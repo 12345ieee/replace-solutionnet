@@ -1,19 +1,15 @@
 #!/usr/bin/env python3
 
-import re
 import csv
 
 from natsort import natsorted
 
-filename=r"score_dump.csv"
+scoresfile=r"score_dump.csv"
 
 """
 {'Username': 'LittleBigDej', 'Level Category': '63corvi', 'Level Number': '1', 'Level Name': 'QT-1',
  'Cycle Count': '20', 'Reactor Count': '1', 'Symbol Count': '5', 'Upload Time': '2013-08-15 10:23:14.329898', 'Youtube Link': ''}
 """
-
-RNet_names_after_28 = "Cyanamide|Acetic Acid|Combustion Engine|Smelting Iron|Neodymium Magnet|Carbide Swap|Fuel Production|Siliconheart Piece|Raygun Mechanism|Sulfuric Acid|Fuming Nitric Acid|Rocket Fuel|Hydroxides|Nobility|Sortite|Radiation Treatment|Boron Compounds|Photovoltaic Cells|Elementary|Mixed Acids|Squaric Acid|Misproportioned|Narkotikum|Vereinheitlichung|Haber-Bosch|Mustard Oil|Nano Electric Motor|Count|Sharing is Caring|Reassembly|Cyanogen|Chloromethylsilane|Glyceraldehyde|Ethandiamin|Radikal|Kreisalkanol|Inorganic Pigments|Miller-Urey|Getting Pumped|Lewisite|Novichok|Ribulose|Knockout Drops|Strong Acids|Vitamin B3|1,2,3-Triphenol|1,3-Dimetoxibencene|Think in Spirals|Yellowcake|Thiourea|Downgrade|Wood Alcohol|Allyl Alcohol|Propargyl Alcohol|Condensation|Silane|Phosphine|Nuclear Medicine|Oxygen Supply|Red Cross|Fluoromethanes|Exercise|Nanoboxes" \
-                     .split('|')
 
 def tiebreak(this_score, best_score, stat1, stat2, stat3, stat4):
     return this_score[stat1] < best_score[stat1] or \
@@ -56,9 +52,12 @@ def reorder_levels(val):
 
 if __name__ == '__main__':
     
+    with open(r'resNetLevels.txt') as namesfile:
+        RNet_names = {'ResearchNet Published {}-{}'.format(i//3+1,i%3+1) : name.rstrip() for i, name in enumerate(namesfile)}
+    
     levels = dict()
     
-    with open(filename) as csvfile:
+    with open(scoresfile) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             level_name = (row['Level Category'], row['Level Number'], row['Level Name'])
@@ -96,9 +95,8 @@ if __name__ == '__main__':
     
     for name, scores in natsorted(levels.items(), key=reorder_levels):
         print('|{} - {} | Min Cycles | Min Symbols'.format(name[0], name[1]))
-        match = re.match(r'ResearchNet Published (\d\d)-([1-3])', name[2])
-        if match:
-            realname = RNet_names_after_28[3*(int(match.group(1))-28)+int(match.group(2))-1]
+        if name[2] in RNet_names:
+            realname = RNet_names[name[2]]
         else:
             realname = name[2]
         print('|{:13} '.format(realname), end='')
