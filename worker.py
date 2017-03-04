@@ -25,6 +25,14 @@ def tiebreak(this_score, best_score, stat1, stat2, stat3, stat4):
             )
            )
 
+def printscore(scores, category):
+    score = scores[category]
+    print('  {:29} U:{:14}  C:{:5} R:{:1} S:{:3}  T:{:26}  {}'.
+          format(category, score['Username'], 
+                 score['Cycle Count'], score['Reactor Count'], score['Symbol Count'], 
+                 score['Upload Time'], 'Y:'+score['Youtube Link'] if score['Youtube Link'] else '')
+         )
+
 
 if __name__ == '__main__':
     
@@ -40,22 +48,39 @@ if __name__ == '__main__':
                           'Symbol Count': int(row['Symbol Count']),
                           'Upload Time': row['Upload Time'],
                           'Youtube Link': row['Youtube Link']}
+            
+            # In, Out, 2 arrows, Swap = 5
+            # In, Swap, Out /2 = 1.5
+            if this_score['Symbol Count'] < 5*this_score['Reactor Count'] or \
+               this_score['Cycle Count'] < 1.5*this_score['Reactor Count']:
+                   continue
+            
             if level_name not in levels:
                 levels[level_name] = {}
                 levels[level_name]['Least Cycles'] = this_score
                 levels[level_name]['Least Symbols'] = this_score
-                levels[level_name]['Least Cycles - Min reactors'] = this_score
-                levels[level_name]['Least Symbols - Min reactors'] = this_score
+                levels[level_name]['Least Cycles - Min Reactors'] = this_score
+                levels[level_name]['Least Symbols - Min Reactors'] = this_score
             else:
                 if tiebreak(this_score, levels[level_name]['Least Cycles'], 'Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'):
                     levels[level_name]['Least Cycles'] = this_score
                     
                 if tiebreak(this_score, levels[level_name]['Least Symbols'], 'Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'):
                     levels[level_name]['Least Symbols'] = this_score
-
+                
+                if tiebreak(this_score, levels[level_name]['Least Cycles - Min Reactors'], 'Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'):
+                    levels[level_name]['Least Cycles - Min Reactors'] = this_score
+                    
+                if tiebreak(this_score, levels[level_name]['Least Symbols - Min Reactors'], 'Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'):
+                    levels[level_name]['Least Symbols - Min Reactors'] = this_score
+    
+    print()
     for name, scores in natsorted(levels.items()):
-        print(name)
-        for category, score in sorted(scores.items()):
-            print('',category, ' U:', score['Username'], 
-                  ' C:', score['Cycle Count'], ' R:', score['Reactor Count'], ' S:', score['Symbol Count'], 
-                  ' T:', score['Upload Time'], ' Y:', score['Youtube Link'] if score['Youtube Link'] else '\'\'')
+        print('{} | {} | {}'.format(*name))
+        printscore(scores, 'Least Cycles')
+        printscore(scores, 'Least Symbols')
+        if scores['Least Cycles - Min Reactors'] != scores['Least Cycles']:
+            printscore(scores, 'Least Cycles - Min Reactors')
+        if scores['Least Symbols - Min Reactors'] != scores['Least Symbols']:
+            printscore(scores, 'Least Symbols - Min Reactors')
+        print()
