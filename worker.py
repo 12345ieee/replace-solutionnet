@@ -11,6 +11,21 @@ filename=r"score_dump.csv"
  'Cycle Count': '20', 'Reactor Count': '1', 'Symbol Count': '5', 'Upload Time': '2013-08-15 10:23:14.329898', 'Youtube Link': ''}
 """
 
+def tiebreak(this_score, best_score, stat1, stat2, stat3, stat4):
+    return this_score[stat1] < best_score[stat1] or \
+           (this_score[stat1] == best_score[stat1] and \
+            (this_score[stat2] < best_score[stat2] or \
+             (this_score[stat2] == best_score[stat2] and \
+              (this_score[stat3] < best_score[stat3] or \
+               (this_score[stat3] == best_score[stat3] and \
+                this_score[stat4] < best_score[stat4]
+               )
+              )
+             )
+            )
+           )
+
+
 if __name__ == '__main__':
     
     levels = dict()
@@ -29,37 +44,15 @@ if __name__ == '__main__':
                 levels[level_name] = {}
                 levels[level_name]['Least Cycles'] = this_score
                 levels[level_name]['Least Symbols'] = this_score
+                levels[level_name]['Least Cycles - Min reactors'] = this_score
+                levels[level_name]['Least Symbols - Min reactors'] = this_score
             else:
-                best_score = levels[level_name]['Least Cycles']
-                if this_score['Cycle Count'] < best_score['Cycle Count'] or \
-                   (this_score['Cycle Count'] == best_score['Cycle Count'] and \
-                    (this_score['Reactor Count'] < best_score['Reactor Count'] or \
-                     (this_score['Reactor Count'] == best_score['Reactor Count'] and \
-                      (this_score['Symbol Count'] < best_score['Symbol Count'] or \
-                       (this_score['Symbol Count'] == best_score['Symbol Count'] and \
-                        this_score['Upload Time'] < best_score['Upload Time']
-                       )
-                      )
-                     )
-                    )
-                   ):
+                if tiebreak(this_score, levels[level_name]['Least Cycles'], 'Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'):
                     levels[level_name]['Least Cycles'] = this_score
                     
-                best_score = levels[level_name]['Least Symbols']
-                if this_score['Symbol Count'] < best_score['Symbol Count'] or \
-                   (this_score['Symbol Count'] == best_score['Symbol Count'] and \
-                    (this_score['Reactor Count'] < best_score['Reactor Count'] or \
-                     (this_score['Reactor Count'] == best_score['Reactor Count'] and \
-                      (this_score['Cycle Count'] < best_score['Cycle Count'] or \
-                       (this_score['Cycle Count'] == best_score['Cycle Count'] and \
-                        this_score['Upload Time'] < best_score['Upload Time']
-                       )
-                      )
-                     )
-                    )
-                   ):
+                if tiebreak(this_score, levels[level_name]['Least Symbols'], 'Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'):
                     levels[level_name]['Least Symbols'] = this_score
-    
+
     for name, scores in natsorted(levels.items()):
         print(name)
         for category, score in sorted(scores.items()):
