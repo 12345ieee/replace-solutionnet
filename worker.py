@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 
 import csv
+import re
+import html
 
 from natsort import natsorted
 
-scoresfile=r"score_dump.csv"
+from save_names_dict import save_names_dict
+
+scoresfile = r"score_dump.csv"
+savefile = r'Level.csv'
 
 """
 {'Username': 'LittleBigDej', 'Level Category': '63corvi', 'Level Number': '1', 'Level Name': 'QT-1',
@@ -52,15 +57,22 @@ def reorder_levels(val):
 
 if __name__ == '__main__':
     
-    with open(r'resNetLevels.txt') as namesfile:
-        RNet_names = {'ResearchNet Published {}-{}'.format(i//3+1,i%3+1) : name.rstrip() for i, name in enumerate(namesfile)}
-    
     levels = dict()
     
     with open(scoresfile) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            level_name = (row['Level Category'], row['Level Number'], row['Level Name'])
+            
+            if row['Level Category'] == 'researchnet':
+                if row['Level Number'].count('-') == 2:
+                    volume, issue, assign = map(int, row['Level Number'].split('-'))
+                    longissue = (volume-1)*12+issue
+                    level_name = ('researchnet', '{}-{}'.format(longissue, assign),  html.unescape(row['Level Name']))
+                else:
+                    level_name = save_names_dict['published-{}'.format(row['Level Number'])]
+            else:
+                level_name = (row['Level Category'], row['Level Number'],  html.unescape(row['Level Name']))
+            
             this_score = {'Username': row['Username'],
                           'Cycle Count': int(row['Cycle Count']),
                           'Reactor Count': int(row['Reactor Count']),
@@ -92,20 +104,58 @@ if __name__ == '__main__':
                     
                 if tiebreak(this_score, levels[level_name]['Least Symbols - Min Reactors'], 'Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'):
                     levels[level_name]['Least Symbols - Min Reactors'] = this_score
-    
+
+    with open(savefile) as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            if row['passed'] != '1':
+                continue
+            if row['id'] in save_names_dict:
+                level_name = save_names_dict[row['id']]
+            else:
+                continue
+            this_score = {'Username': '12345ieee',
+                          'Cycle Count': int(row['cycles']),
+                          'Reactor Count': int(row['reactors']),
+                          'Symbol Count': int(row['symbols']),
+                          'Upload Time': '2017-03-05 09:12:35.408504',
+                          'Youtube Link': ''}
+            
+            # In, Out, 2 arrows, Swap = 5
+            # In, Swap, Out /2 = 1.5
+            if this_score['Symbol Count'] < 5*this_score['Reactor Count'] or \
+               this_score['Cycle Count'] < 1.5*this_score['Reactor Count']:
+                   continue
+            
+            if level_name not in levels:
+                continue
+                #~ levels[level_name] = {}
+                #~ levels[level_name]['Least Cycles'] = this_score
+                #~ levels[level_name]['Least Symbols'] = this_score
+                #~ levels[level_name]['Least Cycles - Min Reactors'] = this_score
+                #~ levels[level_name]['Least Symbols - Min Reactors'] = this_score
+            else:
+                if tiebreak(this_score, levels[level_name]['Least Cycles'], 'Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'):
+                    levels[level_name]['Least Cycles'] = this_score
+                    
+                if tiebreak(this_score, levels[level_name]['Least Symbols'], 'Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'):
+                    levels[level_name]['Least Symbols'] = this_score
+                
+                if tiebreak(this_score, levels[level_name]['Least Cycles - Min Reactors'], 'Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'):
+                    levels[level_name]['Least Cycles - Min Reactors'] = this_score
+                    
+                if tiebreak(this_score, levels[level_name]['Least Symbols - Min Reactors'], 'Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'):
+                    levels[level_name]['Least Symbols - Min Reactors'] = this_score
+
     for name, scores in natsorted(levels.items(), key=reorder_levels):
         print('|{} - {} | Min Cycles | Min Symbols'.format(name[0], name[1]))
-        if name[2] in RNet_names:
-            realname = RNet_names[name[2]]
-        else:
-            realname = name[2]
-        print('|{:13} '.format(realname), end='')
+        print('|{:13} '.format(name[2]), end='')
         printscore(scores['Least Cycles'], bold=1)
         printscore(scores['Least Symbols'], bold=3)
         print()
         if scores['Least Cycles - Min Reactors'] != scores['Least Cycles'] or \
            scores['Least Symbols - Min Reactors'] != scores['Least Symbols']:
-            print('|{} - N reactors '.format(realname), end='')
+            print('|{} - N Reactors '.format(name[2]), end='')
             printscore(scores['Least Cycles - Min Reactors'], bold=1)
             printscore(scores['Least Symbols - Min Reactors'], bold=3)
             print()
