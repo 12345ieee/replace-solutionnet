@@ -1,7 +1,10 @@
+# Cache
 __pycache__
 
+# My save
 Level.csv
 convert-db-to-csv/
 save
 
-out.md
+# Outfiles
+out*
