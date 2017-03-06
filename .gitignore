@@ -2,8 +2,7 @@
 __pycache__
 
 # My save
-Level.csv
-convert-db-to-csv/
+save.csv
 save
 
 # Outfiles

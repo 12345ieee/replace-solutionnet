@@ -8,7 +8,7 @@ from natsort import natsorted
 import level_dicts
 
 scoresfile = r"score_dump.csv"
-savefile = r'Level.csv'
+savefile = r'save.csv'
 
 """
 {'Username': 'LittleBigDej', 'Level Category': '63corvi', 'Level Number': '1', 'Level Name': 'QT-1',
