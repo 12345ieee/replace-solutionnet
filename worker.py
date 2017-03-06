@@ -151,13 +151,33 @@ if __name__ == '__main__':
     for level_id, scores in natsorted(levels.items(), key=reorder_levels):
         print('|{} - {} | Min Cycles | Min Symbols'.format(*level_id))
         level = level_dicts.id2level[level_id]
-        print('|{:13} '.format(level['name']), end='')
-        printscore(scores['Least Cycles'], bold=0b100)
-        printscore(scores['Least Symbols'], bold=0b001)
-        print()
-        if level['isResearch'] == 0:
-            print('|{} - N Reactors '.format(level['name']), end='')
-            printscore(scores['Least Cycles - Min Reactors'], bold=0b110)
-            printscore(scores['Least Symbols - Min Reactors'], bold=0b011)
+        
+        if level['isDeterministic']:
+            print('|{name:13} '.format(**level), end='')
+            printscore(scores['Least Cycles'], bold=0b100)
+            printscore(scores['Least Symbols'], bold=0b001)
             print()
+            if not level['isResearch']:
+                print('|{name} - N Reactors '.format(**level), end='')
+                printscore(scores['Least Cycles - Min Reactors'], bold=0b110)
+                printscore(scores['Least Symbols - Min Reactors'], bold=0b011)
+                print()
+        else:
+            print('|{name} - Windows '.format(**level), end='')
+            printscore(scores['Least Cycles'], bold=0b100)
+            printscore(scores['Least Symbols'], bold=0b001)
+            print()
+            print('|{name} - Linux '.format(**level), end='')
+            printscore(scores['Least Cycles'], bold=0b100)
+            printscore(scores['Least Symbols'], bold=0b001)
+            print()
+            if not level['isResearch']:
+                print('|{name} - Windows - N Reactors '.format(**level), end='')
+                printscore(scores['Least Cycles - Min Reactors'], bold=0b110)
+                printscore(scores['Least Symbols - Min Reactors'], bold=0b011)
+                print()
+                print('|{name} - Linux - N Reactors '.format(**level), end='')
+                printscore(scores['Least Cycles - Min Reactors'], bold=0b110)
+                printscore(scores['Least Symbols - Min Reactors'], bold=0b011)
+                print()
         print()
