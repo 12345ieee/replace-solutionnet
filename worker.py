@@ -29,6 +29,14 @@ def tiebreak(this_score, best_score, stat1, stat2, stat3, stat4):
             )
            )
 
+def should_reject(this_score):
+    # In, Out, 2 arrows, Swap = 5 min
+    # Max of 2*2*80=320 symbols/reactor
+    # In, Swap, Out /2 = 1.5
+    return this_score['Symbol Count'] < 5*this_score['Reactor Count'] or \
+           this_score['Symbol Count'] > 320*this_score['Reactor Count'] or \
+           this_score['Cycle Count'] < 1.5*this_score['Reactor Count']
+
 def printscore_vis(scores, category):
     score = scores[category]
     print('  {:29} U:{:14}  C:{:5} R:{:1} S:{:3}  T:{:26}  {}'.
@@ -79,11 +87,8 @@ if __name__ == '__main__':
                           'Upload Time': row['Upload Time'],
                           'Youtube Link': row['Youtube Link']}
             
-            # In, Out, 2 arrows, Swap = 5
-            # In, Swap, Out /2 = 1.5
-            if this_score['Symbol Count'] < 5*this_score['Reactor Count'] or \
-               this_score['Cycle Count'] < 1.5*this_score['Reactor Count']:
-                   continue
+            if should_reject(this_score):
+                continue
             
             if level_id not in levels:
                 levels[level_id] = {}
@@ -120,11 +125,8 @@ if __name__ == '__main__':
                           'Upload Time': '2017-03-05 09:12:35.408504',
                           'Youtube Link': ''}
             
-            # In, Out, 2 arrows, Swap = 5
-            # In, Swap, Out /2 = 1.5
-            if this_score['Symbol Count'] < 5*this_score['Reactor Count'] or \
-               this_score['Cycle Count'] < 1.5*this_score['Reactor Count']:
-                   continue
+            if should_reject(this_score):
+                continue
             
             if level_id not in levels:
                 continue
