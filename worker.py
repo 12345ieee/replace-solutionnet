@@ -70,13 +70,11 @@ if __name__ == '__main__':
         reader = csv.DictReader(csvfile)
         for row in reader:
             
-            if row['Level Category'] == 'researchnet':
-                if row['Level Number'].count('-') == 2:
-                    volume, issue, assign = map(int, row['Level Number'].split('-'))
-                    longissue = (volume-1)*12+issue
-                    level_id = ('researchnet', '{}-{}'.format(longissue, assign))
-                else:
-                    level_id = ('researchnet', row['Level Number'])
+            if row['Level Category'] == 'researchnet' and \
+               row['Level Number'].count('-') == 1:
+                    longissue, assign = map(int, row['Level Number'].split('-'))
+                    volume, issue = (longissue-1)//12+1, (longissue-1)%12+1
+                    level_id = ('researchnet', '{}-{}-{}'.format(volume, issue, assign))
             else:
                 level_id = (row['Level Category'], row['Level Number'])
             
