@@ -9,6 +9,7 @@ import level_dicts
 
 scoresfile = r"score_dump.csv"
 savefile = r'save.csv'
+playername = '12345ieee'
 
 """
 {'Username': 'LittleBigDej', 'Level Category': '63corvi', 'Level Number': '1', 'Level Name': 'QT-1',
@@ -129,7 +130,7 @@ if __name__ == '__main__':
                 level_id = level_dicts.save2id[row['id']]
             else:
                 continue
-            this_score = {'Username': '12345ieee',
+            this_score = {'Username': playername,
                           'Cycle Count': int(row['cycles']),
                           'Reactor Count': int(row['reactors']),
                           'Symbol Count': int(row['symbols']),
