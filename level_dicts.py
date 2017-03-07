@@ -685,22 +685,35 @@ id2level = {
 }
 
 user2OS = {
-    # cat - | grep -P 'Windows|Linux'|sed -e "s/^/\'/g"|sed -e "s/	/\': \'/g"|sed -e "s/$/\',/g"
+    # cat - | grep -P 'Windows|Linux'|sed -e "s/^/\'/g"|sed -e "s/\t/\': \'/g"|sed -e "s/$/\',/g"
     
-    'toi333': 'Windows',
-    'pieceofmind': 'Windows',
-    'hailstone': 'Windows',
+    'Alexander Zeillinger': 'Windows',
     'Andy': 'Windows',
+    'Benjikshoo': 'Linux',
+    'Blueeyedrat': 'Windows',
+    'CaitSith2': 'Windows',
+    'Carlbunk': 'Windows',
+    'cearn': 'Windows',
+    'DariusRaider': 'Windows',
+    'davenger': 'Windows',
+    'DFyNt2U': 'Windows',
+    'ecco2': 'Windows',
+    'gggol': 'Linux',
+    'goodbyeclock': 'Windows',
+    'GuavaMoment': 'Windows',
+    'hailstone': 'Windows',
+    'Ir_Sigma': 'Windows',
+    'Leylite': 'Linux',
+    'mrcable': 'Windows',
+    'pieceofmind': 'Windows',
     'Sahishar': 'Windows',
     'ShadowTheAge': 'Windows',
-    'mrcable': 'Windows',
-    'cearn': 'Windows',
-    'CaitSith2': 'Windows',
-    'davenger': 'Windows',
-    'gggol': 'Linux',
-    'GuavaMoment': 'Windows',
+    'testalot47': 'Windows',
+    'toi333': 'Windows',
+    'TotalSushi': 'Windows',
+    'WildM': 'Windows',
     'Zemyla': 'Windows',
-    'Leylite': 'Linux',
+    
     'ToughThought': 'Linux',
     '12345ieee': 'Linux',
 }
