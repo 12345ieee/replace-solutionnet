@@ -101,10 +101,6 @@ if __name__ == '__main__':
                 continue
             
             props = level_dicts.id2level[level_id]
-            if this_score['Username'] in level_dicts.user2OS:
-                userOS = level_dicts.user2OS[this_score['Username']]
-            else:
-                userOS = 'Unknown OS'
             
             if props['isDeterministic']:
                 insert_score(this_score, levels[level_id], 'Least Cycles', ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
@@ -113,6 +109,10 @@ if __name__ == '__main__':
                     insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
                     insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
             else:
+                if this_score['Username'] in level_dicts.user2OS:
+                    userOS = level_dicts.user2OS[this_score['Username']]
+                else:
+                    userOS = 'Unknown OS'
                 insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(userOS), ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
                 insert_score(this_score, levels[level_id], 'Least Symbols - {}'.format(userOS), ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
                 if not props['isResearch']:
@@ -140,10 +140,6 @@ if __name__ == '__main__':
                 continue
             
             props = level_dicts.id2level[level_id]
-            if this_score['Username'] in level_dicts.user2OS:
-                userOS = level_dicts.user2OS[this_score['Username']]
-            else:
-                userOS = 'Unknown OS'
             
             if props['isDeterministic']:
                 insert_score(this_score, levels[level_id], 'Least Cycles', ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
@@ -152,6 +148,10 @@ if __name__ == '__main__':
                     insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
                     insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
             else:
+                if this_score['Username'] in level_dicts.user2OS:
+                    userOS = level_dicts.user2OS[this_score['Username']]
+                else:
+                    userOS = 'Unknown OS'
                 insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(userOS), ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
                 insert_score(this_score, levels[level_id], 'Least Symbols - {}'.format(userOS), ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
                 if not props['isResearch']:
