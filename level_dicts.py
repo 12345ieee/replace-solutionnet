@@ -450,7 +450,7 @@ id2level = {
     ("researchnet", "1-9-3"): {'name': "Diels-Alder", 'isResearch': 1, 'isDeterministic': 1},
     ("researchnet", "1-10-1"): {'name': "Bad Times, Part II", 'isResearch': 1, 'isDeterministic': 1},
     ("researchnet", "1-10-2"): {'name': "Freon", 'isResearch': 1, 'isDeterministic': 0},
-    ("researchnet", "1-10-3"): {'name': "Benzene Derivation", 'isResearch': 1, 'isDeterministic': 0},
+    ("researchnet", "1-10-3"): {'name': "Benzene Derivatives", 'isResearch': 1, 'isDeterministic': 0},
     ("researchnet", "1-11-1"): {'name': "Portland Cement", 'isResearch': 1, 'isDeterministic': 1},
     ("researchnet", "1-11-2"): {'name': "Solder Coarsening", 'isResearch': 1, 'isDeterministic': 1},
     ("researchnet", "1-11-3"): {'name': "Graphene", 'isResearch': 1, 'isDeterministic': 1},
