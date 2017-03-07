@@ -339,7 +339,6 @@ save2id = {
     "published-91-1": ("researchnet", "8-15-1"),
     "published-91-2": ("researchnet", "8-15-2"),
     "published-91-3": ("researchnet", "8-15-3"),
-
 }
 
 id2level = {
@@ -683,5 +682,25 @@ id2level = {
     ("researchnet", "8-15-1"): {'name': "Precious Tears", 'isResearch': 0, 'isDeterministic': 1},
     ("researchnet", "8-15-2"): {'name': "Desperate Measur...", 'isResearch': 0, 'isDeterministic': 0},
     ("researchnet", "8-15-3"): {'name': "Hydrocarbon Stitch", 'isResearch': 1, 'isDeterministic': 0},
+}
 
+user2OS = {
+    # cat - | grep -P 'Windows|Linux'|sed -e "s/^/\'/g"|sed -e "s/	/\': \'/g"|sed -e "s/$/\',/g"
+    
+    'toi333': 'Windows',
+    'pieceofmind': 'Windows',
+    'hailstone': 'Windows',
+    'Andy': 'Windows',
+    'Sahishar': 'Windows',
+    'ShadowTheAge': 'Windows',
+    'mrcable': 'Windows',
+    'cearn': 'Windows',
+    'CaitSith2': 'Windows',
+    'davenger': 'Windows',
+    'gggol': 'Linux',
+    'GuavaMoment': 'Windows',
+    'Zemyla': 'Windows',
+    'Leylite': 'Linux',
+    'ToughThought': 'Linux',
+    '12345ieee': 'Linux',
 }

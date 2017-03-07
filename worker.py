@@ -29,6 +29,10 @@ def tiebreak(this_score, best_score, stat1, stat2, stat3, stat4):
             )
            )
 
+def insert_score(this_score, scores, category, stats):
+    if category not in scores or tiebreak(this_score, scores[category], *stats):
+        scores[category] = this_score
+
 def should_reject(this_score):
     # In, Out, 2 arrows, Swap = 5 min
     # Max of 2*2*80=320 symbols/reactor
@@ -57,6 +61,12 @@ def printscore(score, bold=0):
         fmt_score = '[{}]({})'.format(fmt_score, score['Youtube Link'])
     print('| {:20}'.format(fmt_score),end=' ')
 
+def printblock(scores, header, cat1, cat2, bold1, bold2):
+    if cat1 in scores and cat2 in scores: 
+        print(header, end='')
+        printscore(scores[cat1], bold=bold1)
+        printscore(scores[cat2], bold=bold2)
+        print()
 
 level_order = {'main':0, 'tf2':1, '63corvi':2, 'researchnet':3}
 
@@ -66,7 +76,7 @@ def reorder_levels(val):
 
 if __name__ == '__main__':
     
-    levels = dict()
+    levels = {k: dict() for k in level_dicts.id2level}
     
     with open(scoresfile) as csvfile:
         reader = csv.DictReader(csvfile)
@@ -90,24 +100,25 @@ if __name__ == '__main__':
             if should_reject(this_score):
                 continue
             
-            if level_id not in levels:
-                levels[level_id] = {}
-                levels[level_id]['Least Cycles'] = this_score
-                levels[level_id]['Least Symbols'] = this_score
-                levels[level_id]['Least Cycles - Min Reactors'] = this_score
-                levels[level_id]['Least Symbols - Min Reactors'] = this_score
+            props = level_dicts.id2level[level_id]
+            if this_score['Username'] in level_dicts.user2OS:
+                userOS = level_dicts.user2OS[this_score['Username']]
             else:
-                if tiebreak(this_score, levels[level_id]['Least Cycles'], 'Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'):
-                    levels[level_id]['Least Cycles'] = this_score
-                    
-                if tiebreak(this_score, levels[level_id]['Least Symbols'], 'Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'):
-                    levels[level_id]['Least Symbols'] = this_score
-                
-                if tiebreak(this_score, levels[level_id]['Least Cycles - Min Reactors'], 'Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'):
-                    levels[level_id]['Least Cycles - Min Reactors'] = this_score
-                    
-                if tiebreak(this_score, levels[level_id]['Least Symbols - Min Reactors'], 'Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'):
-                    levels[level_id]['Least Symbols - Min Reactors'] = this_score
+                userOS = 'Unknown OS'
+            
+            if props['isDeterministic']:
+                insert_score(this_score, levels[level_id], 'Least Cycles', ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
+                insert_score(this_score, levels[level_id], 'Least Symbols', ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
+                if not props['isResearch']:
+                    insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
+                    insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
+            else:
+                insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(userOS), ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
+                insert_score(this_score, levels[level_id], 'Least Symbols - {}'.format(userOS), ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
+                if not props['isResearch']:
+                    insert_score(this_score, levels[level_id], 'Least Cycles - {} - N Reactors'.format(userOS), ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
+                    insert_score(this_score, levels[level_id], 'Least Symbols - {} - N Reactors'.format(userOS), ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
+
 
     with open(savefile) as csvfile:
         reader = csv.DictReader(csvfile)
@@ -128,56 +139,39 @@ if __name__ == '__main__':
             if should_reject(this_score):
                 continue
             
-            if level_id not in levels:
-                continue
-                #~ levels[level_id] = {}
-                #~ levels[level_id]['Least Cycles'] = this_score
-                #~ levels[level_id]['Least Symbols'] = this_score
-                #~ levels[level_id]['Least Cycles - Min Reactors'] = this_score
-                #~ levels[level_id]['Least Symbols - Min Reactors'] = this_score
+            props = level_dicts.id2level[level_id]
+            if this_score['Username'] in level_dicts.user2OS:
+                userOS = level_dicts.user2OS[this_score['Username']]
             else:
-                if tiebreak(this_score, levels[level_id]['Least Cycles'], 'Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'):
-                    levels[level_id]['Least Cycles'] = this_score
-                    
-                if tiebreak(this_score, levels[level_id]['Least Symbols'], 'Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'):
-                    levels[level_id]['Least Symbols'] = this_score
-                
-                if tiebreak(this_score, levels[level_id]['Least Cycles - Min Reactors'], 'Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'):
-                    levels[level_id]['Least Cycles - Min Reactors'] = this_score
-                    
-                if tiebreak(this_score, levels[level_id]['Least Symbols - Min Reactors'], 'Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'):
-                    levels[level_id]['Least Symbols - Min Reactors'] = this_score
+                userOS = 'Unknown OS'
+            
+            if props['isDeterministic']:
+                insert_score(this_score, levels[level_id], 'Least Cycles', ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
+                insert_score(this_score, levels[level_id], 'Least Symbols', ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
+                if not props['isResearch']:
+                    insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
+                    insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
+            else:
+                insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(userOS), ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
+                insert_score(this_score, levels[level_id], 'Least Symbols - {}'.format(userOS), ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
+                if not props['isResearch']:
+                    insert_score(this_score, levels[level_id], 'Least Cycles - {} - N Reactors'.format(userOS), ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
+                    insert_score(this_score, levels[level_id], 'Least Symbols - {} - N Reactors'.format(userOS), ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
+
 
     for level_id, scores in natsorted(levels.items(), key=reorder_levels):
+        if not scores:
+            continue
+        
         print('|{} - {} | Min Cycles | Min Symbols'.format(*level_id))
+
         level = level_dicts.id2level[level_id]
         
-        if level['isDeterministic']:
-            print('|{name:13} '.format(**level), end='')
-            printscore(scores['Least Cycles'], bold=0b100)
-            printscore(scores['Least Symbols'], bold=0b001)
-            print()
-            if not level['isResearch']:
-                print('|{name} - N Reactors '.format(**level), end='')
-                printscore(scores['Least Cycles - Min Reactors'], bold=0b110)
-                printscore(scores['Least Symbols - Min Reactors'], bold=0b011)
-                print()
-        else:
-            print('|{name} - Windows '.format(**level), end='')
-            printscore(scores['Least Cycles'], bold=0b100)
-            printscore(scores['Least Symbols'], bold=0b001)
-            print()
-            print('|{name} - Linux '.format(**level), end='')
-            printscore(scores['Least Cycles'], bold=0b100)
-            printscore(scores['Least Symbols'], bold=0b001)
-            print()
-            if not level['isResearch']:
-                print('|{name} - Windows - N Reactors '.format(**level), end='')
-                printscore(scores['Least Cycles - Min Reactors'], bold=0b110)
-                printscore(scores['Least Symbols - Min Reactors'], bold=0b011)
-                print()
-                print('|{name} - Linux - N Reactors '.format(**level), end='')
-                printscore(scores['Least Cycles - Min Reactors'], bold=0b110)
-                printscore(scores['Least Symbols - Min Reactors'], bold=0b011)
-                print()
+        for OSstring in ['', ' - Windows', ' - Linux', ' - Unknown OS']:
+            printblock(scores, '|{name}{OS} '.format(**level, OS=OSstring),
+                       'Least Cycles{}'.format(OSstring), 'Least Symbols{}'.format(OSstring),
+                       0b100, 0b001)
+            printblock(scores, '|{name}{OS} - N Reactors '.format(**level, OS=OSstring),
+                       'Least Cycles{} - N Reactors'.format(OSstring), 'Least Symbols{} - N Reactors'.format(OSstring),
+                       0b110, 0b011)
         print()
