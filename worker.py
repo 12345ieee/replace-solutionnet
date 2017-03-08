@@ -72,7 +72,7 @@ def printblock(scores, header, cat1, cat2, bold1, bold2):
 level_order = {'main':0, 'tf2':1, '63corvi':2, 'researchnet':3}
 
 def reorder_levels(val):
-    return (level_order[val[0][0]], val[0][1])
+    return (level_order[val[0]], val[1])
 
 
 if __name__ == '__main__':
@@ -160,7 +160,8 @@ if __name__ == '__main__':
                     insert_score(this_score, levels[level_id], 'Least Symbols - {} - N Reactors'.format(userOS), ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
 
 
-    for level_id, scores in natsorted(levels.items(), key=reorder_levels):
+    for level_id in natsorted(levels, key=reorder_levels):
+        scores = levels[level_id]
         if not scores:
             continue
         
