@@ -614,7 +614,7 @@ id2level = {
     ("researchnet", "6-3-1"): {'name': "Carbon Snakes", 'isResearch': 1, 'isDeterministic': 1},
     ("researchnet", "6-3-2"): {'name': "Catalyst", 'isResearch': 1, 'isDeterministic': 1},
     ("researchnet", "6-3-3"): {'name': "Catalyst II", 'isResearch': 1, 'isDeterministic': 1},
-    ("researchnet", "6-4-1"): {'name': "Unbonding with n...", 'isResearch': 1, 'isDeterministic': 1},
+    ("researchnet", "6-4-1"): {'name': "Unbonding with no Bonders", 'isResearch': 1, 'isDeterministic': 1},
     ("researchnet", "6-4-2"): {'name': "Breeder Reactor", 'isResearch': 0, 'isDeterministic': 1},
     ("researchnet", "6-4-3"): {'name': "Nightmare Factory", 'isResearch': 0, 'isDeterministic': 0},
 
@@ -685,10 +685,12 @@ id2level = {
 }
 
 user2OS = {
-    # cat - | grep -P 'Windows|Linux'|sed -e "s/^/\'/g"|sed -e "s/\t/\': \'/g"|sed -e "s/$/\',/g"
+    # cat - | grep -P 'Windows|Linux'|sed -e "s/^/    \'/g"|sed -e "s/\t/\': \'/g"|sed -e "s/$/\',/g"
     
-    'Alexander Zeillinger': 'Windows',
+    '12345ieee': 'Linux',
     'Andy': 'Windows',
+    'ants280': 'Windows',
+    'Bashy_McFetus': 'Windows',
     'Benjikshoo': 'Linux',
     'Blueeyedrat': 'Windows',
     'CaitSith2': 'Windows',
@@ -698,22 +700,28 @@ user2OS = {
     'davenger': 'Windows',
     'DFyNt2U': 'Windows',
     'ecco2': 'Windows',
+    'Elvis': 'Windows',
     'gggol': 'Linux',
     'goodbyeclock': 'Windows',
     'GuavaMoment': 'Windows',
     'hailstone': 'Windows',
     'Ir_Sigma': 'Windows',
+    'keyyek': 'Windows',
     'Leylite': 'Linux',
+    'michelcolman': 'Linux',
     'mrcable': 'Windows',
     'pieceofmind': 'Windows',
+    'RYANSUPERGENIUS1123': 'Windows',
     'Sahishar': 'Windows',
     'ShadowTheAge': 'Windows',
+    'SnapDragon': 'Windows',
     'testalot47': 'Windows',
     'toi333': 'Windows',
     'TotalSushi': 'Windows',
+    'ToughThought': 'Linux',
+    'whoever314': 'Windows',
+    'WildFilch': 'Linux',
     'WildM': 'Windows',
     'Zemyla': 'Windows',
-    
-    'ToughThought': 'Linux',
-    '12345ieee': 'Linux',
+    'Zig': 'Windows',
 }
