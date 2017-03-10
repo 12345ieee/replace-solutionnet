@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import csv
-import re
+import sqlite3
 
 from natsort import natsorted
 
@@ -9,12 +9,16 @@ import level_dicts
 import user_dict
 
 scoresfile = r"score_dump.csv"
-savefile = r'save.csv'
+savefiles = [r'save/000.user', r'save/001.user']
 playername = '12345ieee'
 
 """
 {'Username': 'LittleBigDej', 'Level Category': '63corvi', 'Level Number': '1', 'Level Name': 'QT-1',
  'Cycle Count': '20', 'Reactor Count': '1', 'Symbol Count': '5', 'Upload Time': '2013-08-15 10:23:14.329898', 'Youtube Link': ''}
+"""
+
+"""
+{'id': 'fusion-1', 'passed': 1, 'mastered': 0, 'cycles': 52, 'symbols': 38, 'reactors': 1, 'best_cycles': 52, 'best_symbols': 11, 'best_reactors': 1}
 """
 
 def tiebreak(this_score, best_score, stat1, stat2, stat3, stat4):
@@ -42,14 +46,6 @@ def should_reject(this_score):
     return this_score['Symbol Count'] < 5*this_score['Reactor Count'] or \
            this_score['Symbol Count'] > 320*this_score['Reactor Count'] or \
            this_score['Cycle Count'] < 1.5*this_score['Reactor Count']
-
-def printscore_vis(scores, category):
-    score = scores[category]
-    print('  {:29} U:{:14}  C:{:5} R:{:1} S:{:3}  T:{:26}  {}'.
-          format(category, score['Username'],
-                 score['Cycle Count'], score['Reactor Count'], score['Symbol Count'],
-                 score['Upload Time'], 'Y:'+score['Youtube Link'] if score['Youtube Link'] else '')
-         )
 
 
 fmt_scores_with_bold = ['({}/{}/{}) {}', '({}/{}/**{}**) {}', '({}/**{}**/{}) {}', '({}/**{}**/**{}**) {}',
@@ -122,19 +118,22 @@ if __name__ == '__main__':
                     insert_score(this_score, levels[level_id], 'Least Symbols - {} - N Reactors'.format(userOS), ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
 
 
-    with open(savefile) as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            if row['passed'] != '1':
+    for savefile in savefiles:
+        conn = sqlite3.connect(savefile)
+        conn.row_factory = sqlite3.Row
+        dbcursor = conn.execute("SELECT * FROM {}".format('Level'))
+
+        for row in dbcursor:
+            if row['passed'] == 0:
                 continue
             if row['id'] in level_dicts.save2id:
                 level_id = level_dicts.save2id[row['id']]
             else:
                 continue
             this_score = {'Username': playername,
-                          'Cycle Count': int(row['cycles']),
-                          'Reactor Count': int(row['reactors']),
-                          'Symbol Count': int(row['symbols']),
+                          'Cycle Count': row['cycles'],
+                          'Reactor Count': row['reactors'],
+                          'Symbol Count': row['symbols'],
                           'Upload Time': '2017-03-05 09:12:35.408504',
                           'Youtube Link': ''}
             
@@ -159,7 +158,8 @@ if __name__ == '__main__':
                 if not props['isResearch']:
                     insert_score(this_score, levels[level_id], 'Least Cycles - {} - N Reactors'.format(userOS), ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
                     insert_score(this_score, levels[level_id], 'Least Symbols - {} - N Reactors'.format(userOS), ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
-
+        
+        conn.close()
 
     for level_id in natsorted(levels, key=reorder_levels):
         scores = levels[level_id]

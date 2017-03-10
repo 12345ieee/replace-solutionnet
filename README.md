@@ -5,14 +5,16 @@ You need:
 * A python3 interpreter
 * The `natsort` PyPi package: `pip3 install natsort`
 
-Parsing your save, too:
+Parsing your save(s), too:
 
-* Pre-parse your savefile via: `./dump_save.sh path/to/save/.../something.user`
-* Give your name as `playername = '<name>'` at the beginning of `worker.py`
+* Give your savefile(s) as: `savefiles = ['path/to/save1.user', 'path/to/save2.user', ...]`
+* Give your name as `playername = '<name>'`
+
+at the beginning of `worker.py`
 
 Don't parse your save:
 
-* Comment out the 2nd `with` block, not elegant but it works.
+* `savefiles = []` at the beginning of `worker.py`
 
 Then just run `./worker` and the table will be printed to stdout
 
