@@ -6,6 +6,7 @@ import re
 from natsort import natsorted
 
 import level_dicts
+import user_dict
 
 scoresfile = r"score_dump.csv"
 savefile = r'save.csv'
@@ -110,8 +111,8 @@ if __name__ == '__main__':
                     insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
                     insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
             else:
-                if this_score['Username'] in level_dicts.user2OS:
-                    userOS = level_dicts.user2OS[this_score['Username']]
+                if this_score['Username'] in user_dict.user2OS:
+                    userOS = user_dict.user2OS[this_score['Username']]
                 else:
                     userOS = 'Unknown OS'
                 insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(userOS), ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
@@ -149,8 +150,8 @@ if __name__ == '__main__':
                     insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
                     insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
             else:
-                if this_score['Username'] in level_dicts.user2OS:
-                    userOS = level_dicts.user2OS[this_score['Username']]
+                if this_score['Username'] in user_dict.user2OS:
+                    userOS = user_dict.user2OS[this_score['Username']]
                 else:
                     userOS = 'Unknown OS'
                 insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(userOS), ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
