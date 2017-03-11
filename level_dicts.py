@@ -605,11 +605,11 @@ id2level = {
     ("researchnet", "5-12-2"): {'name': "Master Plan", 'isResearch': 0, 'isDeterministic': 0},
     ("researchnet", "5-12-3"): {'name': "Rags to Riches", 'isResearch': 0, 'isDeterministic': 0},
 
-    ("researchnet", "6-1-1"): {'name': "Plutonium Separator", 'isResearch': 1, 'isDeterministic': 0},
+    ("researchnet", "6-1-1"): {'name': "Plutonium Separation", 'isResearch': 1, 'isDeterministic': 0},
     ("researchnet", "6-1-2"): {'name': "You're doing it wrong", 'isResearch': 1, 'isDeterministic': 1},
     ("researchnet", "6-1-3"): {'name': "Synthetic Elerium", 'isResearch': 1, 'isDeterministic': 1},
     ("researchnet", "6-2-1"): {'name': "Deadly Soft Drinks", 'isResearch': 1, 'isDeterministic': 1},
-    ("researchnet", "6-2-2"): {'name': "Deadly Fluorinate...", 'isResearch': 1, 'isDeterministic': 1},
+    ("researchnet", "6-2-2"): {'name': "Deadly Fluorinated Water", 'isResearch': 1, 'isDeterministic': 1},
     ("researchnet", "6-2-3"): {'name': "Deadly Microwaves", 'isResearch': 1, 'isDeterministic': 1},
     ("researchnet", "6-3-1"): {'name': "Carbon Snakes", 'isResearch': 1, 'isDeterministic': 1},
     ("researchnet", "6-3-2"): {'name': "Catalyst", 'isResearch': 1, 'isDeterministic': 1},
