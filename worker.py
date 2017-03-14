@@ -6,11 +6,11 @@ import sqlite3
 from natsort import natsorted
 
 import level_dicts
-import user_dict
 
 scoresfile = r"score_dump.csv"
 savefiles = [r'save/000.user', r'save/001.user']
 playername = '12345ieee'
+playerOS = 'Linux' # 'Windows'
 
 """
 {'Username': 'LittleBigDej', 'Level Category': '63corvi', 'Level Number': '1', 'Level Name': 'QT-1',
@@ -75,9 +75,14 @@ def reorder_levels(val):
 if __name__ == '__main__':
     
     levels = {k: dict() for k in level_dicts.id2level}
+    user2OS = {}
     
-    with open(scoresfile) as csvfile:
-        reader = csv.DictReader(csvfile)
+    with open('users.csv') as userscsv:
+        reader = csv.DictReader(userscsv, skipinitialspace=True)
+        user2OS = {row['User']: row['OS'] for row in reader}
+    
+    with open(scoresfile) as scorescsv:
+        reader = csv.DictReader(scorescsv)
         for row in reader:
             
             if row['Level Category'] == 'researchnet' and \
@@ -107,8 +112,8 @@ if __name__ == '__main__':
                     insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
                     insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
             else:
-                if this_score['Username'] in user_dict.user2OS:
-                    userOS = user_dict.user2OS[this_score['Username']]
+                if this_score['Username'] in user2OS:
+                    userOS = user2OS[this_score['Username']]
                 else:
                     userOS = 'Unknown OS'
                 insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(userOS), ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
@@ -149,15 +154,11 @@ if __name__ == '__main__':
                     insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
                     insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
             else:
-                if this_score['Username'] in user_dict.user2OS:
-                    userOS = user_dict.user2OS[this_score['Username']]
-                else:
-                    userOS = 'Unknown OS'
-                insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(userOS), ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
-                insert_score(this_score, levels[level_id], 'Least Symbols - {}'.format(userOS), ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
+                insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(playerOS), ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
+                insert_score(this_score, levels[level_id], 'Least Symbols - {}'.format(playerOS), ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
                 if not props['isResearch']:
-                    insert_score(this_score, levels[level_id], 'Least Cycles - {} - N Reactors'.format(userOS), ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
-                    insert_score(this_score, levels[level_id], 'Least Symbols - {} - N Reactors'.format(userOS), ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
+                    insert_score(this_score, levels[level_id], 'Least Cycles - {} - N Reactors'.format(playerOS), ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
+                    insert_score(this_score, levels[level_id], 'Least Symbols - {} - N Reactors'.format(playerOS), ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
         
         conn.close()
 

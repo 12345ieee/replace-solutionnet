@@ -9,6 +9,7 @@ Parsing your save(s), too:
 
 * Give your savefile(s) as: `savefiles = ['path/to/save1.user', 'path/to/save2.user', ...]`
 * Give your name as `playername = '<name>'`
+* Give your OS as `playerOS = '<OS>'`
 
 at the beginning of `worker.py`
 
