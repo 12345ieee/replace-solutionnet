@@ -8,9 +8,11 @@ from natsort import natsorted
 import level_dicts
 
 scoresfile = r"score_dump.csv"
-savefiles = [r'save/000.user', r'save/001.user']
-playername = '12345ieee'
-playerOS = 'Linux' # 'Windows'
+saves = [ {'saveFile': r'save/000.user', 'playerName': '12345ieee', 'playerOS': 'Linux'},
+          {'saveFile': r'save/001.user', 'playerName': '12345ieee', 'playerOS': 'Linux'},
+          {'saveFile': r'save/002.user', 'playerName': '12345ieee', 'playerOS': 'Linux'},
+          {'saveFile': r'saves/Criado.user', 'playerName': 'Criado', 'playerOS': 'Linux'},
+        ]
 
 """
 {'Username': 'LittleBigDej', 'Level Category': '63corvi', 'Level Number': '1', 'Level Name': 'QT-1',
@@ -49,7 +51,7 @@ def should_reject(this_score):
 
 
 fmt_scores_with_bold = ['({}/{}/{}) {}', '({}/{}/**{}**) {}', '({}/**{}**/{}) {}', '({}/**{}**/**{}**) {}',
-                        '(**{}**/{}/{}) {}', '(**{}**/{}/**{}**) {}', '(**{}**/**{}**/{}) {}', 
+                        '(**{}**/{}/{}) {}', '(**{}**/{}/**{}**) {}', '(**{}**/**{}**/{}) {}',
                         '(**{}**/**{}**/**{}**) {}']
 
 def printscore(score, bold=0):
@@ -57,10 +59,10 @@ def printscore(score, bold=0):
                                                   score['Username'])
     if score['Youtube Link']:
         fmt_score = '[{}]({})'.format(fmt_score, score['Youtube Link'])
-    print('| {:20}'.format(fmt_score),end=' ')
+    print('| {:20}'.format(fmt_score), end=' ')
 
 def printblock(scores, header, cat1, cat2, bold1, bold2):
-    if cat1 in scores and cat2 in scores: 
+    if cat1 in scores and cat2 in scores:
         print(header, end='')
         printscore(scores[cat1], bold=bold1)
         printscore(scores[cat2], bold=bold2)
@@ -114,6 +116,8 @@ if __name__ == '__main__':
             else:
                 if this_score['Username'] in user2OS:
                     userOS = user2OS[this_score['Username']]
+                elif '@' in this_score['Username']:
+                    userOS = this_score['Username'].split('@')[1]
                 else:
                     userOS = 'Unknown OS'
                 insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(userOS), ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
@@ -123,8 +127,8 @@ if __name__ == '__main__':
                     insert_score(this_score, levels[level_id], 'Least Symbols - {} - N Reactors'.format(userOS), ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
 
 
-    for savefile in savefiles:
-        conn = sqlite3.connect(savefile)
+    for save in saves:
+        conn = sqlite3.connect(save['saveFile'])
         conn.row_factory = sqlite3.Row
         dbcursor = conn.execute("SELECT * FROM {}".format('Level'))
 
@@ -135,7 +139,7 @@ if __name__ == '__main__':
                 level_id = level_dicts.save2id[row['id']]
             else:
                 continue
-            this_score = {'Username': playername,
+            this_score = {'Username': save['playerName'],
                           'Cycle Count': row['cycles'],
                           'Reactor Count': row['reactors'],
                           'Symbol Count': row['symbols'],
@@ -154,6 +158,7 @@ if __name__ == '__main__':
                     insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
                     insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
             else:
+                playerOS = save['playerOS']
                 insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(playerOS), ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
                 insert_score(this_score, levels[level_id], 'Least Symbols - {}'.format(playerOS), ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
                 if not props['isResearch']:

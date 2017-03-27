@@ -1,8 +1,9 @@
 # Cache
 __pycache__
 
-# My save
+# Saves
 save
+saves
 
 # Outfiles
 out*
