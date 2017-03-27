@@ -54,18 +54,18 @@ fmt_scores_with_bold = ['({}/{}/{}) {}', '({}/{}/**{}**) {}', '({}/**{}**/{}) {}
                         '(**{}**/{}/{}) {}', '(**{}**/{}/**{}**) {}', '(**{}**/**{}**/{}) {}',
                         '(**{}**/**{}**/**{}**) {}']
 
-def printscore(score, bold=0):
+def printscore(score, bold=0, suffix=''):
     fmt_score = fmt_scores_with_bold[bold].format(score['Cycle Count'], score['Reactor Count'], score['Symbol Count'],
                                                   score['Username'])
     if score['Youtube Link']:
         fmt_score = '[{}]({})'.format(fmt_score, score['Youtube Link'])
-    print('| {:20}'.format(fmt_score), end=' ')
+    print('| {:20}{suffix}'.format(fmt_score, suffix=suffix), end=' ')
 
-def printblock(scores, header, cat1, cat2, bold1, bold2):
+def printblock(scores, header, cat1, cat2, bold1, bold2, suffix=''):
     if cat1 in scores and cat2 in scores:
-        print(header, end='')
-        printscore(scores[cat1], bold=bold1)
-        printscore(scores[cat2], bold=bold2)
+        print(header.ljust(20), end='')
+        printscore(scores[cat1], bold=bold1, suffix=suffix)
+        printscore(scores[cat2], bold=bold2, suffix=suffix)
         print()
 
 level_order = {'main':0, 'tf2':1, '63corvi':2, 'researchnet':3}
@@ -172,15 +172,15 @@ if __name__ == '__main__':
         if not scores:
             continue
         
-        print('|{} - {} | Min Cycles | Min Symbols'.format(*level_id))
+        print('|{} - {} | Min Cycles | Min Cycles - No Bugs | Min Symbols | Min Symbols - No Bugs'.format(*level_id))
 
         level = level_dicts.id2level[level_id]
         
         for OSstring in ['', ' - Windows', ' - Linux', ' - Unknown OS']:
             printblock(scores, '|{name}{OS} '.format(**level, OS=OSstring),
                        'Least Cycles{}'.format(OSstring), 'Least Symbols{}'.format(OSstring),
-                       0b100, 0b001)
+                       0b100, 0b001, ' | N/A | N/A' if OSstring else ' | N/A')
             printblock(scores, '|{name}{OS} - N Reactors '.format(**level, OS=OSstring),
                        'Least Cycles{} - N Reactors'.format(OSstring), 'Least Symbols{} - N Reactors'.format(OSstring),
-                       0b110, 0b011)
+                       0b110, 0b011, ' | N/A | N/A' if OSstring else ' | N/A')
         print()
