@@ -114,10 +114,10 @@ if __name__ == '__main__':
                     insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
                     insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
             else:
-                if this_score['Username'] in user2OS:
+                if '@' in this_score['Username']:
+                    this_score['Username'], userOS = this_score['Username'].split('@')
+                elif this_score['Username'] in user2OS:
                     userOS = user2OS[this_score['Username']]
-                elif '@' in this_score['Username']:
-                    userOS = this_score['Username'].split('@')[1]
                 else:
                     userOS = 'Unknown OS'
                 insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(userOS), ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
