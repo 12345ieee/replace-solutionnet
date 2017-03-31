@@ -2,6 +2,7 @@
 
 import csv
 import sqlite3
+import pickle
 from collections import OrderedDict
 
 import level_dicts
@@ -12,6 +13,7 @@ saves = [ {'saveFile': r'save/000.user', 'playerName': '12345ieee', 'playerOS': 
           {'saveFile': r'save/002.user', 'playerName': '12345ieee', 'playerOS': 'Linux'},
           {'saveFile': r'saves/Criado.user', 'playerName': 'Criado', 'playerOS': 'Linux'},
         ]
+dumpfile = r'dump.pickle'
 
 """
 {'Username': 'LittleBigDej', 'Level Category': '63corvi', 'Level Number': '1', 'Level Name': 'QT-1',
@@ -67,15 +69,14 @@ def printblock(scores, header, cat1, cat2, bold1, bold2, suffix=''):
         printscore(scores[cat2], bold=bold2, suffix=suffix)
         print()
 
-if __name__ == '__main__':
-    
-    levels = OrderedDict((key, {}) for key in level_dicts.id2level)
+def parse_solnet(levels, scoresfile):
+
     user2OS = {}
     
     with open('users.csv') as userscsv:
         reader = csv.DictReader(userscsv, skipinitialspace=True)
         user2OS = {row['User']: row['OS'] for row in reader}
-    
+
     with open(scoresfile) as scorescsv:
         reader = csv.DictReader(scorescsv)
         for row in reader:
@@ -119,6 +120,7 @@ if __name__ == '__main__':
                     insert_score(this_score, levels[level_id], 'Least Cycles - {} - N Reactors'.format(userOS), ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
                     insert_score(this_score, levels[level_id], 'Least Symbols - {} - N Reactors'.format(userOS), ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
 
+def parse_saves(levels, saves):
 
     for save in saves:
         conn = sqlite3.connect(save['saveFile'])
@@ -160,6 +162,13 @@ if __name__ == '__main__':
         
         conn.close()
 
+def dump_scores(levels):
+    with open(dumpfile, 'wb') as dumpdest:
+        pickle.dump(levels, dumpdest)
+    
+
+def print_scores(levels):
+
     for level_id in levels:
         scores = levels[level_id]
         if not scores:
@@ -177,3 +186,13 @@ if __name__ == '__main__':
                        'Least Cycles{} - N Reactors'.format(OSstring), 'Least Symbols{} - N Reactors'.format(OSstring),
                        0b110, 0b011, ' | N/A | N/A' if OSstring else ' | N/A')
         print()
+
+
+if __name__ == '__main__':
+    
+    levels = OrderedDict((key, {}) for key in level_dicts.id2level)
+    
+    parse_solnet(levels, scoresfile)
+    parse_saves(levels, saves)
+    # dump_scores(levels)
+    print_scores(levels)
