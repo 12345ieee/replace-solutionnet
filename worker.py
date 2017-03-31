@@ -178,10 +178,20 @@ def parse_saves():
         
         conn.close()
 
+def parse_wiki():
+    table = []
+    for f in ['index.md', 'researchnet.md', 'researchnet2.md']:
+        table.extend(open('../wiki/'+f).readlines())
+    print(table)
+
 def dump_scores():
     with open(dumpfile, 'wb') as dumpdest:
         pickle.dump(levels, dumpdest)
-    
+
+def load_scores():
+    global levels
+    with open(dumpfile, 'rb') as dumpdest:
+        levels = pickle.load(dumpdest)
 
 def print_scores():
 
@@ -206,7 +216,9 @@ def print_scores():
 
 if __name__ == '__main__':
     init()
-    parse_solnet()
-    parse_saves()
-    # dump_scores()
-    print_scores()
+    parse_wiki()
+    #~ load_scores()
+    #~ parse_solnet()
+    #~ parse_saves()
+    #~ dump_scores()
+    #~ print_scores()

@@ -5,5 +5,8 @@ __pycache__
 save
 saves
 
+# Dump
+*.pickle
+
 # Outfiles
 out*
