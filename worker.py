@@ -2,8 +2,7 @@
 
 import csv
 import sqlite3
-
-from natsort import natsorted
+from collections import OrderedDict
 
 import level_dicts
 
@@ -68,15 +67,9 @@ def printblock(scores, header, cat1, cat2, bold1, bold2, suffix=''):
         printscore(scores[cat2], bold=bold2, suffix=suffix)
         print()
 
-level_order = {'main':0, 'tf2':1, '63corvi':2, 'researchnet':3}
-
-def reorder_levels(val):
-    return (level_order[val[0]], val[1])
-
-
 if __name__ == '__main__':
     
-    levels = {k: dict() for k in level_dicts.id2level}
+    levels = OrderedDict((key, {}) for key in level_dicts.id2level)
     user2OS = {}
     
     with open('users.csv') as userscsv:
@@ -167,12 +160,12 @@ if __name__ == '__main__':
         
         conn.close()
 
-    for level_id in natsorted(levels, key=reorder_levels):
+    for level_id in levels:
         scores = levels[level_id]
         if not scores:
             continue
         
-        print('|{} - {} | Min Cycles | Min Cycles - No Bugs | Min Symbols | Min Symbols - No Bugs'.format(*level_id))
+        print('|{} - {}'.format(*level_id).ljust(20) + '| Min Cycles | Min Cycles - No Bugs | Min Symbols | Min Symbols - No Bugs')
 
         level = level_dicts.id2level[level_id]
         
