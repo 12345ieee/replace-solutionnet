@@ -1,0 +1,341 @@
+saveId, category, number, name, isResearch, isDeterministic
+
+"research-example-1", "main", "1-1", "Of Pancakes and Spaceships", 1, 1
+"research-tutorial-1", "main", "1-2", "Slightly Different", 1, 1
+"research-tutorial-1point5", "main", "1-3", "Crossover", 1, 1
+"research-example-2", "main", "1-4", "An Introduction to Bonding", 1, 1
+"research-tutorial-2", "main", "1-5", "A Brief History of SpaceChem", 1, 1
+"research-tutorial-3", "main", "1-6", "Removing Bonds", 1, 1
+
+"research-tutorial-4", "main", "2-1", "Double Bonds", 1, 1
+"research-tutorial-5", "main", "2-2", "Best Left Unanswered", 1, 1
+"research-tutorial-6", "main", "2-3", "Multiple Outputs", 1, 1
+"production-tutorial-1", "main", "2-4", "An Introduction to Pipelines", 1, 1
+"production-tutorial-2", "main", "2-5", "There's Something in the Fishcake", 1, 1
+"production-tutorial-3", "main", "2-6", "Sleepless on Sernimir IV", 1, 1
+
+"bonding-2", "main", "3-1", "Every Day is the First Day", 1, 1
+"bonding-3", "main", "3-2", "It Takes Three", 1, 1
+"bonding-4", "main", "3-3", "Split Before Bonding", 1, 1
+"bonding-6", "main", "3-4", "Settling into the Routine", 1, 1
+"bonding-7", "main", "3-5", "Nothing Works", 0, 1
+"bonding-boss", "main", "3-6", "A Most Unfortunate Malfunction", 0, 1
+"bonding-5", "main", "3-C", "Challenge: In-Place Swap", 0, 1
+
+"sensing-1", "main", "4-1", "An Introduction to Sensing", 1, 0
+"sensing-2", "main", "4-2", "Prelude to a Migraine", 1, 0
+"sensing-3", "main", "4-3", "Random Oxides", 1, 0
+"sensing-4", "main", "4-4", "No Ordinary Headache", 0, 0
+"sensing-5", "main", "4-5", "No Thanks Necessary", 0, 0
+"sensing-boss", "main", "4-6", "No Need for Introductions", 0, 0
+"sensing-6", "main", "4-C", "Challenge: Going Green", 0, 0
+
+"fusion-1", "main", "5-1", "Ice to Meet You", 1, 1
+"fusion-2", "main", "5-2", "Under the Ice", 1, 1
+"fusion-3", "main", "5-3", "Unknown Sender", 1, 1
+"fusion-5", "main", "5-4", "Falling", 0, 1
+"fusion-boss", "main", "5-5", "Exploding Head Syndrome", 0, 1
+"fusion-6", "main", "5-C", "Challenge: Applied Fusion", 0, 1
+
+"mining-2", "main", "6-1", "Like a Boss", 1, 1
+"mining-3", "main", "6-2", "Sacré Bleu!", 1, 1
+"mining-7", "main", "6-3", "The Plot Thickens", 1, 1
+"mining-1", "main", "6-4", "Danger Zone", 1, 0
+"mining-5", "main", "6-6", "Molecular Foundry", 0, 0
+"mining-4", "main", "6-7", "Gas Works Park", 0, 0
+"mining-boss", "main", "6-5", "More than Machine", 0, 0
+"mining-6", "main", "6-C", "Challenge: KOHCTPYKTOP", 0, 1
+
+"research-1", "main", "7-1", "The Blue Danube", 1, 0
+"research-3", "main", "7-2", "No Stomach for Lunch", 1, 1
+"research-6", "main", "7-3", "No Employment Record Found", 1, 0
+"research-5", "main", "7-4", "Right All Along", 1, 1
+"research-2", "main", "7-5", "Accidents Happen", 1, 0
+"research-boss", "main", "7-6", "Don't Fear the Reaper", 0, 1
+
+"organic-1", "main", "8-1", "Special Assignment", 1, 1
+"organic-2", "main", "8-2", "Suspicious Behavior", 1, 1
+"organic-3", "main", "8-3", "I Told You So", 1, 1
+"organic-5", "main", "8-5a", "Ω-Pseudoethyne", 1, 0
+"organic-6", "main", "8-5b", "Σ-Ethylene", 1, 1
+"organic-boss", "main", "8-4", "Freedom of Choice", 0, 1
+
+"warp-boss", "main", "9-1", "End of the Line", 0, 1
+
+
+"tf2-1", "tf2", "TF2-1", "Moustachium 602", 1, 1
+"tf2-2", "tf2", "TF2-2", "Moustachium 604", 1, 1
+"tf2-3", "tf2", "TF2-3", "Moustachium 608", 1, 1
+
+
+"quantum-1", "63corvi", "1", "QT-1", 1, 1
+"quantum-2", "63corvi", "2", "QT-2", 1, 1
+"quantum-4", "63corvi", "3", "Teleporters", 0, 1
+"quantum-3", "63corvi", "4", "QT-3", 1, 1
+"quantum-5", "63corvi", "5", "QT-4", 1, 1
+"quantum-6", "63corvi", "6", "Precursor Compounds", 0, 0
+"quantum-boss", "63corvi", "7", "Collapsar", 0, 1
+
+
+"published-1-1", "researchnet", "1-1-1", "Tunnels I", 1, 1
+"published-1-2", "researchnet", "1-1-2", "Tunnels II", 1, 1
+"published-1-3", "researchnet", "1-1-3", "Tunnels III", 1, 1
+"published-2-1", "researchnet", "1-2-1", "Fission I", 1, 1
+"published-2-2", "researchnet", "1-2-2", "Fission II", 1, 1
+"published-2-3", "researchnet", "1-2-3", "Fission III", 1, 1
+"published-3-1", "researchnet", "1-3-1", "Chloroform", 1, 1
+"published-3-2", "researchnet", "1-3-2", "Cycloaddition", 1, 1
+"published-3-3", "researchnet", "1-3-3", "KOHCTPYKTOP++", 1, 0
+"published-4-1", "researchnet", "1-4-1", "Quantum Decomposition", 1, 1
+"published-4-2", "researchnet", "1-4-2", "Propane Accessories", 1, 1
+"published-4-3", "researchnet", "1-4-3", "Benzoic Acid", 1, 1
+"published-5-1", "researchnet", "1-5-1", "Electrophilic Addition", 1, 1
+"published-5-2", "researchnet", "1-5-2", "Diethyl Ether", 1, 1
+"published-5-3", "researchnet", "1-5-3", "2-Hexene", 1, 1
+"published-6-1", "researchnet", "1-6-1", "Mazeite'", 1, 1
+"published-6-2", "researchnet", "1-6-2", "Silica", 1, 1
+"published-6-3", "researchnet", "1-6-3", "Galvanization", 1, 1
+"published-7-1", "researchnet", "1-7-1", "Industrial Methanol", 1, 1
+"published-7-2", "researchnet", "1-7-2", "Glyoxylic Acid", 1, 1
+"published-7-3", "researchnet", "1-7-3", "Bioplastic", 1, 1
+"published-8-1", "researchnet", "1-8-1", "Chlorination", 1, 1
+"published-8-2", "researchnet", "1-8-2", "Sulfuric Acid", 1, 1
+"published-8-3", "researchnet", "1-8-3", "Bad Times", 1, 1
+"published-9-1", "researchnet", "1-9-1", "Friedel-Crafts", 1, 1
+"published-9-2", "researchnet", "1-9-2", "Wöhler Synthesis", 1, 1
+"published-9-3", "researchnet", "1-9-3", "Diels-Alder", 1, 1
+"published-10-1", "researchnet", "1-10-1", "Bad Times, Part II", 1, 1
+"published-10-2", "researchnet", "1-10-2", "Freon", 1, 0
+"published-10-3", "researchnet", "1-10-3", "Benzene Derivatives", 1, 0
+"published-11-1", "researchnet", "1-11-1", "Portland Cement", 1, 1
+"published-11-2", "researchnet", "1-11-2", "Solder Coarsening", 1, 1
+"published-11-3b", "researchnet", "1-11-3", "Graphene", 1, 1
+"published-12-1", "researchnet", "1-12-1", "The Big Cleanup", 1, 0
+"published-12-2", "researchnet", "1-12-2", "Going Green Part II", 1, 1
+"published-12-3", "researchnet", "1-12-3", "Waste Treatment", 1, 0
+
+"published-13-1", "researchnet", "2-1-1", "Pyridine", 1, 1
+"published-13-2", "researchnet", "2-1-2", "Breakdown", 1, 1
+"published-13-3", "researchnet", "2-1-3", "Vitamin B3", 1, 1
+"published-14-1", "researchnet", "2-2-1", "PVC", 1, 1
+"published-14-2", "researchnet", "2-2-2", "PVA", 1, 1
+"published-14-3", "researchnet", "2-2-3", "Naphthalene", 1, 1
+"published-15-1", "researchnet", "2-3-1", "Anthraquinone", 1, 1
+"published-15-2", "researchnet", "2-3-2", "Soap", 1, 1
+"published-15-3", "researchnet", "2-3-3", "Glucose", 1, 1
+"published-16-1", "researchnet", "2-4-1", "PZA", 1, 1
+"published-16-2", "researchnet", "2-4-2", "INH", 1, 1
+"published-16-3", "researchnet", "2-4-3", "PAS", 1, 1
+"published-17-1", "researchnet", "2-5-1", "Fusion - Germane", 1, 1
+"published-17-2", "researchnet", "2-5-2", "Fusion - Silane", 1, 1
+"published-17-3", "researchnet", "2-5-3", "Fermentation", 1, 1
+"published-18-1", "researchnet", "2-6-1", "Hydrazine", 1, 1
+"published-18-2", "researchnet", "2-6-2", "Organometallics", 1, 1
+"published-18-3", "researchnet", "2-6-3", "Nonsense!", 1, 0
+"published-19-1", "researchnet", "2-7-1", "Iron and Ozone", 1, 1
+"published-19-2", "researchnet", "2-7-2", "Normalization", 1, 0
+"published-19-3", "researchnet", "2-7-3", "Decomposition", 1, 1
+"published-20-1", "researchnet", "2-8-1", "Phenol", 1, 1
+"published-20-2", "researchnet", "2-8-2", "Uracil", 1, 1
+"published-20-3", "researchnet", "2-8-3", "Pyridine", 1, 0
+"published-21-1", "researchnet", "2-9-1", "Phosgene", 1, 1
+"published-21-2", "researchnet", "2-9-2", "Ignoble", 1, 1
+"published-21-3", "researchnet", "2-9-3", "Alchemy", 1, 1
+"published-22-1", "researchnet", "2-10-1", "Bosch-Meiser", 1, 1
+"published-22-2", "researchnet", "2-10-2", "Beckmann Rearrangement", 1, 1
+"published-22-3", "researchnet", "2-10-3", "Stock-Pohland", 1, 1
+"published-23-1", "researchnet", "2-11-1", "Swapite", 1, 1
+"published-23-2", "researchnet", "2-11-2", "Hardening", 1, 1
+"published-23-3", "researchnet", "2-11-3", "Keying In", 1, 0
+"published-24-1", "researchnet", "2-12-1", "Ethane", 1, 1
+"published-24-2", "researchnet", "2-12-2", "Cyclobutane", 1, 1
+"published-24-3", "researchnet", "2-12-3", "Styrene", 1, 1
+
+"published-25-1", "researchnet", "3-1-1", "Thinner Line", 0, 1
+"published-25-2", "researchnet", "3-1-2", "Decomposition of Ethanolamine", 0, 0
+"published-25-3", "researchnet", "3-1-3", "Anesthetics", 0, 0
+"published-26-1", "researchnet", "3-2-1", "Fertigprodukt", 0, 0
+"published-26-2", "researchnet", "3-2-2", "Novel Semiconductor", 0, 0
+"published-26-3", "researchnet", "3-2-3", "Passivation", 1, 0
+"published-27-1", "researchnet", "3-3-1", "Life: Prep Work", 1, 1
+"published-27-2", "researchnet", "3-3-2", "Life: Cytosine", 1, 1
+"published-27-3", "researchnet", "3-3-3", "Life: Thymine", 1, 1
+"published-28-1", "researchnet", "3-4-1", "Cyanamide", 1, 1
+"published-28-2", "researchnet", "3-4-2", "Acetic Acid", 1, 1
+"published-28-3", "researchnet", "3-4-3", "Combustion Engine", 0, 0
+"published-29-1", "researchnet", "3-5-1", "Smelting Iron", 0, 0
+"published-29-2", "researchnet", "3-5-2", "Neodymium Magnet", 1, 1
+"published-29-3", "researchnet", "3-5-3", "Carbide Swap", 1, 1
+"published-30-1", "researchnet", "3-6-1", "Fuel Production", 0, 0
+"published-30-2", "researchnet", "3-6-2", "Siliconheart Piece", 0, 1
+"published-30-3", "researchnet", "3-6-3", "Raygun Mechanism", 0, 1
+"published-31-1", "researchnet", "3-7-1", "Sulfuric Acid", 0, 1
+"published-31-2", "researchnet", "3-7-2", "Fuming Nitric Acid", 0, 1
+"published-31-3", "researchnet", "3-7-3", "Rocket Fuel", 0, 0
+"published-32-1", "researchnet", "3-8-1", "Hydroxides", 0, 0
+"published-32-2", "researchnet", "3-8-2", "Nobility", 0, 0
+"published-32-3", "researchnet", "3-8-3", "Sortite", 1, 0
+"published-33-1", "researchnet", "3-9-1", "Radiation Treatment", 0, 1
+"published-33-2", "researchnet", "3-9-2", "Boron Compounds", 0, 1
+"published-33-3", "researchnet", "3-9-3", "Photovoltaic Cells", 0, 1
+"published-34-1", "researchnet", "3-10-1", "Elementary", 0, 1
+"published-34-2", "researchnet", "3-10-2", "Mixed Acids", 0, 0
+"published-34-3", "researchnet", "3-10-3", "Squaric Acid", 1, 1
+"published-35-1", "researchnet", "3-11-1", "Misproportioned", 0, 0
+"published-35-2", "researchnet", "3-11-2", "Narkotikum", 0, 0
+"published-35-3", "researchnet", "3-11-3", "Vereinheitlichung", 0, 0
+"published-36-1", "researchnet", "3-12-1", "Haber-Bosch", 0, 0
+"published-36-2", "researchnet", "3-12-2", "Mustard Oil", 1, 1
+"published-36-3", "researchnet", "3-12-3", "Nano Electric Motor", 1, 1
+
+"published-37-1", "researchnet", "4-1-1", "Count", 1, 1
+"published-37-2", "researchnet", "4-1-2", "Sharing is Caring", 0, 0
+"published-37-3", "researchnet", "4-1-3", "Reassembly", 0, 1
+"published-38-1", "researchnet", "4-2-1", "Cyanogen", 1, 1
+"published-38-2", "researchnet", "4-2-2", "Chloromethylsilane", 1, 1
+"published-38-3", "researchnet", "4-2-3", "Glyceraldehyde", 1, 1
+"published-39-1", "researchnet", "4-3-1", "Ethandiamin", 0, 1
+"published-39-2", "researchnet", "4-3-2", "Radikal", 0, 0
+"published-39-3", "researchnet", "4-3-3", "Kreisalkanol", 0, 1
+"published-40-1", "researchnet", "4-4-1", "Inorganic Pigments", 0, 0
+"published-40-2", "researchnet", "4-4-2", "Miller-Urey", 0, 0
+"published-40-3", "researchnet", "4-4-3", "Getting Pumped", 1, 1
+"published-41-1", "researchnet", "4-5-1", "Lewisite", 1, 1
+"published-41-2", "researchnet", "4-5-2", "Novichok", 0, 1
+"published-41-3", "researchnet", "4-5-3", "Ribulose", 1, 1
+"published-42-1", "researchnet", "4-6-1", "Knockout Drops", 0, 1
+"published-42-2", "researchnet", "4-6-2", "Strong Acids", 0, 1
+"published-42-3", "researchnet", "4-6-3", "Vitamin B3", 0, 1
+"published-43-1", "researchnet", "4-7-1", "1,2,3-Triphenol", 1, 1
+"published-43-2", "researchnet", "4-7-2", "1,3-Dimetoxibencene", 1, 1
+"published-43-3", "researchnet", "4-7-3", "Think in Spirals", 1, 1
+"published-44-1", "researchnet", "4-8-1", "Yellowcake", 0, 0
+"published-44-2", "researchnet", "4-8-2", "Thiourea", 0, 1
+"published-44-3", "researchnet", "4-8-3", "Downgrade", 1, 1
+"published-45-1", "researchnet", "4-9-1", "Wood Alcohol", 1, 1
+"published-45-2", "researchnet", "4-9-2", "Allyl Alcohol", 1, 1
+"published-45-3", "researchnet", "4-9-3", "Propargyl Alcohol", 1, 1
+"published-46-1", "researchnet", "4-10-1", "Condensation", 0, 1
+"published-46-2", "researchnet", "4-10-2", "Silane", 1, 1
+"published-46-3", "researchnet", "4-10-3", "Phosphine", 1, 1
+"published-47-1", "researchnet", "4-11-1", "Nuclear Medicine", 0, 1
+"published-47-2", "researchnet", "4-11-2", "Oxygen Supply", 1, 1
+"published-47-3", "researchnet", "4-11-3", "Red Cross", 1, 1
+"published-48-1", "researchnet", "4-12-1", "Fluoromethanes", 1, 0
+"published-48-2", "researchnet", "4-12-2", "Exercise", 1, 1
+"published-48-3", "researchnet", "4-12-3", "Nanoboxes", 1, 1
+
+"published-49-1", "researchnet", "5-1-1", "PAX Challenge 1", 1, 1
+"published-49-2", "researchnet", "5-1-2", "PAX Challenge 2", 1, 1
+"published-49-3", "researchnet", "5-1-3", "PAX Challenge 3", 1, 1
+"published-50-1", "researchnet", "5-2-1", "Fill in the Blank", 0, 1
+"published-50-2", "researchnet", "5-2-2", "Break-up", 0, 0
+"published-50-3", "researchnet", "5-2-3", "Average Out", 0, 0
+"published-51-1", "researchnet", "5-3-1", "Fake Out", 0, 0
+"published-51-2", "researchnet", "5-3-2", "Breakdown", 0, 0
+"published-51-3", "researchnet", "5-3-3", "Master of Disguise", 0, 0
+"published-52-1", "researchnet", "5-4-1", "Thermoplastic", 1, 1
+"published-52-2", "researchnet", "5-4-2", "Contaminated", 0, 0
+"published-52-3", "researchnet", "5-4-3", "Running Low", 0, 1
+"published-53-1", "researchnet", "5-5-1", "Not a Planet", 0, 1
+"published-53-2", "researchnet", "5-5-2", "Back to Basics", 0, 1
+"published-53-3", "researchnet", "5-5-3", "Not Helping", 0, 1
+"published-54-1", "researchnet", "5-6-1", "Two-fer", 0, 1
+"published-54-2", "researchnet", "5-6-2", "Oxygen Synthesis", 0, 1
+"published-54-3", "researchnet", "5-6-3", "Stupor", 0, 1
+"published-55-1", "researchnet", "5-7-1", "Oxygen Synthesis for Kids", 0, 1
+"published-55-2", "researchnet", "5-7-2", "+1", 0, 1
+"published-55-3", "researchnet", "5-7-3", "Nuclear Sorting", 0, 0
+"published-56-1", "researchnet", "5-8-1", "Fun with Oxides", 0, 0
+"published-56-2", "researchnet", "5-8-2", "Overflow", 0, 0
+"published-56-3", "researchnet", "5-8-3", "Conversion", 0, 1
+"published-57-1", "researchnet", "5-9-1", "Benzene Machine", 0, 1
+"published-57-2", "researchnet", "5-9-2", "Speedster", 0, 1
+"published-57-3", "researchnet", "5-9-3", "Carbon Splatter", 0, 1
+"published-58-1", "researchnet", "5-10-1", "Eth", 0, 0
+"published-58-2", "researchnet", "5-10-2", "Large Scale", 0, 0
+"published-58-3", "researchnet", "5-10-3", "Revenge", 0, 1
+"published-59-1", "researchnet", "5-11-1", "Excess", 0, 0
+"published-59-2", "researchnet", "5-11-2", "Carbon Compounds", 0, 0
+"published-59-3", "researchnet", "5-11-3", "Magnesium Bicarbonate", 1, 1
+"published-60-1", "researchnet", "5-12-1", "Impostor", 0, 0
+"published-60-2", "researchnet", "5-12-2", "Master Plan", 0, 0
+"published-60-3", "researchnet", "5-12-3", "Rags to Riches", 0, 0
+
+"published-61-1", "researchnet", "6-1-1", "Plutonium Separation", 1, 0
+"published-61-2", "researchnet", "6-1-2", "You're doing it wrong", 1, 1
+"published-61-3", "researchnet", "6-1-3", "Synthetic Elerium", 1, 1
+"published-62-1", "researchnet", "6-2-1", "Deadly Soft Drinks", 1, 1
+"published-62-2", "researchnet", "6-2-2", "Deadly Fluorinated Water", 1, 1
+"published-62-3", "researchnet", "6-2-3", "Deadly Microwaves", 1, 1
+"published-63-1", "researchnet", "6-3-1", "Carbon Snakes", 1, 1
+"published-63-2", "researchnet", "6-3-2", "Catalyst", 1, 1
+"published-63-3", "researchnet", "6-3-3", "Catalyst II", 1, 1
+"published-64-1", "researchnet", "6-4-1", "Unbonding with no Bonders", 1, 1
+"published-64-2", "researchnet", "6-4-2", "Breeder Reactor", 0, 1
+"published-64-3", "researchnet", "6-4-3", "Nightmare Factory", 0, 0
+
+"published-71-1", "researchnet", "7-1-1", "Fructose Factory", 1, 1
+"published-71-2", "researchnet", "7-1-2", "Misfortune Modifier", 1, 0
+"published-71-3", "researchnet", "7-1-3", "Particle Accelerator", 1, 1
+"published-72-1", "researchnet", "7-2-1", "Sun Simulator", 1, 1
+"published-72-2", "researchnet", "7-2-2", "100", 1, 1
+"published-72-3", "researchnet", "7-2-3", "Hypothetical Synthesis", 1, 1
+"published-73-1", "researchnet", "7-3-1", "Halogen Sorting", 1, 0
+"published-73-2", "researchnet", "7-3-2", "Metallica", 0, 0
+"published-73-3", "researchnet", "7-3-3", "Homogenizer", 0, 0
+"published-74-1", "researchnet", "7-4-1", "Dessication Station", 1, 0
+"published-74-2", "researchnet", "7-4-2", "Vinegar Distillation", 0, 0
+"published-74-3", "researchnet", "7-4-3", "A Glass of Water", 0, 0
+"published-75-1", "researchnet", "7-5-1", "Pertetroxide Synthesis", 1, 1
+"published-75-2", "researchnet", "7-5-2", "Fantastic Metals", 0, 1
+"published-75-3", "researchnet", "7-5-3", "Reppe Chemistry", 0, 0
+"published-76-1", "researchnet", "7-6-1", "Better Than Graphene", 1, 1
+"published-76-2", "researchnet", "7-6-2", "Magnets", 1, 0
+"published-76-3", "researchnet", "7-6-3", "Precious Oxygen", 1, 1
+
+"published-77-1", "researchnet", "8-1-1", "Dewer Benzene", 1, 1
+"published-77-2", "researchnet", "8-1-2", "Natural Chemo", 1, 1
+"published-77-3", "researchnet", "8-1-3", "The Chem in SpaceChem", 1, 1
+"published-78-1", "researchnet", "8-2-1", "Airborne Aldehyde", 1, 1
+"published-78-2", "researchnet", "8-2-2", "Natural Gas", 0, 0
+"published-78-3", "researchnet", "8-2-3", "Symmetry", 1, 1
+"published-79-1", "researchnet", "8-3-1", "Fenton Industries...", 1, 0
+"published-79-2", "researchnet", "8-3-2", "Oxygen Candle", 1, 0
+"published-79-3", "researchnet", "8-3-3", "Lies", 1, 0
+"published-80-1", "researchnet", "8-4-1", "Liquid Glass", 1, 1
+"published-80-2", "researchnet", "8-4-2", "PVC V", 1, 1
+"published-80-3", "researchnet", "8-4-3", "Memories", 1, 1
+"published-81-1", "researchnet", "8-5-1", "Tumbler", 0, 1
+"published-81-2", "researchnet", "8-5-2", "Molecular Key Carving", 0, 1
+"published-81-3", "researchnet", "8-5-3", "Sensitive Explosiv...", 1, 1
+"published-82-1", "researchnet", "8-6-1", "Waste Gas", 1, 1
+"published-82-2", "researchnet", "8-6-2", "Ethane Scrubbing", 0, 0
+"published-82-3", "researchnet", "8-6-3", "Melanophlogite Clathrates", 0, 0
+"published-83-1", "researchnet", "8-7-1", "Largest Prime", 1, 1
+"published-83-2", "researchnet", "8-7-2", "Three", 1, 1
+"published-83-3", "researchnet", "8-7-3", "Θne", 1, 1
+"published-84-1", "researchnet", "8-8-1", "A Small Push", 1, 1
+"published-84-2", "researchnet", "8-8-2", "Pushed Together", 1, 1
+"published-84-3", "researchnet", "8-8-3", "Repair Tungsten", 1, 1
+"published-85-1", "researchnet", "8-9-1", "Shared Space I", 1, 1
+"published-85-2", "researchnet", "8-9-2", "Shared Space II", 1, 1
+"published-85-3", "researchnet", "8-9-3", "Taking Turns", 1, 1
+"published-86-1", "researchnet", "8-10-1", "How Ionic", 1, 1
+"published-86-2", "researchnet", "8-10-2", "Two by Two", 1, 1
+"published-86-3", "researchnet", "8-10-3", "The Gold Standard", 1, 0
+"published-87-1", "researchnet", "8-11-1", "2 of Hearts", 1, 1
+"published-87-2", "researchnet", "8-11-2", "Miracle Cure", 1, 1
+"published-87-3", "researchnet", "8-11-3", "Oxygen Snake", 1, 1
+"published-88-1", "researchnet", "8-12-1", "That's a Relief", 1, 1
+"published-88-2", "researchnet", "8-12-2", "Headaches", 1, 1
+"published-88-3", "researchnet", "8-12-3", "Under the Counter", 1, 1
+"published-89-1", "researchnet", "8-13-1", "A New Beginning", 0, 0
+"published-89-2", "researchnet", "8-13-2", "Discombobulate", 0, 0
+"published-89-3", "researchnet", "8-13-3", "Magnum Opus", 0, 0
+"published-90-1", "researchnet", "8-14-1", "Organic Fusion Chemistry", 1, 0
+"published-90-2", "researchnet", "8-14-2", "The Soul of Iron", 1, 1
+"published-90-3", "researchnet", "8-14-3", "Serbalcide", 1, 1
+"published-91-1", "researchnet", "8-15-1", "Precious Tears", 0, 1
+"published-91-2", "researchnet", "8-15-2", "Desperate Measur...", 0, 0
+"published-91-3", "researchnet", "8-15-3", "Hydrocarbon Stitch", 1, 0

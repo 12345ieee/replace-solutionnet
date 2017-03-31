@@ -5,8 +5,6 @@ import sqlite3
 import pickle
 from collections import OrderedDict
 
-import level_dicts
-
 scoresfile = r"score_dump.csv"
 saves = [ {'saveFile': r'save/000.user', 'playerName': '12345ieee', 'playerOS': 'Linux'},
           {'saveFile': r'save/001.user', 'playerName': '12345ieee', 'playerOS': 'Linux'},
@@ -23,6 +21,30 @@ dumpfile = r'dump.pickle'
 """
 {'id': 'fusion-1', 'passed': 1, 'mastered': 0, 'cycles': 52, 'symbols': 38, 'reactors': 1, 'best_cycles': 52, 'best_symbols': 11, 'best_reactors': 1}
 """
+
+save2id = {}
+id2level = {}
+levels = OrderedDict()
+user2OS = {}
+
+def init():
+
+    global save2id, id2level, levels, user2OS
+
+    with open('levels.csv') as levelscsv:
+        reader = csv.DictReader(levelscsv, skipinitialspace=True)
+        for row in reader:
+            id_tuple = (row['category'], row['number'])
+            save2id[row['saveId']] = id_tuple
+            id2level[id_tuple] = {'name': row['name'], 
+                                  'isResearch': int(row['isResearch']),
+                                  'isDeterministic': int(row['isDeterministic'])}
+            levels[id_tuple] = {}
+
+    with open('users.csv') as userscsv:
+        reader = csv.DictReader(userscsv, skipinitialspace=True)
+        user2OS = {row['User']: row['OS'] for row in reader}
+
 
 def tiebreak(this_score, best_score, stat1, stat2, stat3, stat4):
     return this_score[stat1] < best_score[stat1] or \
@@ -69,13 +91,7 @@ def printblock(scores, header, cat1, cat2, bold1, bold2, suffix=''):
         printscore(scores[cat2], bold=bold2, suffix=suffix)
         print()
 
-def parse_solnet(levels, scoresfile):
-
-    user2OS = {}
-    
-    with open('users.csv') as userscsv:
-        reader = csv.DictReader(userscsv, skipinitialspace=True)
-        user2OS = {row['User']: row['OS'] for row in reader}
+def parse_solnet():
 
     with open(scoresfile) as scorescsv:
         reader = csv.DictReader(scorescsv)
@@ -99,7 +115,7 @@ def parse_solnet(levels, scoresfile):
             if should_reject(this_score):
                 continue
             
-            props = level_dicts.id2level[level_id]
+            props = id2level[level_id]
             
             if props['isDeterministic']:
                 insert_score(this_score, levels[level_id], 'Least Cycles', ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
@@ -120,7 +136,7 @@ def parse_solnet(levels, scoresfile):
                     insert_score(this_score, levels[level_id], 'Least Cycles - {} - N Reactors'.format(userOS), ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
                     insert_score(this_score, levels[level_id], 'Least Symbols - {} - N Reactors'.format(userOS), ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
 
-def parse_saves(levels, saves):
+def parse_saves():
 
     for save in saves:
         conn = sqlite3.connect(save['saveFile'])
@@ -130,8 +146,8 @@ def parse_saves(levels, saves):
         for row in dbcursor:
             if row['passed'] == 0:
                 continue
-            if row['id'] in level_dicts.save2id:
-                level_id = level_dicts.save2id[row['id']]
+            if row['id'] in save2id:
+                level_id = save2id[row['id']]
             else:
                 continue
             this_score = {'Username': save['playerName'],
@@ -144,7 +160,7 @@ def parse_saves(levels, saves):
             if should_reject(this_score):
                 continue
             
-            props = level_dicts.id2level[level_id]
+            props = id2level[level_id]
             
             if props['isDeterministic']:
                 insert_score(this_score, levels[level_id], 'Least Cycles', ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
@@ -162,12 +178,12 @@ def parse_saves(levels, saves):
         
         conn.close()
 
-def dump_scores(levels):
+def dump_scores():
     with open(dumpfile, 'wb') as dumpdest:
         pickle.dump(levels, dumpdest)
     
 
-def print_scores(levels):
+def print_scores():
 
     for level_id in levels:
         scores = levels[level_id]
@@ -176,7 +192,7 @@ def print_scores(levels):
         
         print('|{} - {}'.format(*level_id).ljust(20) + '| Min Cycles | Min Cycles - No Bugs | Min Symbols | Min Symbols - No Bugs')
 
-        level = level_dicts.id2level[level_id]
+        level = id2level[level_id]
         
         for OSstring in ['', ' - Windows', ' - Linux', ' - Unknown OS']:
             printblock(scores, '|{name}{OS} '.format(**level, OS=OSstring),
@@ -189,10 +205,8 @@ def print_scores(levels):
 
 
 if __name__ == '__main__':
-    
-    levels = OrderedDict((key, {}) for key in level_dicts.id2level)
-    
-    parse_solnet(levels, scoresfile)
-    parse_saves(levels, saves)
-    # dump_scores(levels)
-    print_scores(levels)
+    init()
+    parse_solnet()
+    parse_saves()
+    # dump_scores()
+    print_scores()
