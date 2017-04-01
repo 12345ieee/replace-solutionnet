@@ -3,6 +3,7 @@
 import csv
 import sqlite3
 import pickle
+import re
 from collections import OrderedDict
 
 scoresfile = r"score_dump.csv"
@@ -25,11 +26,10 @@ dumpfile = r'dump.pickle'
 save2id = {}
 id2level = {}
 levels = OrderedDict()
-user2OS = {}
 
 def init():
 
-    global save2id, id2level, levels, user2OS
+    global save2id, id2level, levels
 
     with open('levels.csv') as levelscsv:
         reader = csv.DictReader(levelscsv, skipinitialspace=True)
@@ -37,13 +37,9 @@ def init():
             id_tuple = (row['category'], row['number'])
             save2id[row['saveId']] = id_tuple
             id2level[id_tuple] = {'name': row['name'], 
-                                  'isResearch': int(row['isResearch']),
+                                  'type': row['type'],
                                   'isDeterministic': int(row['isDeterministic'])}
             levels[id_tuple] = {}
-
-    with open('users.csv') as userscsv:
-        reader = csv.DictReader(userscsv, skipinitialspace=True)
-        user2OS = {row['User']: row['OS'] for row in reader}
 
 
 def tiebreak(this_score, best_score, stat1, stat2, stat3, stat4):
@@ -93,6 +89,12 @@ def printblock(scores, header, cat1, cat2, bold1, bold2, suffix=''):
 
 def parse_solnet():
 
+    user2OS = {}
+
+    with open('users.csv') as userscsv:
+        reader = csv.DictReader(userscsv, skipinitialspace=True)
+        user2OS = {row['User']: row['OS'] for row in reader}
+
     with open(scoresfile) as scorescsv:
         reader = csv.DictReader(scorescsv)
         for row in reader:
@@ -120,7 +122,7 @@ def parse_solnet():
             if props['isDeterministic']:
                 insert_score(this_score, levels[level_id], 'Least Cycles', ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
                 insert_score(this_score, levels[level_id], 'Least Symbols', ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
-                if not props['isResearch']:
+                if props['type'] in {'production', 'boss'}:
                     insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
                     insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
             else:
@@ -132,7 +134,7 @@ def parse_solnet():
                     userOS = 'Unknown OS'
                 insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(userOS), ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
                 insert_score(this_score, levels[level_id], 'Least Symbols - {}'.format(userOS), ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
-                if not props['isResearch']:
+                if props['type'] in {'production', 'boss'}:
                     insert_score(this_score, levels[level_id], 'Least Cycles - {} - N Reactors'.format(userOS), ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
                     insert_score(this_score, levels[level_id], 'Least Symbols - {} - N Reactors'.format(userOS), ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
 
@@ -165,24 +167,18 @@ def parse_saves():
             if props['isDeterministic']:
                 insert_score(this_score, levels[level_id], 'Least Cycles', ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
                 insert_score(this_score, levels[level_id], 'Least Symbols', ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
-                if not props['isResearch']:
+                if props['type'] in {'production', 'boss'}:
                     insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
                     insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
             else:
                 playerOS = save['playerOS']
                 insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(playerOS), ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
                 insert_score(this_score, levels[level_id], 'Least Symbols - {}'.format(playerOS), ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
-                if not props['isResearch']:
+                if props['type'] in {'production', 'boss'}:
                     insert_score(this_score, levels[level_id], 'Least Cycles - {} - N Reactors'.format(playerOS), ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
                     insert_score(this_score, levels[level_id], 'Least Symbols - {} - N Reactors'.format(playerOS), ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
         
         conn.close()
-
-def parse_wiki():
-    table = []
-    for f in ['index.md', 'researchnet.md', 'researchnet2.md']:
-        table.extend(open('../wiki/'+f).readlines())
-    print(table)
 
 def dump_scores():
     with open(dumpfile, 'wb') as dumpdest:
@@ -212,6 +208,28 @@ def print_scores():
                        'Least Cycles{} - N Reactors'.format(OSstring), 'Least Symbols{} - N Reactors'.format(OSstring),
                        0b110, 0b011, ' | N/A | N/A' if OSstring else ' | N/A')
         print()
+
+def parse_wiki():
+    
+    creg = re.compile(r' - \d Reactor| - Linux| - Unknown OS')
+    
+    lines = []
+    for f in ['index.md']: #, 'researchnet.md', 'researchnet2.md']:
+        lines.extend(open('../wiki/'+f).readlines())
+    
+    reg = re.compile(r'^\|{0}\|{0}\|{0}\|{0}\|{0}\|?{0}?\|?{0}?'.format(r'([^|\n]+)'))
+    it = iter(levels)
+    
+    for line in lines:
+        match = reg.match(line)
+        if match:
+            if match.group(1).strip() not in {'Name', ':-'}:
+                if not creg.search(match.group(1)):
+                    el = next(it)
+                    while id2level[el]['type'] == 'boss':
+                        el = next(it)
+                print(el, match.groups())
+
 
 
 if __name__ == '__main__':
