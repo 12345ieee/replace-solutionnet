@@ -14,5 +14,5 @@ Don't parse your save:
 
 * `saves = []` at the beginning of `worker.py`
 
-Then just run `./worker` and the table will be printed to stdout
+Then just run `./worker.py` and the table will be printed to stdout
 

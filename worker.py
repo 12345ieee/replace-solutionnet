@@ -7,6 +7,8 @@ import re
 import datetime
 from collections import OrderedDict
 
+### Configuration block
+
 scoresfile = r"score_dump.csv"
 saves = [ {'saveFile': r'save/000.user', 'playerName': '12345ieee', 'playerOS': 'Linux'},
           {'saveFile': r'save/001.user', 'playerName': '12345ieee', 'playerOS': 'Linux'},
@@ -17,16 +19,16 @@ dumpfile = r'dump.pickle'
 wikifolder = r'../wiki/'
 wikifiles = [r'index.md', r'researchnet.md', r'researchnet2.md']
 
-nowstring = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
-
 """
-{'Username': 'LittleBigDej', 'Level Category': '63corvi', 'Level Number': '1', 'Level Name': 'QT-1',
+{'Username': '<user>', 'Level Category': '63corvi', 'Level Number': '1', 'Level Name': 'QT-1',
  'Cycle Count': '20', 'Reactor Count': '1', 'Symbol Count': '5', 'Upload Time': '2013-08-15 10:23:14.329898', 'Youtube Link': ''}
 """
 
 """
 {'id': 'fusion-1', 'passed': 1, 'mastered': 0, 'cycles': 52, 'symbols': 38, 'reactors': 1, 'best_cycles': 52, 'best_symbols': 11, 'best_reactors': 1}
 """
+
+nowstring = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
 
 save2id = {}
 id2level = {}
@@ -48,15 +50,16 @@ def init():
 
 
 def tiebreak(this_score, best_score, stat1, stat2, stat3):
-    return this_score[stat1] < best_score[stat1] or \
-           (this_score[stat1] == best_score[stat1] and \
-            (this_score[stat2] < best_score[stat2] or \
-             (this_score[stat2] == best_score[stat2] and \
-              (this_score[stat3] < best_score[stat3] or \
-               (this_score[stat3] == best_score[stat3] and \
-                (bool(this_score['Youtube Link']) > bool(best_score['Youtube Link']) or \
-                 (bool(this_score['Youtube Link']) == bool(best_score['Youtube Link']) and \
-                  this_score['Upload Time'] < best_score['Upload Time']
+    return (this_score[stat1] < best_score[stat1] or
+            (this_score[stat1] == best_score[stat1] and
+             (this_score[stat2] < best_score[stat2] or
+              (this_score[stat2] == best_score[stat2] and
+               (this_score[stat3] < best_score[stat3] or
+                (this_score[stat3] == best_score[stat3] and
+                 (bool(this_score['Youtube Link']) > bool(best_score['Youtube Link']) or
+                  (bool(this_score['Youtube Link']) == bool(best_score['Youtube Link']) and
+                   this_score['Upload Time'] < best_score['Upload Time']
+                  )
                  )
                 )
                )
@@ -217,9 +220,9 @@ def parse_wiki():
         with open(wikifolder + f) as infile:
             lines.extend(infile.readlines())
     
-    reg = re.compile(r'^\|{0}\|{0}\|{0}\|{0}\|{0}\|?{0}?\|?{0}?'.format(r'([^|\n]+)'))
-    sreg = re.compile(r'^\s*\[?\(\**(?P<cycles>\d+)\**(?P<OSmark>\\\*)?/\**(?P<reactors>\d+)\**/\**(?P<symbols>\d+)\**\)\s+(?P<user>[^\]]+?)(?:\]\((?P<link>[^\)]+)\))?\s*$')
+    reg = re.compile(r'^\|{0}\|{0}\|{0}\|{0}\|{0}\|?{0}?\|?{0}?$'.format(r'([^|]+)'))
     lreg = re.compile(r'^(?P<level>.+?)(?: - (?P<OS>Windows|Linux|Unknown OS))?(?: - (?P<reactors>\d) Reactors?)?\s*$')
+    sreg = re.compile(r'^\s*\[?\(\**(?P<cycles>\d+)\**(?P<OSmark>\\\*)?/\**(?P<reactors>\d+)\**/\**(?P<symbols>\d+)\**\)\s+(?P<user>[^\]]+?)(?:\]\((?P<link>[^\)]+)\))?\s*$')
     it = iter(levels)
     
     for line in lines:
