@@ -13,6 +13,8 @@ saves = [ {'saveFile': r'save/000.user', 'playerName': '12345ieee', 'playerOS': 
           {'saveFile': r'saves/Criado.user', 'playerName': 'Criado', 'playerOS': 'Linux'},
         ]
 dumpfile = r'dump.pickle'
+wikifolder = r'../wiki/'
+wikifiles = [r'index.md', r'researchnet.md', r'researchnet2.md']
 
 """
 {'Username': 'LittleBigDej', 'Level Category': '63corvi', 'Level Number': '1', 'Level Name': 'QT-1',
@@ -42,14 +44,18 @@ def init():
             levels[id_tuple] = {}
 
 
-def tiebreak(this_score, best_score, stat1, stat2, stat3, stat4):
+def tiebreak(this_score, best_score, stat1, stat2, stat3):
     return this_score[stat1] < best_score[stat1] or \
            (this_score[stat1] == best_score[stat1] and \
             (this_score[stat2] < best_score[stat2] or \
              (this_score[stat2] == best_score[stat2] and \
               (this_score[stat3] < best_score[stat3] or \
                (this_score[stat3] == best_score[stat3] and \
-                this_score[stat4] < best_score[stat4]
+                (bool(this_score['Youtube Link']) > bool(best_score['Youtube Link']) or \
+                 (bool(this_score['Youtube Link']) == bool(best_score['Youtube Link']) and \
+                  this_score['Upload Time'] < best_score['Upload Time']
+                 )
+                )
                )
               )
              )
@@ -59,6 +65,23 @@ def tiebreak(this_score, best_score, stat1, stat2, stat3, stat4):
 def insert_score(this_score, scores, category, stats):
     if category not in scores or tiebreak(this_score, scores[category], *stats):
         scores[category] = this_score
+
+def add_score(level_id, this_score, playerOS):
+
+    props = id2level[level_id]
+
+    if props['isDeterministic']:
+        insert_score(this_score, levels[level_id], 'Least Cycles', ['Cycle Count', 'Reactor Count', 'Symbol Count'])
+        insert_score(this_score, levels[level_id], 'Least Symbols', ['Symbol Count', 'Reactor Count', 'Cycle Count'])
+        if props['type'] in {'production', 'boss'}:
+            insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count'])
+            insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count'])
+    else:
+        insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(playerOS), ['Cycle Count', 'Reactor Count', 'Symbol Count'])
+        insert_score(this_score, levels[level_id], 'Least Symbols - {}'.format(playerOS), ['Symbol Count', 'Reactor Count', 'Cycle Count'])
+        if props['type'] in {'production', 'boss'}:
+            insert_score(this_score, levels[level_id], 'Least Cycles - {} - N Reactors'.format(playerOS), ['Reactor Count', 'Cycle Count', 'Symbol Count'])
+            insert_score(this_score, levels[level_id], 'Least Symbols - {} - N Reactors'.format(playerOS), ['Reactor Count', 'Symbol Count', 'Cycle Count'])
 
 def should_reject(this_score):
     # In, Out, 2 arrows, Swap = 5 min
@@ -119,24 +142,15 @@ def parse_solnet():
             
             props = id2level[level_id]
             
-            if props['isDeterministic']:
-                insert_score(this_score, levels[level_id], 'Least Cycles', ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
-                insert_score(this_score, levels[level_id], 'Least Symbols', ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
-                if props['type'] in {'production', 'boss'}:
-                    insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
-                    insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
+            if '@' in this_score['Username']:
+                this_score['Username'], userOS = this_score['Username'].split('@')
+            elif this_score['Username'] in user2OS:
+                userOS = user2OS[this_score['Username']]
             else:
-                if '@' in this_score['Username']:
-                    this_score['Username'], userOS = this_score['Username'].split('@')
-                elif this_score['Username'] in user2OS:
-                    userOS = user2OS[this_score['Username']]
-                else:
-                    userOS = 'Unknown OS'
-                insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(userOS), ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
-                insert_score(this_score, levels[level_id], 'Least Symbols - {}'.format(userOS), ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
-                if props['type'] in {'production', 'boss'}:
-                    insert_score(this_score, levels[level_id], 'Least Cycles - {} - N Reactors'.format(userOS), ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
-                    insert_score(this_score, levels[level_id], 'Least Symbols - {} - N Reactors'.format(userOS), ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
+                userOS = 'Unknown OS'
+            
+            add_score(level_id, this_score, userOS)
+
 
 def parse_saves():
 
@@ -164,19 +178,7 @@ def parse_saves():
             
             props = id2level[level_id]
             
-            if props['isDeterministic']:
-                insert_score(this_score, levels[level_id], 'Least Cycles', ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
-                insert_score(this_score, levels[level_id], 'Least Symbols', ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
-                if props['type'] in {'production', 'boss'}:
-                    insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
-                    insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
-            else:
-                playerOS = save['playerOS']
-                insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(playerOS), ['Cycle Count', 'Reactor Count', 'Symbol Count', 'Upload Time'])
-                insert_score(this_score, levels[level_id], 'Least Symbols - {}'.format(playerOS), ['Symbol Count', 'Reactor Count', 'Cycle Count', 'Upload Time'])
-                if props['type'] in {'production', 'boss'}:
-                    insert_score(this_score, levels[level_id], 'Least Cycles - {} - N Reactors'.format(playerOS), ['Reactor Count', 'Cycle Count', 'Symbol Count', 'Upload Time'])
-                    insert_score(this_score, levels[level_id], 'Least Symbols - {} - N Reactors'.format(playerOS), ['Reactor Count', 'Symbol Count', 'Cycle Count', 'Upload Time'])
+            add_score(level_id, this_score, save['playerOS'])
         
         conn.close()
 
@@ -211,32 +213,50 @@ def print_scores():
 
 def parse_wiki():
     
-    creg = re.compile(r' - \d Reactor| - Linux| - Unknown OS')
-    
     lines = []
-    for f in ['index.md']: #, 'researchnet.md', 'researchnet2.md']:
-        lines.extend(open('../wiki/'+f).readlines())
+    for f in wikifiles:
+        with open(wikifolder + f) as infile:
+            lines.extend(infile.readlines())
     
     reg = re.compile(r'^\|{0}\|{0}\|{0}\|{0}\|{0}\|?{0}?\|?{0}?'.format(r'([^|\n]+)'))
+    sreg = re.compile(r'^\s*\[?\(\**(?P<cycles>\d+)\**(?P<OSmark>\\\*)?/\**(?P<reactors>\d+)\**/\**(?P<symbols>\d+)\**\)\s+(?P<user>[^\]]+?)(?:\]\((?P<link>[^\)]+)\))?\s*$')
+    lreg = re.compile(r'^(?P<level>.+?)(?: - (?P<OS>Windows|Linux|Unknown OS))?(?: - (?P<reactors>\d) Reactors?)?\s*$')
     it = iter(levels)
     
     for line in lines:
         match = reg.match(line)
         if match:
             if match.group(1).strip() not in {'Name', ':-'}:
-                if not creg.search(match.group(1)):
-                    el = next(it)
-                    while id2level[el]['type'] == 'boss':
-                        el = next(it)
-                print(el, match.groups())
+                lmatch = lreg.match(match.group(1))
+                best_reactors = lmatch.group('reactors')
+                playerOS = lmatch.group('OS')
+                if not best_reactors and not playerOS in {'Linux', 'Unknown OS'}:
+                    level_id = next(it)
+                    while id2level[level_id]['type'] == 'boss':
+                        level_id = next(it)
+                for m in filter(None, match.groups()[1:]):
+                    smatch = sreg.match(m)
+                    if smatch:
+                        if smatch.group('OSmark'):
+                            username = smatch.group('OSmark') + smatch.group('user')
+                        else:
+                            username = smatch.group('user')
+                        this_score = {'Username': username,
+                                      'Cycle Count': int(smatch.group('cycles')),
+                                      'Reactor Count': int(smatch.group('reactors')),
+                                      'Symbol Count': int(smatch.group('symbols')),
+                                      'Upload Time': '2017-03-31 09:12:35.408504',
+                                      'Youtube Link': smatch.group('link') if smatch.group('link') else ''}
+                        
+                        add_score(level_id, this_score, playerOS)
 
 
 
 if __name__ == '__main__':
     init()
-    parse_wiki()
     #~ load_scores()
-    #~ parse_solnet()
-    #~ parse_saves()
+    parse_wiki()
+    parse_solnet()
+    parse_saves()
     #~ dump_scores()
-    #~ print_scores()
+    print_scores()
