@@ -4,6 +4,7 @@ import csv
 import sqlite3
 import pickle
 import re
+import datetime
 from collections import OrderedDict
 
 scoresfile = r"score_dump.csv"
@@ -15,6 +16,8 @@ saves = [ {'saveFile': r'save/000.user', 'playerName': '12345ieee', 'playerOS': 
 dumpfile = r'dump.pickle'
 wikifolder = r'../wiki/'
 wikifiles = [r'index.md', r'researchnet.md', r'researchnet2.md']
+
+nowstring = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
 
 """
 {'Username': 'LittleBigDej', 'Level Category': '63corvi', 'Level Number': '1', 'Level Name': 'QT-1',
@@ -38,7 +41,7 @@ def init():
         for row in reader:
             id_tuple = (row['category'], row['number'])
             save2id[row['saveId']] = id_tuple
-            id2level[id_tuple] = {'name': row['name'], 
+            id2level[id_tuple] = {'name': row['name'],
                                   'type': row['type'],
                                   'isDeterministic': int(row['isDeterministic'])}
             levels[id_tuple] = {}
@@ -140,8 +143,6 @@ def parse_solnet():
             if should_reject(this_score):
                 continue
             
-            props = id2level[level_id]
-            
             if '@' in this_score['Username']:
                 this_score['Username'], userOS = this_score['Username'].split('@')
             elif this_score['Username'] in user2OS:
@@ -170,13 +171,11 @@ def parse_saves():
                           'Cycle Count': row['cycles'],
                           'Reactor Count': row['reactors'],
                           'Symbol Count': row['symbols'],
-                          'Upload Time': '2017-03-05 09:12:35.408504',
+                          'Upload Time': nowstring,
                           'Youtube Link': ''}
             
             if should_reject(this_score):
                 continue
-            
-            props = id2level[level_id]
             
             add_score(level_id, this_score, save['playerOS'])
         
@@ -230,7 +229,7 @@ def parse_wiki():
                 lmatch = lreg.match(match.group(1))
                 best_reactors = lmatch.group('reactors')
                 playerOS = lmatch.group('OS')
-                if not best_reactors and not playerOS in {'Linux', 'Unknown OS'}:
+                if not best_reactors and playerOS not in {'Linux', 'Unknown OS'}:
                     level_id = next(it)
                     while id2level[level_id]['type'] == 'boss':
                         level_id = next(it)
@@ -245,11 +244,10 @@ def parse_wiki():
                                       'Cycle Count': int(smatch.group('cycles')),
                                       'Reactor Count': int(smatch.group('reactors')),
                                       'Symbol Count': int(smatch.group('symbols')),
-                                      'Upload Time': '2017-03-31 09:12:35.408504',
+                                      'Upload Time': nowstring,
                                       'Youtube Link': smatch.group('link') if smatch.group('link') else ''}
                         
                         add_score(level_id, this_score, playerOS)
-
 
 
 if __name__ == '__main__':
