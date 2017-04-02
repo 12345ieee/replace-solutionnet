@@ -76,6 +76,9 @@ def add_score(level_id, this_score, playerOS):
 
     props = id2level[level_id]
 
+    if should_reject(this_score):
+        return
+
     if props['isDeterministic']:
         insert_score(this_score, levels[level_id], 'Least Cycles', ['Cycle Count', 'Reactor Count', 'Symbol Count'])
         insert_score(this_score, levels[level_id], 'Least Symbols', ['Symbol Count', 'Reactor Count', 'Cycle Count'])
@@ -143,9 +146,6 @@ def parse_solnet():
                           'Upload Time': row['Upload Time'],
                           'Youtube Link': row['Youtube Link']}
             
-            if should_reject(this_score):
-                continue
-            
             if '@' in this_score['Username']:
                 this_score['Username'], userOS = this_score['Username'].split('@')
             elif this_score['Username'] in user2OS:
@@ -176,9 +176,6 @@ def parse_saves():
                           'Symbol Count': row['symbols'],
                           'Upload Time': nowstring,
                           'Youtube Link': ''}
-            
-            if should_reject(this_score):
-                continue
             
             add_score(level_id, this_score, save['playerOS'])
         
