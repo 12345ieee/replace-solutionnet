@@ -219,7 +219,7 @@ def parse_wiki():
     
     table_reg = re.compile(r'^\|{0}\|{0}\|{0}\|{0}\|{0}\|?{0}?\|?{0}?$'.format(r'([^|]+)'))
     level_reg = re.compile(r'^(?P<level>.+?)(?: - (?P<OS>Windows|Linux|Unknown OS))?(?: - (?P<reactors>\d) Reactors?)?\s*$')
-    score_reg = re.compile(r'^\s*\[?\(\**(?P<cycles>\d+)\**(?P<OSmark>\\\*)?/\**(?P<reactors>\d+)\**/\**(?P<symbols>\d+)\**\)'
+    score_reg = re.compile(r'^\s*\[?\(\**(?P<cycles>\?|\d+)\**(?P<OSmark>\\\*)?/\**(?P<reactors>\d+)\**/\**(?P<symbols>\d+)\**\)'
                            r'\s+(?P<user>[^\]]+?)(?:\]\((?P<link>[^\)]+)\).*?)?\s*$')
     single_score_reg = re.compile(r'^\s*\**(?P<score>\d+)\**\s*$')
     
@@ -243,8 +243,12 @@ def parse_wiki():
                             username = score_match.group('OSmark') + score_match.group('user')
                         else:
                             username = score_match.group('user')
+                        if score_match.group('cycles') == '?':
+                            cycles = 99999999
+                        else:
+                            cycles = int(score_match.group('cycles'))
                         this_score = {'Username': username,
-                                      'Cycle Count': int(score_match.group('cycles')),
+                                      'Cycle Count': cycles,
                                       'Reactor Count': int(score_match.group('reactors')),
                                       'Symbol Count': int(score_match.group('symbols')),
                                       'Upload Time': nowstring,
