@@ -5,6 +5,8 @@ import sqlite3
 import pickle
 import re
 import datetime
+import argparse
+
 from collections import OrderedDict
 
 ### Configuration block
@@ -283,10 +285,26 @@ def parse_wiki():
 
 
 if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-l", "--load", action="store_true")
+    parser.add_argument("--no-wiki", action="store_false", dest='wiki')
+    parser.add_argument("-n", "--solnet", action="store_true")
+    parser.add_argument("-s", "--saves", action="store_true")
+    parser.add_argument("-d", "--dump", action="store_true")
+    parser.add_argument("--no-print", action="store_false", dest='print')
+    args = parser.parse_args()
+
     init()
-    #~ load_scores()
-    parse_wiki()
-    #~ parse_solnet()
-    parse_saves()
-    #~ dump_scores()
-    print_scores()
+    if args.load:
+        load_scores()
+    if args.wiki:
+        parse_wiki()
+    if args.solnet:
+        parse_solnet()
+    if args.saves:
+        parse_saves()
+    if args.dump:
+        dump_scores()
+    if args.print:
+        print_scores()
