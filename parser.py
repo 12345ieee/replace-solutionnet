@@ -253,7 +253,7 @@ def parse_wiki():
                                       'Cycle Count': cycles,
                                       'Reactor Count': int(score_match.group('reactors')),
                                       'Symbol Count': int(score_match.group('symbols')),
-                                      'Upload Time': nowstring,
+                                      'Upload Time': '0',
                                       'Youtube Link': score_match.group('link') if score_match.group('link') else ''}
                                       
                         add_score(level_id, this_score, playerOS)
@@ -289,10 +289,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-l", "--load", action="store_true")
     parser.add_argument("--no-wiki", action="store_false", dest='wiki')
+    parser.add_argument("-w", "--wiki", action="store_true", dest='wiki')
     parser.add_argument("-n", "--solnet", action="store_true")
     parser.add_argument("-s", "--saves", action="store_true")
     parser.add_argument("-d", "--dump", action="store_true")
     parser.add_argument("--no-print", action="store_false", dest='print')
+    parser.add_argument("-p", "--print", action="store_true", dest='print')
     args = parser.parse_args()
 
     init()

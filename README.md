@@ -4,15 +4,15 @@ You need:
 
 * A python3 interpreter
 
-Parsing your save(s), too:
+Configuration (at the beginning of `worker.py`):
 
-* `saves = [{'saveFile': r'path/to/save.user', 'playerName': '<name>', 'playerOS': '<OS>'}]` at the beginning of `worker.py`
+* Saves: `saves = [{'saveFile': r'path/to/save.user', 'playerName': '<name>', 'playerOS': '<OS>'}]`
+* Dump/load: `dumpfile = r'path/to/dumpfile'`
+* Wiki: `wikifolder = r'path/to/wiki/folder'`
 
-at the beginning of `worker.py`
+Runtime options:
 
-Don't parse your save:
+    ./parser --help
 
-* `saves = []` at the beginning of `worker.py`
-
-Then just run `./worker.py` and the table will be printed to stdout
+Then just run `./parser.py` and the table will be printed to stdout
 
