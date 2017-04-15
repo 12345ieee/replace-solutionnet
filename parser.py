@@ -238,7 +238,10 @@ def parse_wiki():
                     level_id = next(it)
                     while id2level[level_id]['type'] == 'boss':
                         level_id = next(it)
-                for idx, tm in enumerate(filter(None, table_match.groups()[1:]), 1):
+                scores = [m for m in table_match.groups()[1:] if m]
+                cols = len(scores)
+                assert cols in {4,6}
+                for idx, tm in enumerate(scores):
                     score_match = score_reg.match(tm)
                     if score_match:
                         if score_match.group('OSmark'):
@@ -262,9 +265,9 @@ def parse_wiki():
                         if single_score_match:
                             
                             score = int(single_score_match.group('score'))
-                            if idx in {1,2}:
+                            if 0 <= idx < cols/2:
                                 c,s = score, 9999
-                            elif idx in {3,4,5}:
+                            elif cols/2 <= idx < cols:
                                 c,s = 99999999, score
                             else:
                                 raise IndexError('Score {score} at idx {idx}'.format_map(locals()))
@@ -272,7 +275,7 @@ def parse_wiki():
                             if id2level[level_id]['type'] == 'research':
                                 r = 1
                             else:
-                                r = 6
+                                r = 7
 
                             this_score = {'Username': 'Unknown User',
                                           'Cycle Count': c,
