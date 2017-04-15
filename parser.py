@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import csv
 import sqlite3
 import pickle
@@ -12,11 +13,13 @@ from collections import OrderedDict
 ### Configuration block
 
 scoresfile = r"score_dump.csv"
-saves = [ {'saveFile': r'save/000.user', 'playerName': '12345ieee', 'playerOS': 'Linux'},
-          {'saveFile': r'save/001.user', 'playerName': '12345ieee', 'playerOS': 'Linux'},
-          {'saveFile': r'save/002.user', 'playerName': '12345ieee', 'playerOS': 'Linux'},
-          {'saveFile': r'saves/Criado.user', 'playerName': 'Criado', 'playerOS': 'Linux'},
-        ]
+saves_folder = r'saves'
+saveOSes = {
+             'AapOpSokken': 'Windows',
+             'Criado': 'Linux',
+             '12345ieee': 'Linux',
+           }
+
 dumpfile = r'dump.pickle'
 wikifolder = r'../wiki/'
 wikifiles = [r'index.md', r'researchnet.md', r'researchnet2.md']
@@ -160,28 +163,30 @@ def parse_solnet():
 
 def parse_saves():
 
-    for save in saves:
-        conn = sqlite3.connect(save['saveFile'])
-        conn.row_factory = sqlite3.Row
-        dbcursor = conn.execute("SELECT * FROM {}".format('Level'))
+    for player in os.listdir(saves_folder):
+        player_folder = os.path.join(saves_folder, player)
+        for save in os.listdir(player_folder):
+            conn = sqlite3.connect(os.path.join(player_folder, save))
+            conn.row_factory = sqlite3.Row
+            dbcursor = conn.execute("SELECT * FROM {}".format('Level'))
 
-        for row in dbcursor:
-            if row['passed'] == 0:
-                continue
-            if row['id'] in save2id:
-                level_id = save2id[row['id']]
-            else:
-                continue
-            this_score = {'Username': save['playerName'],
-                          'Cycle Count': row['cycles'],
-                          'Reactor Count': row['reactors'],
-                          'Symbol Count': row['symbols'],
-                          'Upload Time': nowstring,
-                          'Youtube Link': ''}
+            for row in dbcursor:
+                if row['passed'] == 0:
+                    continue
+                if row['id'] in save2id:
+                    level_id = save2id[row['id']]
+                else:
+                    continue
+                this_score = {'Username': player,
+                              'Cycle Count': row['cycles'],
+                              'Reactor Count': row['reactors'],
+                              'Symbol Count': row['symbols'],
+                              'Upload Time': nowstring,
+                              'Youtube Link': ''}
+                
+                add_score(level_id, this_score, saveOSes[player])
             
-            add_score(level_id, this_score, save['playerOS'])
-        
-        conn.close()
+            conn.close()
 
 def dump_scores():
     with open(dumpfile, 'wb') as dumpdest:
