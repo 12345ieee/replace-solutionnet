@@ -2,11 +2,7 @@
 __pycache__
 
 # Saves
-save
 saves
 
 # Dump
 *.pickle
-
-# Outfiles
-out*
