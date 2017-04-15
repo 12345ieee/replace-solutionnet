@@ -197,17 +197,22 @@ def load_scores():
     with open(dumpfile, 'rb') as dumpdest:
         levels = pickle.load(dumpdest)
 
-def print_scores():
+def print_scores(printset):
 
+    if not printset:
+        return
+    
     for level_id in levels:
         scores = levels[level_id]
         if not scores:
             continue
+
+        level = id2level[level_id]
+        if level['type'] not in printset:
+            continue
         
         print('|{} - {}'.format(*level_id).ljust(20) + '| Min Cycles | Min Cycles - No Bugs | Min Symbols | Min Symbols - No Bugs')
 
-        level = id2level[level_id]
-        
         for OSstring in ['', ' - Windows', ' - Linux', ' - Unknown OS']:
             printblock(scores, '|{name}{OS} '.format(**level, OS=OSstring),
                        'Least Cycles{}'.format(OSstring), 'Least Symbols{}'.format(OSstring),
@@ -301,8 +306,8 @@ if __name__ == '__main__':
     parser.add_argument("-n", "--solnet", action="store_true")
     parser.add_argument("-s", "--saves", action="store_true")
     parser.add_argument("-d", "--dump", action="store_true")
-    parser.add_argument("--no-print", action="store_false", dest='print')
-    parser.add_argument("-p", "--print", action="store_true", dest='print')
+    parser.add_argument("-p", "--print", choices={'research', 'production', 'boss'}, nargs='+', default=['research', 'production', 'boss'])
+    parser.add_argument("--no-print", choices={'research', 'production', 'boss'}, nargs='+', default=[])
     args = parser.parse_args()
 
     init()
@@ -316,5 +321,5 @@ if __name__ == '__main__':
         parse_saves()
     if args.dump:
         dump_scores()
-    if args.print:
-        print_scores()
+    
+    print_scores(set(args.print) - set(args.no_print))
