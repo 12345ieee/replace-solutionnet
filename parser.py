@@ -250,7 +250,7 @@ def parse_wiki():
                         level_id = next(it)
                 scores = [m for m in table_match.groups()[1:] if m]
                 cols = len(scores)
-                assert cols in {4,6}
+                assert cols in {4,6}, "Level {level_id} has {cols} cols".format_map(locals())
                 for idx, tm in enumerate(scores):
                     score_match = score_reg.match(tm)
                     if score_match:
