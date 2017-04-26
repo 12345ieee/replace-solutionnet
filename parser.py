@@ -248,6 +248,14 @@ def parse_wiki():
                     level_id = next(it)
                     while id2level[level_id]['type'] == 'boss':
                         level_id = next(it)
+                elif best_reactors:
+                    reactors_placeholder_score = {'Username': "Unknown User",
+                                                  'Cycle Count': 99999999,
+                                                  'Reactor Count': int(best_reactors),
+                                                  'Symbol Count': 9999,
+                                                  'Upload Time': '0',
+                                                  'Youtube Link': ''}
+                    add_score(level_id, reactors_placeholder_score, playerOS, False)
                 scores = [m for m in table_match.groups()[1:] if m]
                 cols = len(scores)
                 assert cols in {4,6}, "Level {level_id} has {cols} cols".format_map(locals())
