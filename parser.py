@@ -9,6 +9,7 @@ import datetime
 import argparse
 
 from collections import OrderedDict
+from collections import Counter
 
 ### Configuration block
 
@@ -197,31 +198,6 @@ def load_scores():
     with open(dumpfile, 'rb') as dumpdest:
         levels = pickle.load(dumpdest)
 
-def print_scores(printset):
-
-    if not printset:
-        return
-    
-    for level_id in levels:
-        scores = levels[level_id]
-        if not scores:
-            continue
-
-        level = id2level[level_id]
-        if level['type'] not in printset:
-            continue
-        
-        print('|{} - {}'.format(*level_id).ljust(20) + '| Min Cycles | Min Cycles - No Bugs | Min Symbols | Min Symbols - No Bugs')
-
-        for OSstring in ['', ' - Windows', ' - Linux', ' - Unknown OS']:
-            printblock(scores, '|{name}{OS} '.format(**level, OS=OSstring),
-                       'Least Cycles{}'.format(OSstring), 'Least Symbols{}'.format(OSstring),
-                       0b100, 0b001, ' | N/A | N/A' if OSstring else ' | N/A')
-            printblock(scores, '|{name}{OS} - N Reactors '.format(**level, OS=OSstring),
-                       'Least Cycles{} - N Reactors'.format(OSstring), 'Least Symbols{} - N Reactors'.format(OSstring),
-                       0b110, 0b011, ' | N/A | N/A' if OSstring else ' | N/A')
-        print()
-
 def parse_wiki():
     
     lines = []
@@ -304,6 +280,42 @@ def parse_wiki():
                                 
                             add_score(level_id, this_score, playerOS, False)
 
+def print_scores(printset):
+
+    if not printset:
+        return
+    
+    for level_id in levels:
+        scores = levels[level_id]
+        if not scores:
+            continue
+
+        level = id2level[level_id]
+        if level['type'] not in printset:
+            continue
+        
+        print('|{} - {}'.format(*level_id).ljust(20) + '| Min Cycles | Min Cycles - No Bugs | Min Symbols | Min Symbols - No Bugs')
+
+        for OSstring in ['', ' - Windows', ' - Linux', ' - Unknown OS']:
+            printblock(scores, '|{name}{OS} '.format(**level, OS=OSstring),
+                       'Least Cycles{}'.format(OSstring), 'Least Symbols{}'.format(OSstring),
+                       0b100, 0b001, ' | N/A | N/A' if OSstring else ' | N/A')
+            printblock(scores, '|{name}{OS} - N Reactors '.format(**level, OS=OSstring),
+                       'Least Cycles{} - N Reactors'.format(OSstring), 'Least Symbols{} - N Reactors'.format(OSstring),
+                       0b110, 0b011, ' | N/A | N/A' if OSstring else ' | N/A')
+        print()
+
+def print_leaderboard():
+    leaderboard = Counter()
+    for scores in levels.values():
+        for score in scores.values():
+            name = score['Username'].replace('\*', '')
+            leaderboard[name] += 1
+
+    print('{} scores by {} users'.format(sum(leaderboard.values()), len(leaderboard)))
+    print('Name                 Scores')
+    for name, count in sorted(leaderboard.items(), key=lambda item: (-item[1], item[0].lower())):
+        print('{name:24}{count:3}'.format_map(locals()))
 
 if __name__ == '__main__':
 
@@ -316,6 +328,7 @@ if __name__ == '__main__':
     parser.add_argument("-d", "--dump", action="store_true")
     parser.add_argument("-p", "--print", choices={'research', 'production', 'boss'}, nargs='+', default=['research', 'production', 'boss'])
     parser.add_argument("--no-print", choices={'research', 'production', 'boss'}, nargs='+', default=[])
+    parser.add_argument("--leaderboard", action="store_true")
     args = parser.parse_args()
 
     init()
@@ -331,3 +344,6 @@ if __name__ == '__main__':
         dump_scores()
     
     print_scores(set(args.print) - set(args.no_print))
+    
+    if args.leaderboard:
+        print_leaderboard()
