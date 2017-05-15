@@ -280,7 +280,7 @@ def parse_wiki():
                                 
                             add_score(level_id, this_score, playerOS, False)
 
-def print_scores(printset):
+def print_scores(printset, no_separator=False):
 
     if not printset:
         return
@@ -297,12 +297,13 @@ def print_scores(printset):
         print('|{} - {}'.format(*level_id).ljust(20) + '| Min Cycles | Min Cycles - No Bugs | Min Symbols | Min Symbols - No Bugs')
 
         for OSstring in ['', ' - Windows', ' - Linux', ' - Unknown OS']:
+            score_separator = '' if no_separator else ' | N/A | N/A' if OSstring else ' | N/A'
             printblock(scores, '|{name}{OS} '.format(**level, OS=OSstring),
                        'Least Cycles{}'.format(OSstring), 'Least Symbols{}'.format(OSstring),
-                       0b100, 0b001, ' | N/A | N/A' if OSstring else ' | N/A')
+                       0b100, 0b001, score_separator)
             printblock(scores, '|{name}{OS} - N Reactors '.format(**level, OS=OSstring),
                        'Least Cycles{} - N Reactors'.format(OSstring), 'Least Symbols{} - N Reactors'.format(OSstring),
-                       0b110, 0b011, ' | N/A | N/A' if OSstring else ' | N/A')
+                       0b110, 0b011, score_separator)
         print()
 
 def print_leaderboard():
@@ -328,6 +329,7 @@ if __name__ == '__main__':
     parser.add_argument("-d", "--dump", action="store_true")
     parser.add_argument("-p", "--print", choices={'research', 'production', 'boss'}, nargs='+', default=['research', 'production', 'boss'])
     parser.add_argument("--no-print", choices={'research', 'production', 'boss'}, nargs='+', default=[])
+    parser.add_argument("--no-print-separator", action="store_true")
     parser.add_argument("--leaderboard", action="store_true")
     args = parser.parse_args()
 
@@ -343,7 +345,7 @@ if __name__ == '__main__':
     if args.dump:
         dump_scores()
     
-    print_scores(set(args.print) - set(args.no_print))
+    print_scores(set(args.print) - set(args.no_print), args.no_print_separator)
     
     if args.leaderboard:
         print_leaderboard()
