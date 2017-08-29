@@ -111,18 +111,18 @@ fmt_scores_with_bold = ['({}/{}/{}) {}', '({}/{}/**{}**) {}', '({}/**{}**/{}) {}
                         '(**{}**/{}/{}) {}', '(**{}**/{}/**{}**) {}', '(**{}**/**{}**/{}) {}',
                         '(**{}**/**{}**/**{}**) {}']
 
-def printscore(score, bold=0, suffix=''):
+def printscore(score, bold=0, suffix='', printvideo=True):
     fmt_score = fmt_scores_with_bold[bold].format(score['Cycle Count'], score['Reactor Count'], score['Symbol Count'],
                                                   score['Username'])
-    if score['Youtube Link']:
+    if printvideo and score['Youtube Link']:
         fmt_score = '[{}]({})'.format(fmt_score, score['Youtube Link'])
     print('| {:20}{suffix}'.format(fmt_score, suffix=suffix), end=' ')
 
-def printblock(scores, header, cat1, cat2, bold1, bold2, suffix=''):
+def printblock(scores, header, cat1, cat2, bold1, bold2, suffix='', printvideo=True):
     if cat1 in scores and cat2 in scores:
         print(header.ljust(20), end='')
-        printscore(scores[cat1], bold=bold1, suffix=suffix)
-        printscore(scores[cat2], bold=bold2, suffix=suffix)
+        printscore(scores[cat1], bold=bold1, suffix=suffix, printvideo=printvideo)
+        printscore(scores[cat2], bold=bold2, suffix=suffix, printvideo=printvideo)
         print()
 
 def parse_solnet():
@@ -280,7 +280,7 @@ def parse_wiki():
                                 
                             add_score(level_id, this_score, playerOS, False)
 
-def print_scores(printset, no_separator=False):
+def print_scores(printset, no_separator=False, no_video=False):
 
     if not printset:
         return
@@ -293,17 +293,18 @@ def print_scores(printset, no_separator=False):
         level = id2level[level_id]
         if level['type'] not in printset:
             continue
-        
-        print('|{} - {}'.format(*level_id).ljust(20) + '| Min Cycles | Min Cycles - No Bugs | Min Symbols | Min Symbols - No Bugs')
+        score_header = '| Min Cycles | Min Symbols' if no_separator else \
+                       '| Min Cycles | Min Cycles - No Bugs | Min Symbols | Min Symbols - No Bugs'
+        print('|{} - {}'.format(*level_id).ljust(20) + score_header)
 
         for OSstring in ['', ' - Windows', ' - Linux', ' - Unknown OS']:
             score_separator = '' if no_separator else ' | N/A | N/A' if OSstring else ' | N/A'
             printblock(scores, '|{name}{OS} '.format(**level, OS=OSstring),
                        'Least Cycles{}'.format(OSstring), 'Least Symbols{}'.format(OSstring),
-                       0b100, 0b001, score_separator)
+                       0b100, 0b001, score_separator, not no_video)
             printblock(scores, '|{name}{OS} - N Reactors '.format(**level, OS=OSstring),
                        'Least Cycles{} - N Reactors'.format(OSstring), 'Least Symbols{} - N Reactors'.format(OSstring),
-                       0b110, 0b011, score_separator)
+                       0b110, 0b011, score_separator, not no_video)
         print()
 
 def print_leaderboard():
@@ -330,6 +331,7 @@ if __name__ == '__main__':
     parser.add_argument("-p", "--print", choices={'research', 'production', 'boss'}, nargs='+', default=['research', 'production', 'boss'])
     parser.add_argument("--no-print", choices={'research', 'production', 'boss'}, nargs='+', default=[])
     parser.add_argument("--no-print-separator", action="store_true")
+    parser.add_argument("--no-print-video", action="store_true")
     parser.add_argument("--leaderboard", action="store_true")
     args = parser.parse_args()
 
@@ -345,7 +347,7 @@ if __name__ == '__main__':
     if args.dump:
         dump_scores()
     
-    print_scores(set(args.print) - set(args.no_print), args.no_print_separator)
+    print_scores(set(args.print) - set(args.no_print), args.no_print_separator, args.no_print_video)
     
     if args.leaderboard:
         print_leaderboard()
