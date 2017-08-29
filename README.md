@@ -6,7 +6,8 @@ You need:
 
 Configuration (at the beginning of `worker.py`):
 
-* Saves: `saves = [{'saveFile': r'path/to/save.user', 'playerName': '<name>', 'playerOS': '<OS>'}]`
+* Saves: Put your save in a subfolder under `saves`, called with your username
+* SaveOS: `saveOSes = {'<YourName>': '<YourOS>'}`
 * Dump/load: `dumpfile = r'path/to/dumpfile'`
 * Wiki: `wikifolder = r'path/to/wiki/folder'`
 
