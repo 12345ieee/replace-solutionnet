@@ -15,11 +15,6 @@ from collections import Counter
 
 scoresfile = r"score_dump.csv"
 saves_folder = r'saves'
-saveOSes = {
-             'AapOpSokken': 'Windows',
-             'Criado': 'Linux',
-             '12345ieee': 'Linux',
-           }
 
 dumpfile = r'dump.pickle'
 wikifolder = r'../wiki/'
@@ -164,8 +159,9 @@ def parse_solnet():
 
 def parse_saves():
 
-    for player in os.listdir(saves_folder):
-        player_folder = os.path.join(saves_folder, player)
+    for playersave in os.listdir(saves_folder):
+        player, playerOS = playersave.rsplit('_', 1)
+        player_folder = os.path.join(saves_folder, playersave)
         for save in os.listdir(player_folder):
             conn = sqlite3.connect(os.path.join(player_folder, save))
             conn.row_factory = sqlite3.Row
@@ -185,7 +181,7 @@ def parse_saves():
                               'Upload Time': nowstring,
                               'Youtube Link': ''}
                 
-                add_score(level_id, this_score, saveOSes[player])
+                add_score(level_id, this_score, playerOS)
             
             conn.close()
 
