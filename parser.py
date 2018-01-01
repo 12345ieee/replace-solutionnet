@@ -201,19 +201,19 @@ def parse_wiki():
         with open(wikifolder + f) as infile:
             lines.extend(infile.readlines())
     
-    table_reg = re.compile(r'^\|{0}\|{0}\|{0}\|{0}\|{0}\|?{0}?\|?{0}?$'.format(r'([^|]+)'))
     level_reg = re.compile(r'^(?P<level>.+?)(?: - (?P<OS>Windows|Linux|Unknown OS))?(?: - (?P<reactors>\d) Reactors?)?\s*$')
-    score_reg = re.compile(r'^\s*\[?\(\**(?P<cycles>[?\d]+)\**(?P<OSmark>\\\*)?/\**(?P<reactors>\d+)\**/\**(?P<symbols>\d+)\**\)'
+    score_reg = re.compile(r'^\s*\[?\(\**(?P<cycles>[?\d,]+)\**(?P<OSmark>\\\*)?/\**(?P<reactors>\d+)\**/\**(?P<symbols>\d+)\**\)'
                            r'\s+(?P<user>[^\]]+?)(?:\]\((?P<link>[^\)]+)\).*?)?\s*$')
-    single_score_reg = re.compile(r'^\s*\**(?P<score>\d+)\**\s*$')
+    single_score_reg = re.compile(r'^\s*\**(?P<score>[\d,]+)\**\s*$')
     
     it = iter(levels)
     
     for line in lines:
-        table_match = table_reg.match(line)
-        if table_match:
-            if table_match.group(1).strip() not in {'Name', ':-'}:
-                level_match = level_reg.match(table_match.group(1))
+        table_cols = line.split('|')[1:]
+        if len(table_cols) >= 5:
+            name_col = table_cols[0].strip()
+            if name_col not in {'Name', ':-'}:
+                level_match = level_reg.match(name_col)
                 best_reactors = level_match.group('reactors')
                 playerOS = level_match.group('OS')
                 if not best_reactors and playerOS not in {'Linux', 'Unknown OS'}:
@@ -228,7 +228,7 @@ def parse_wiki():
                                                   'Upload Time': '0',
                                                   'Youtube Link': ''}
                     add_score(level_id, reactors_placeholder_score, playerOS, False)
-                scores = [m for m in table_match.groups()[1:] if m]
+                scores = table_cols[1:]
                 cols = len(scores)
                 assert cols in {4,6}, "Level {level_id} has {cols} cols".format_map(locals())
                 for idx, tm in enumerate(scores):
@@ -241,7 +241,7 @@ def parse_wiki():
                         if '?' in score_match.group('cycles'):
                             cycles = 99999999
                         else:
-                            cycles = int(score_match.group('cycles'))
+                            cycles = int(score_match.group('cycles').replace(',', ''))
                         this_score = {'Username': username,
                                       'Cycle Count': cycles,
                                       'Reactor Count': int(score_match.group('reactors')),
@@ -254,7 +254,7 @@ def parse_wiki():
                         single_score_match = single_score_reg.match(tm)
                         if single_score_match:
                             
-                            score = int(single_score_match.group('score'))
+                            score = int(single_score_match.group('score').replace(',', ''))
                             if 0 <= idx < cols/2:
                                 c,s = score, 9999
                             elif cols/2 <= idx < cols:
