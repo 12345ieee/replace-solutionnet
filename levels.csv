@@ -231,7 +231,7 @@ saveId, category, number, name, type, isDeterministic
 "published-50-1", "researchnet", "5-2-1", "Fill in the Blank", "production", 1
 "published-50-2", "researchnet", "5-2-2", "Break-up", "production", 0
 "published-50-3", "researchnet", "5-2-3", "Average Out", "production", 0
-"published-51-1", "researchnet", "5-3-1", "Fake Out", "production", 0
+"published-51-1", "researchnet", "5-3-1", "Fake-out", "production", 0
 "published-51-2", "researchnet", "5-3-2", "Breakdown", "production", 0
 "published-51-3", "researchnet", "5-3-3", "Master of Disguise", "production", 0
 "published-52-1", "researchnet", "5-4-1", "Thermoplastic", "research", 1
