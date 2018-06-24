@@ -1,0 +1,59 @@
+Nothing Works | Least Symbols - N Reactors | (814/**3**/**28**) ants280 | 79919 | 
+A Most Unfortunate Malfunction | Least Symbols - N Reactors | (2465/**2**/**22**) Spiff | 47941 | *** 1st / 1st (2R) / Ugly solution with LOTS of manual toggling / required outputs by cycle: 0-70 R1t; 70-270 R2t; 270-1030 R2b; 1030-1710 R1t; after 1710 waldo cycles once in R1; then 1x R1b; then 1x R1t
+Challenge: In-Place Swap | Least Symbols - N Reactors | (2045/**1**/**26**) Cereal314 | 79255 | 
+No Ordinary Headache | Least Symbols - Linux - N Reactors | (3235/**1**/**39**) xyuzhg | 60711 | 
+No Thanks Necessary | Least Symbols - Linux - N Reactors | (10754/**2**/**62**) xyuzhg | 61476 | 
+No Need for Introductions | Least Symbols - Linux - N Reactors | (3486/**2**/**26**) MestreLion | 66572 | Third 2R attempt. And shame on everyone who used Spiff's design without crediting him, including Sahishar. At least my solution is original, not based on someone else's.
+Challenge: Going Green | Least Symbols - Linux - N Reactors | (3473/**2**/**69**) ToughThought | 69971 | 
+Falling | Least Symbols - N Reactors | [(1420/**2**/**39**) Sahishar](http://www.youtube.com/watch?v=mGjidk1RE1g) | 22749 | thx!
+Exploding Head Syndrome | Least Symbols - N Reactors | (4197/**2**/**21**) Sahishar | 21477 | 
+Challenge: Applied Fusion | Least Symbols - N Reactors | (5457/**1**/**31**) mrcable | 51610 | 
+Molecular Foundry | Least Symbols - Linux - N Reactors | [(44118/**1**/**65**) michelcolman](http://www.youtube.com/watch?v=janSoLD56L0) | 29446 | Single reactor, single waldo!!!
+Gas Works Park | Least Symbols - Linux - N Reactors | (7035/**1**/**146**) michelcolman | 29447 | 
+More than Machine | Least Symbols - Linux - N Reactors | (3463/**2**/**117**) michelcolman | 29693 | My first solution used three reactors, one just being a trigger for the Xenon atom. Then I noticed other people's solutions were just feeding the Xenon straight into the laser. So I removed the trigger reactor, and it worked right away.
+Challenge: KOHCTPYKTOP | Least Symbols - N Reactors | (3351/**3**/**105**) Andy | 30500 | 
+Don't Fear the Reaper | Least Symbols - N Reactors | (7446/**2**/**31**) mbishop94479 | 83078 | Shamelessly ripped off the top solution, but have fewer cycles for some reason...
+Freedom of Choice | Least Symbols - N Reactors | (4344/**3**/**57**) Phoil | 24038 | 
+End of the Line | Least Symbols - N Reactors | (2152/**3**/**145**) cake-pie | 41828 | 
+Teleporters | Least Symbols - N Reactors | [(3859/**2**/**27**) Sahishar](http://www.youtube.com/watch?v=pDsmPbx9jB4) | 36354 | 
+Precursor Compounds | Least Symbols - Linux - N Reactors | (7422/**3**/**178**) jp26 | 66382 | 
+Collapsar | Least Symbols - N Reactors | (3297/**2**/**74**) ToughThought | 74707 | 
+Thinner Line | Least Symbols - N Reactors | (4816/**1**/**25**) mrcable | 52633 | 
+Decomposition of Ethanolamine | Least Symbols - Linux - N Reactors | (3413/**3**/**58**) WildFilch | 39037 | 
+Anesthetics | Least Symbols - Linux - N Reactors | (156682/**3**/**276**) WildFilch | 55164 | 
+Fertigprodukt | Least Symbols - Linux - N Reactors | (44065/**1**/**112**) WildFilch | 39038 | 
+Novel Semiconductor | Least Symbols - Linux - N Reactors | (14922/**1**/**71**) WildFilch | 39039 | 
+Combustion Engine | Least Symbols - Linux - N Reactors | (7019/**1**/**134**) WildFilch | 41410 | 
+Smelting Iron | Least Symbols - Linux - N Reactors | (2024/**3**/**125**) Leylite | 71497 | I had plenty of CO2, so instead of combining the iron oxide's oxygen with the coke to get more CO2, I just dumped it as garbage.
+Fuel Production | Least Symbols - Linux - N Reactors | (17793/**2**/**102**) WildFilch | 55166 | 
+Siliconheart Piece | Least Symbols - N Reactors | (1660/**1**/**25**) gggol | 74611 | 
+Raygun Mechanism | Least Symbols - N Reactors | (2632/**3**/**75**) snuffy | 60501 | 
+Sulfuric Acid | Least Symbols - N Reactors | (4678/**1**/**39**) RYANSUPERGENIUS1123 | 82098 | 
+Fuming Nitric Acid | Least Symbols - N Reactors | (6091/**2**/**86**) Criado | 22461 | 
+Rocket Fuel | Least Symbols - Linux - N Reactors | (37676/**1**/**113**) WildFilch | 39050 | 
+Hydroxides | Least Symbols - Linux - N Reactors | (1659/**2**/**51**) xyuzhg | 60782 | 
+Nobility | Least Symbols - Linux - N Reactors | (62002/**2**/**122**) WildFilch | 39268 | 
+Radiation Treatment | Least Symbols - N Reactors | (1425/**1**/**40**) cake-pie | 25130 | 
+Boron Compounds | Least Symbols - N Reactors | (4793/**5**/**126**) WildFilch | 39048 | 
+Photovoltaic Cells | Least Symbols - N Reactors | (24368/**3**/**192**) WildFilch | 39053 | 
+Elementary | Least Symbols - N Reactors | (1222/**2**/**29**) davenger | 22817 | 
+Mixed Acids | Least Symbols - Linux - N Reactors | (12409/**2**/**63**) WildFilch | 41413 | 
+Misproportioned | Least Symbols - Linux - N Reactors | (7325/**1**/**14**) WildFilch | 41521 | 
+Narkotikum | Least Symbols - Linux - N Reactors | (9749/**1**/**88**) WildFilch | 39054 | 
+Vereinheitlichung | Least Symbols - Linux - N Reactors | (20331/**2**/**76**) WildFilch | 39055 | 
+Haber-Bosch | Least Symbols - Linux - N Reactors | (7128/**2**/**98**) WildFilch | 55169 | 
+Sharing is Caring | Least Symbols - Linux - N Reactors | (5833/**2**/**108**) WildFilch | 41523 | 
+Reassembly | Least Symbols - N Reactors | (2151/**2**/**61**) davenger | 23595 | 
+Ethandiamin | Least Symbols - N Reactors | (3986/**1**/**62**) xyuzhg | 60788 | 
+Radikal | Least Symbols - Linux - N Reactors | (5437/**1**/**51**) xyuzhg | 61995 | 
+Kreisalkanol | Least Symbols - N Reactors | (4994/**1**/**24**) davenger | 23597 | 
+Inorganic Pigments | Least Symbols - Linux - N Reactors | (178726/**2**/**228**) WildFilch | 39270 | 
+Miller-Urey | Least Symbols - Linux - N Reactors | (106274/**2**/**185**) WildFilch | 55170 | 
+Novichok | Least Symbols - N Reactors | (2737/**1**/**62**) myon | 40619 | 
+Knockout Drops | Least Symbols - N Reactors | (4055/**2**/**56**) davenger | 26203 | 
+Strong Acids | Least Symbols - N Reactors | (2638/**1**/**56**) gggol | 76692 | 
+Vitamin B3 | Least Symbols - N Reactors | (17502/**2**/**169**) WildFilch | 41416 | 
+Yellowcake | Least Symbols - Linux - N Reactors | (3549/**2**/**51**) Leylite | 70598 | Basic two-reactor solution. Takes a long time to process the uranium + hydrogen queue.
+Thiourea | Least Symbols - N Reactors | (1664/**1**/**16**) Zemyla | 80757 | 
+Condensation | Least Symbols - N Reactors | (2107/**2**/**96**) rowenlemming | 31601 | 
+Nuclear Medicine | Least Symbols - N Reactors | (2462/**1**/**55**) AgainstTedium | 45685 | 

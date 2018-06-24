@@ -1,0 +1,59 @@
+Nothing Works | Least Symbols - N Reactors | (814/**3**/**28**) ants280 | 79919 | 
+A Most Unfortunate Malfunction | Least Symbols - N Reactors | (2465/**2**/**22**) Spiff | 47941 | *** 1st / 1st (2R) / Ugly solution with LOTS of manual toggling / required outputs by cycle: 0-70 R1t; 70-270 R2t; 270-1030 R2b; 1030-1710 R1t; after 1710 waldo cycles once in R1; then 1x R1b; then 1x R1t
+Challenge: In-Place Swap | Least Symbols - N Reactors | (2045/**1**/**26**) Cereal314 | 79255 | 
+No Ordinary Headache | Least Symbols - Unknown OS - N Reactors | (4638/**1**/**21**) AlexLilic | 27571 | 
+No Thanks Necessary | Least Symbols - Unknown OS - N Reactors | [(19407/**2**/**63**) AlexLilic](http://youtu.be/xl_QvF3pCFg) | 27572 | I hope there is a prize for least effective solution (meaning lotsa cycles burnt) :-)
+No Need for Introductions | Least Symbols - Unknown OS - N Reactors | (3750/**2**/**26**) Bilateralrope | 29523 | 
+Challenge: Going Green | Least Symbols - Unknown OS - N Reactors | (2416/**2**/**36**) Zetsaika | 42729 | 
+Falling | Least Symbols - N Reactors | [(1420/**2**/**39**) Sahishar](http://www.youtube.com/watch?v=mGjidk1RE1g) | 22749 | thx!
+Exploding Head Syndrome | Least Symbols - N Reactors | (4197/**2**/**21**) Sahishar | 21477 | 
+Challenge: Applied Fusion | Least Symbols - N Reactors | (5457/**1**/**31**) mrcable | 51610 | 
+Molecular Foundry | Least Symbols - Unknown OS - N Reactors | (6472/**2**/**59**) Alasher | 84745 | 
+Gas Works Park | Least Symbols - Unknown OS - N Reactors | (5175/**1**/**78**) Null | 80972 | Stole from guavamoment
+More than Machine | Least Symbols - Unknown OS - N Reactors | (3463/**3**/**85**) Niobium | 14358 | 
+Challenge: KOHCTPYKTOP | Least Symbols - N Reactors | (3351/**3**/**105**) Andy | 30500 | 
+Don't Fear the Reaper | Least Symbols - N Reactors | (7446/**2**/**31**) mbishop94479 | 83078 | Shamelessly ripped off the top solution, but have fewer cycles for some reason...
+Freedom of Choice | Least Symbols - N Reactors | (4344/**3**/**57**) Phoil | 24038 | 
+End of the Line | Least Symbols - N Reactors | (2152/**3**/**145**) cake-pie | 41828 | 
+Teleporters | Least Symbols - N Reactors | [(3859/**2**/**27**) Sahishar](http://www.youtube.com/watch?v=pDsmPbx9jB4) | 36354 | 
+Precursor Compounds | Least Symbols - Unknown OS - N Reactors | (17790/**3**/**112**) Sebejias | 15628 | 
+Collapsar | Least Symbols - N Reactors | (3297/**2**/**74**) ToughThought | 74707 | 
+Thinner Line | Least Symbols - N Reactors | (4816/**1**/**25**) mrcable | 52633 | 
+Decomposition of Ethanolamine | Least Symbols - Unknown OS - N Reactors | (1587/**3**/**72**) M64 | 63348 | 
+Anesthetics | Least Symbols - Unknown OS - N Reactors | (21214/**4**/**203**) Criado | 20073 | 
+Fertigprodukt | Least Symbols - Unknown OS - N Reactors | (10770/**4**/**137**) M64 | 63349 | 
+Novel Semiconductor | Least Symbols - Unknown OS - N Reactors | (2976/**4**/**103**) M64 | 63350 | 
+Combustion Engine | Least Symbols - Unknown OS - N Reactors | (2588/**3**/**101**) Criado | 20478 | 
+Smelting Iron | Least Symbols - Unknown OS - N Reactors | (2182/**4**/**114**) Criado | 20526 | 
+Fuel Production | Least Symbols - Unknown OS - N Reactors | (13040/**3**/**60**) Criado | 22783 | 
+Siliconheart Piece | Least Symbols - N Reactors | (1660/**1**/**25**) gggol | 74611 | 
+Raygun Mechanism | Least Symbols - N Reactors | (2632/**3**/**75**) snuffy | 60501 | 
+Sulfuric Acid | Least Symbols - N Reactors | (4678/**1**/**39**) RYANSUPERGENIUS1123 | 82098 | 
+Fuming Nitric Acid | Least Symbols - N Reactors | (6091/**2**/**86**) Criado | 22461 | 
+Rocket Fuel | Least Symbols - Unknown OS - N Reactors | (3918/**3**/**85**) AntCJ | 63881 | 
+Hydroxides | Least Symbols - Unknown OS - N Reactors | (2158/**2**/**60**) Criado | 22458 | 
+Nobility | Least Symbols - Unknown OS - N Reactors | (9648/**3**/**97**) Criado | 23572 | 
+Radiation Treatment | Least Symbols - N Reactors | (1425/**1**/**40**) cake-pie | 25130 | 
+Boron Compounds | Least Symbols - N Reactors | (4793/**5**/**126**) WildFilch | 39048 | 
+Photovoltaic Cells | Least Symbols - N Reactors | (24368/**3**/**192**) WildFilch | 39053 | 
+Elementary | Least Symbols - N Reactors | (1222/**2**/**29**) davenger | 22817 | 
+Mixed Acids | Least Symbols - Unknown OS - N Reactors | (21369/**2**/**83**) Criado | 23574 | 
+Misproportioned | Least Symbols - Unknown OS - N Reactors | (10315/**2**/**34**) Ricket | 23218 | 
+Narkotikum | Least Symbols - Unknown OS - N Reactors | (6085/**2**/**106**) AntCJ | 63882 | 
+Vereinheitlichung | Least Symbols - Unknown OS - N Reactors | (10766/**2**/**77**) ottoeduard | 63605 | 3-11-3 - Vereinheitlichung
+Haber-Bosch | Least Symbols - Unknown OS - N Reactors | (3729/**3**/**117**) AntCJ | 63885 | 
+Sharing is Caring | Least Symbols - Unknown OS - N Reactors | (4134/**4**/**95**) Criado | 23578 | 
+Reassembly | Least Symbols - N Reactors | (2151/**2**/**61**) davenger | 23595 | 
+Ethandiamin | Least Symbols - N Reactors | (3986/**1**/**62**) xyuzhg | 60788 | 
+Radikal | Least Symbols - Unknown OS - N Reactors | (2074/**4**/**60**) rowenwand | 25785 | 
+Kreisalkanol | Least Symbols - N Reactors | (4994/**1**/**24**) davenger | 23597 | 
+Inorganic Pigments | Least Symbols - Unknown OS - N Reactors | (8381/**4**/**202**) Criado | 68457 | 
+Miller-Urey | Least Symbols - Unknown OS - N Reactors | (1283/**5**/**195**) Vordeka | 75025 | 
+Novichok | Least Symbols - N Reactors | (2737/**1**/**62**) myon | 40619 | 
+Knockout Drops | Least Symbols - N Reactors | (4055/**2**/**56**) davenger | 26203 | 
+Strong Acids | Least Symbols - N Reactors | (2638/**1**/**56**) gggol | 76692 | 
+Vitamin B3 | Least Symbols - N Reactors | (17502/**2**/**169**) WildFilch | 41416 | 
+Yellowcake | Least Symbols - Unknown OS - N Reactors | (3025/**3**/**39**) ecnerwal | 82806 | 
+Thiourea | Least Symbols - N Reactors | (1664/**1**/**16**) Zemyla | 80757 | 
+Condensation | Least Symbols - N Reactors | (2107/**2**/**96**) rowenlemming | 31601 | 
+Nuclear Medicine | Least Symbols - N Reactors | (2462/**1**/**55**) AgainstTedium | 45685 | 

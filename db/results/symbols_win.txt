@@ -1,0 +1,207 @@
+Of Pancakes and Spaceships | Least Symbols | (115/1/**6**) Andy | 942 | 
+Slightly Different | Least Symbols | (115/1/**6**) Andy | 933 | 
+Crossover | Least Symbols | (155/1/**16**) Ebola0001 | 746 | 
+An Introduction to Bonding | Least Symbols | (154/1/**10**) Andy | 941 | 
+A Brief History of SpaceChem | Least Symbols | (154/1/**10**) Andy | 931 | 
+Removing Bonds | Least Symbols | (55/1/**7**) Andy | 932 | 
+Double Bonds | Least Symbols | (117/1/**7**) Woode | 460 | 
+Best Left Unanswered | Least Symbols | (117/1/**7**) Woode | 527 | 
+Multiple Outputs | Least Symbols | (155/1/**10**) Andy | 917 | 
+An Introduction to Pipelines | Least Symbols | (407/0/**0**) Andy | 93 | 
+There's Something in the Fishcake | Least Symbols | (647/1/**10**) Regory | 1029 | 
+Sleepless on Sernimir IV | Least Symbols | (810/2/**21**) toi333 | 1080 | 
+Every Day is the First Day | Least Symbols | (354/1/**12**) Sahishar | 2470 | 
+It Takes Three | Least Symbols | (142/1/**14**) Sahishar | 2469 | 
+Split Before Bonding | Least Symbols | (155/1/**11**) Andy | 926 | 
+Settling into the Routine | Least Symbols | [(1777/3/**25**) Sahishar](http://www.youtube.com/watch?v=Z3_VgcEDK-E) | 4143 | 
+Nothing Works | Least Symbols | (814/3/**28**) ants280 | 79919 | 
+A Most Unfortunate Malfunction | Least Symbols | (2465/2/**22**) Spiff | 47941 | *** 1st / 1st (2R) / Ugly solution with LOTS of manual toggling / required outputs by cycle: 0-70 R1t; 70-270 R2t; 270-1030 R2b; 1030-1710 R1t; after 1710 waldo cycles once in R1; then 1x R1b; then 1x R1t
+Challenge: In-Place Swap | Least Symbols | (2045/1/**26**) Cereal314 | 79255 | 
+An Introduction to Sensing | Least Symbols - Windows | [(236/1/**11**) pieceofmind](http://www.youtube.com/watch?hd=1&v=8w0gL2IjQcE) | 26891 | 
+Prelude to a Migraine | Least Symbols - Windows | (152/1/**7**) Andy | 940 | 
+Random Oxides | Least Symbols - Windows | [(422/1/**15**) Sahishar](http://www.youtube.com/watch?v=1uw0l-S08J4) | 6161 | 
+No Ordinary Headache | Least Symbols - Windows | [(3725/1/**17**) Sahishar](http://www.youtube.com/watch?v=AJUkeRZ0E2w) | 30240 | 
+No Thanks Necessary | Least Symbols - Windows | [(6600/3/**44**) Sahishar](http://www.youtube.com/watch?v=ImAXDlTBOj4) | 22403 | 
+No Need for Introductions | Least Symbols - Windows | (3484/2/**26**) Sahishar | 22004 | 
+Challenge: Going Green | Least Symbols - Windows | (2384/2/**36**) mrcable | 52466 | 
+Ice to Meet You | Least Symbols | [(176/1/**10**) Sahishar](http://www.youtube.com/watch?v=rVgZ2hUyKks) | 2473 | 
+Under the Ice | Least Symbols | (178/1/**14**) toi333 | 3692 | 
+Unknown Sender | Least Symbols | (1400/1/**11**) toi333 | 1063 | 
+Falling | Least Symbols | [(1420/2/**39**) Sahishar](http://www.youtube.com/watch?v=mGjidk1RE1g) | 22749 | thx!
+Exploding Head Syndrome | Least Symbols | (4197/2/**21**) Sahishar | 21477 | 
+Challenge: Applied Fusion | Least Symbols | (5457/1/**31**) mrcable | 51610 | 
+Like a Boss | Least Symbols | [(450/1/**18**) Sahishar](http://www.youtube.com/watch?v=oRQ9r0XXRA0) | 2481 | 
+Sacré Bleu! | Least Symbols | (176/1/**18**) toi333 | 1064 | 
+The Plot Thickens | Least Symbols | (1327/1/**14**) Andy | 2118 | 
+Danger Zone | Least Symbols - Windows | [(319/1/**10**) Sahishar](http://www.youtube.com/watch?v=kDlpbr4kxIw) | 56032 | 
+Molecular Foundry | Least Symbols - Windows | [(9540/2/**32**) Sahishar](http://www.youtube.com/watch?v=B320n90E7eM) | 22404 | credit to davenger for saving 2 more symbols from the 34-symbols solution :p
+Gas Works Park | Least Symbols - Windows | [(1954/2/**43**) Sahishar](http://www.youtube.com/watch?v=IWCKKcnnZ4Q) | 22129 | 
+More than Machine | Least Symbols - Windows | (3397/3/**42**) Sahishar | 22526 | 
+Challenge: KOHCTPYKTOP | Least Symbols | (21633/4/**55**) Ir_Sigma | 10309 | 
+The Blue Danube | Least Symbols - Windows | [(319/1/**10**) Sahishar](http://www.youtube.com/watch?v=HVxWRbfehLA) | 56034 | 
+No Stomach for Lunch | Least Symbols | [(237/1/**17**) Sahishar](http://www.youtube.com/watch?v=pbhslbAnJms) | 23735 | 
+No Employment Record Found | Least Symbols - Windows | [(5762/1/**12**) Sahishar](http://www.youtube.com/watch?v=xWURijz_NEI) | 51465 | 
+Right All Along | Least Symbols | [(2705/1/**15**) Sahishar](http://www.youtube.com/watch?v=QYEL_Y2l4f0) | 23922 | 
+Accidents Happen | Least Symbols - Windows | (1044/1/**24**) CaitSith2 | 26146 | Optimization of phoil's solution.
+Don't Fear the Reaper | Least Symbols | (7446/2/**31**) mbishop94479 | 83078 | Shamelessly ripped off the top solution, but have fewer cycles for some reason...
+Special Assignment | Least Symbols | [(657/1/**20**) Sahishar](http://www.youtube.com/watch?v=L0839Zl2_gY) | 35714 | 
+Suspicious Behavior | Least Symbols | [(3318/1/**28**) ShadowTheAge](http://www.youtube.com/watch?v=9flqat-NX98) | 76971 | [v4] Very tricky timing, red waldo does some magic. But OMG I beat Sahishar and Ponchik and improved previous record by over 10%! (Youtube video slightly outdated)
+I Told You So | Least Symbols | (1216/1/**17**) Ir_Sigma | 7154 | 
+Ω-Pseudoethyne | Least Symbols - Windows | [(2109/2/**51**) ShadowTheAge](http://www.youtube.com/watch?v=1uCyWOhnbI8) | 76964 | Aimed for sub-50 but only got 51
+Σ-Ethylene | Least Symbols | (4327/2/**54**) Ir_Sigma | 8883 | 
+Freedom of Choice | Least Symbols | (4344/3/**57**) Phoil | 24038 | 
+End of the Line | Least Symbols | (4174/4/**85**) Sahishar | 41440 | 
+Moustachium 602 | Least Symbols | (117/1/**7**) Andy | 10244 | 
+Moustachium 604 | Least Symbols | (713/1/**9**) toi333 | 1048 | 
+Moustachium 608 | Least Symbols | (473/1/**18**) Phoil | 21394 | 
+QT-1 | Least Symbols | (20/1/**5**) brainz | 12545 | 
+QT-2 | Least Symbols | (83/1/**11**) Spiff | 73312 | *** 1st
+Teleporters | Least Symbols | [(3859/2/**27**) Sahishar](http://www.youtube.com/watch?v=pDsmPbx9jB4) | 36354 | 
+QT-3 | Least Symbols | (400/1/**13**) mrcable | 70682 | 
+QT-4 | Least Symbols | [(1057/1/**18**) Sahishar](http://www.youtube.com/watch?v=DePKulwedGA) | 54021 | 
+Precursor Compounds | Least Symbols - Windows | [(14618/3/**59**) Sahishar](http://www.youtube.com/watch?v=mG0D5xYgx0Q) | 44710 | 
+Collapsar | Least Symbols | (5883/3/**49**) Sahishar | 54015 | 
+Tunnels I | Least Symbols | (20/1/**6**) toi333 | 1038 | 
+Tunnels II | Least Symbols | (193/1/**9**) toi333 | 1037 | 
+Tunnels III | Least Symbols | (244/1/**14**) SolracCV | 65139 | 
+Fission I | Least Symbols | (55/1/**7**) toi333 | 2909 | 
+Fission II | Least Symbols | (154/1/**10**) toi333 | 1036 | 
+Fission III | Least Symbols | (66/1/**18**) Sahishar | 41948 | 
+Chloroform | Least Symbols | (2599/1/**23**) Andy | 8042 | 
+Cycloaddition | Least Symbols | (505/1/**30**) mrcable | 49225 | 
+KOHCTPYKTOP++ | Least Symbols - Windows | (1543/1/**18**) Ir_Sigma | 10534 | 
+Quantum Decomposition | Least Symbols | (294/1/**15**) Sahishar | 57867 | 
+Propane Accessories | Least Symbols | (1474/1/**18**) Sahishar | 57850 | 
+Benzoic Acid | Least Symbols | (322/1/**31**) mrcable | 48830 | 
+Electrophilic Addition | Least Symbols | (253/1/**13**) toi333 | 1041 | 
+Diethyl Ether | Least Symbols | (177/1/**21**) mrcable | 48751 | 
+2-Hexene | Least Symbols | (946/1/**27**) mrcable | 50530 | 
+Mazeite' | Least Symbols | (234/1/**13**) Ir_Sigma | 10926 | 
+Silica | Least Symbols | (598/1/**19**) Ir_Sigma | 10954 | 
+Galvanization | Least Symbols | (1751/1/**24**) mrcable | 48447 | 
+Industrial Methanol | Least Symbols | (346/1/**14**) Sahishar | 57864 | 
+Glyoxylic Acid | Least Symbols | (436/1/**13**) Ir_Sigma | 11129 | 
+Bioplastic | Least Symbols | (805/1/**29**) mrcable | 50450 | minor improvement of davenger-1483, Ir_Sigma-11172
+Chlorination | Least Symbols | (610/1/**54**) Andy | 6940 | 
+Sulfuric Acid | Least Symbols | (489/1/**31**) mrcable | 52106 | 
+Bad Times | Least Symbols | (1719/1/**51**) mrcable | 49767 | 
+Friedel-Crafts | Least Symbols | (147/1/**17**) Sahishar | 57866 | 
+Wöhler Synthesis | Least Symbols | (253/1/**16**) davenger | 1513 | 
+Diels-Alder | Least Symbols | (265/1/**26**) mrcable | 52220 | 
+Bad Times, Part II | Least Symbols | (506/1/**24**) mrcable | 49681 | 
+Freon | Least Symbols - Windows | (230/1/**27**) mrcable | 49397 | 
+Benzene Derivatives | Least Symbols - Windows | (423/1/**31**) mrcable | 52313 | 
+Portland Cement | Least Symbols | (757/1/**28**) mrcable | 50847 | 
+Solder Coarsening | Least Symbols | (1953/1/**32**) mrcable | 50683 | 
+Graphene | Least Symbols | (1685/1/**25**) mrcable | 71679 | 
+The Big Cleanup | Least Symbols - Windows | (324/1/**19**) Sahishar | 57849 | 
+Going Green Part II | Least Symbols | (598/1/**29**) mrcable | 50390 | 
+Waste Treatment | Least Symbols - Windows | (900/1/**27**) mrcable | 49856 | 
+Pyridine | Least Symbols | (195/1/**22**) toi333 | 2803 | 
+Breakdown | Least Symbols | (162/1/**17**) mrcable | 48154 | 
+Vitamin B3 | Least Symbols | (343/1/**33**) davenger | 4229 | 
+PVC | Least Symbols | (2116/1/**25**) mrcable | 50972 | 
+PVA | Least Symbols | (1689/1/**26**) mrcable | 51069 | 
+Naphthalene | Least Symbols | (878/1/**38**) nephyl | 42128 | 
+Anthraquinone | Least Symbols | (999/1/**35**) mrcable | 71255 | 
+Soap | Least Symbols | (424/1/**18**) mrcable | 49601 | 
+Glucose | Least Symbols | (705/1/**25**) davenger | 17156 | 
+PZA | Least Symbols | (465/1/**37**) mrcable | 51544 | 
+INH | Least Symbols | (305/1/**38**) Andy | 11032 | 
+PAS | Least Symbols | (289/1/**38**) davenger | 8397 | 
+Fusion - Germane | Least Symbols | (480/1/**19**) mrcable | 51367 | minor improvement of davenger-7238, Andy-7273
+Fusion - Silane | Least Symbols | (3006/1/**18**) mrcable | 51284 | 
+Fermentation | Least Symbols | (358/1/**21**) mrcable | 51450 | 
+Hydrazine | Least Symbols | (756/1/**16**) davenger | 10692 | 
+Organometallics | Least Symbols | (433/1/**17**) Andy | 10243 | 
+Nonsense! | Least Symbols - Windows | (590/1/**17**) mrcable | 49951 | 
+Iron and Ozone | Least Symbols | (414/1/**11**) Andy | 9794 | 
+Normalization | Least Symbols - Windows | (385/1/**16**) Sahishar | 57603 | 
+Decomposition | Least Symbols | (212/1/**12**) mrcable | 48090 | 
+Phenol | Least Symbols | (181/1/**22**) davenger | 16223 | 
+Uracil | Least Symbols | (243/1/**43**) Oldman | 53503 | 
+Pyridine | Least Symbols - Windows | (726/1/**39**) davenger | 16227 | 
+Phosgene | Least Symbols | (1003/1/**32**) davenger | 16224 | 
+Ignoble | Least Symbols | (1115/1/**36**) Andy | 33134 | 
+Alchemy | Least Symbols | (680/1/**18**) davenger | 16225 | 
+Bosch-Meiser | Least Symbols | (612/1/**26**) davenger | 16222 | 
+Beckmann Rearrangement | Least Symbols | (234/1/**16**) Andy | 17023 | 
+Stock-Pohland | Least Symbols | (1398/1/**29**) davenger | 16221 | 
+Swapite | Least Symbols | (134/1/**6**) Andy | 17229 | 
+Hardening | Least Symbols | (325/1/**24**) Andy | 16888 | 
+Keying In | Least Symbols - Windows | (1047/1/**36**) davenger | 18299 | 
+Ethane | Least Symbols | (657/1/**17**) mrcable | 49327 | 
+Cyclobutane | Least Symbols | [(735/1/**17**) WolfWings](http://youtu.be/0oCZblq3YqU) | 16572 | 
+Styrene | Least Symbols | (943/1/**30**) davenger | 16862 | 
+Thinner Line | Least Symbols | (4816/1/**25**) mrcable | 52633 | 
+Decomposition of Ethanolamine | Least Symbols - Windows | (2638/3/**42**) davenger | 20338 | 
+Anesthetics | Least Symbols - Windows | (7996/5/**102**) davenger | 20339 | 
+Fertigprodukt | Least Symbols - Windows | (14652/4/**63**) davenger | 20346 | 
+Novel Semiconductor | Least Symbols - Windows | (8028/3/**44**) davenger | 20341 | 
+Passivation | Least Symbols - Windows | (570/1/**36**) mrcable | 52031 | 
+Life: Prep Work | Least Symbols | (845/1/**25**) mrcable | 51749 | 
+Life: Cytosine | Least Symbols | (765/1/**74**) mrcable | 71705 | minor improvement of 23571
+Life: Thymine | Least Symbols | (186/1/**40**) gggol | 69057 | 
+Cyanamide | Least Symbols | (990/3/**29**) Sahishar | 57605 | 
+Acetic Acid | Least Symbols | (1614/2/**31**) gggol | 74619 | 
+Combustion Engine | Least Symbols - Windows | (1305/3/**39**) davenger | 21095 | 
+Smelting Iron | Least Symbols - Windows | (2980/3/**55**) davenger | 21099 | 
+Neodymium Magnet | Least Symbols | (2444/1/**37**) davenger | 21101 | 
+Carbide Swap | Least Symbols | (795/1/**39**) davenger | 21408 | 
+Fuel Production | Least Symbols - Windows | (8752/4/**57**) davenger | 21098 | Reactor #2 uses this glitch:
+Siliconheart Piece | Least Symbols | (1660/1/**25**) gggol | 74611 | 
+Raygun Mechanism | Least Symbols | (1838/4/**63**) davenger | 21096 | 
+Sulfuric Acid | Least Symbols | (4678/1/**39**) RYANSUPERGENIUS1123 | 82098 | 
+Fuming Nitric Acid | Least Symbols | (1955/3/**50**) davenger | 22754 | 
+Rocket Fuel | Least Symbols - Windows | (3062/3/**55**) davenger | 22755 | 
+Hydroxides | Least Symbols - Windows | (2815/3/**38**) davenger | 22751 | 
+Nobility | Least Symbols - Windows | (7232/3/**45**) GuavaMoment | 59884 | 
+Sortite | Least Symbols - Windows | (963/1/**41**) RYANSUPERGENIUS1123 | 82099 | 
+Radiation Treatment | Least Symbols | (1143/2/**32**) mrcable | 71774 | 3-9-1 Radiation Treatment
+Boron Compounds | Least Symbols | (1226/6/**78**) JYPark1101 | 47312 | 
+Photovoltaic Cells | Least Symbols | (8188/4/**84**) AgainstTedium | 68549 | 
+Elementary | Least Symbols | (1222/2/**29**) davenger | 22817 | 
+Mixed Acids | Least Symbols - Windows | (7461/3/**46**) Bashy_McFetus | 23010 | 
+Squaric Acid | Least Symbols | (593/1/**61**) davenger | 23043 | 
+Misproportioned | Least Symbols - Windows | (8380/1/**14**) hobsen | 61334 | 
+Narkotikum | Least Symbols - Windows | (2474/3/**40**) davenger | 22810 | 
+Vereinheitlichung | Least Symbols - Windows | (8397/3/**34**) snuffy | 60527 | Reactor #2 attempts to deliver roughly 2/3 to reactor #3... its highly sensitive to timing of the "random" sequence... reactor #3 from GuavaMoment
+Haber-Bosch | Least Symbols - Windows | (4296/3/**44**) davenger | 22813 | 
+Mustard Oil | Least Symbols | (1067/4/**42**) WildFilch | 41943 | 
+Nano Electric Motor | Least Symbols | (266/1/**38**) gggol | 76689 | 
+Count | Least Symbols | (1544/1/**30**) ottoeduard | 64248 | 4-1-1 - Count
+Sharing is Caring | Least Symbols - Windows | (2947/4/**57**) davenger | 23594 | 
+Reassembly | Least Symbols | (2151/2/**61**) davenger | 23595 | 
+Cyanogen | Least Symbols | (518/1/**29**) davenger | 23599 | 
+Chloromethylsilane | Least Symbols | (177/1/**20**) Zemyla | 81302 | 
+Glyceraldehyde | Least Symbols | (685/1/**28**) davenger | 23602 | 
+Ethandiamin | Least Symbols | (2670/3/**36**) davenger | 23598 | 
+Radikal | Least Symbols - Windows | (2181/4/**51**) davenger | 23596 | 
+Kreisalkanol | Least Symbols | (4994/1/**24**) davenger | 23597 | 
+Inorganic Pigments | Least Symbols - Windows | (7144/4/**64**) davenger | 26208 | 
+Miller-Urey | Least Symbols - Windows | (2375/5/**82**) davenger | 26207 | 
+Getting Pumped | Least Symbols | (818/1/**98**) gggol | 76578 | 
+Lewisite | Least Symbols | (332/1/**24**) Andy | 27539 | 
+Novichok | Least Symbols | (1355/2/**38**) davenger | 26205 | 
+Ribulose | Least Symbols | (1258/1/**46**) mrcable | 71699 | 4-5-3 Ribulose
+Knockout Drops | Least Symbols | (4055/2/**56**) davenger | 26203 | 
+Strong Acids | Least Symbols | (2638/1/**56**) gggol | 76692 | 
+Vitamin B3 | Least Symbols | (5974/5/**108**) davenger | 26218 | 
+1,2,3-Triphenol | Least Symbols | (529/1/**39**) Andy | 27516 | 
+1,3-Dimetoxibencene | Least Symbols | (657/1/**35**) davenger | 27545 | 
+Think in Spirals | Least Symbols | (4154/1/**25**) Criado | 68466 | Simple solution.
+Yellowcake | Least Symbols - Windows | (3025/3/**34**) Andy | 29820 | 
+Thiourea | Least Symbols | (1664/1/**16**) Zemyla | 80757 | 
+Downgrade | Least Symbols | (80/1/**19**) davenger | 26213 | 
+Wood Alcohol | Least Symbols | (831/1/**25**) davenger | 27544 | 
+Allyl Alcohol | Least Symbols | (223/1/**15**) Andy | 26403 | 
+Propargyl Alcohol | Least Symbols | (930/1/**26**) davenger | 27543 | 
+Condensation | Least Symbols | (1077/3/**51**) Andy | 30238 | 
+Silane | Least Symbols | (607/1/**25**) mrcable | 71693 | 4-10-2 Silane
+Phosphine | Least Symbols | (368/1/**32**) Andy | 32602 | 
+Nuclear Medicine | Least Symbols | (1607/4/**48**) Andy | 29981 | 
+Oxygen Supply | Least Symbols | (475/1/**33**) mrcable | 71688 | 4-11-2 Oxygen Supply: minor improvement of 30219
+Red Cross | Least Symbols | (598/1/**26**) Andy | 29988 | 
+Fluoromethanes | Least Symbols - Windows | (783/1/**18**) Sahishar | 56156 | 
+Exercise | Least Symbols | (486/1/**33**) Andy | 34393 | 
+Nanoboxes | Least Symbols | (462/1/**43**) Mehr | 47701 | 

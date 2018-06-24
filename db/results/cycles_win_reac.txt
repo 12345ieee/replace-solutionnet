@@ -1,0 +1,59 @@
+Nothing Works | Least Cycles - N Reactors | (**674**/**3**/45) gregorytj | 79748 | Three reactors, low symbol, low cycle.
+A Most Unfortunate Malfunction | Least Cycles - N Reactors | (**2465**/**2**/22) Spiff | 47941 | *** 1st / 1st (2R) / Ugly solution with LOTS of manual toggling / required outputs by cycle: 0-70 R1t; 70-270 R2t; 270-1030 R2b; 1030-1710 R1t; after 1710 waldo cycles once in R1; then 1x R1b; then 1x R1t
+Challenge: In-Place Swap | Least Cycles - N Reactors | (**903**/**1**/31) Spiff | 47424 | *** 1st (1R)
+No Ordinary Headache | Least Cycles - Windows - N Reactors | (**828**/**1**/69) Billy | 28539 | This is a faster and more compact version of my original solution (#26670). Requires at least N/2 of the first N molecules to be oxygen.
+No Thanks Necessary | Least Cycles - Windows - N Reactors | (**3262**/**2**/143) Stephan | 77909 | 1st 2 Reactor solution. Worked pretty hard for approx 3 weeks on it :-D
+No Need for Introductions | Least Cycles - Windows - N Reactors | [(**3485**/**1**/48) cearn](http://www.youtube.com/watch?v=sv2a38EvSYM&hd=1) | 41133 | C: I am grinning from ear to ear right now :D Detailed explanation on youtube.
+Challenge: Going Green | Least Cycles - Windows - N Reactors | [(**1229**/**2**/75) cearn](http://www.youtube.com/watch?hd=1&v=xgd1NFNzfVU) | 47942 | (ref: 24058) I can't believe I didn't shorten that #2 blue path before. Saves 14 cycles. Also replaced double-rotates with something very tricksy :) 
+Falling | Least Cycles - N Reactors | (**1017**/**2**/68) kuroi_neko | 46265 | All credit goes to jjs132 for reactor #1 : I just squeezed one symbol out, but basically it's his design. Reactor #2, however, is mine. Slower but with 4 symbols less.
+Exploding Head Syndrome | Least Cycles - N Reactors | (**2107**/**2**/62) cearn | 37553 | (ref: cearn,26645; Caitsith2,26799). Cleaned up my old solution and incorporated Caitsith2's 6/34+8/14 timings (but again, don't just copy; please link to the original). Switches: 61:A, 401:~AB, 411:~B, 481:A, 621:B, 631:~B, 641:~A
+Challenge: Applied Fusion | Least Cycles - N Reactors | (**2022**/**1**/60) kuroi_neko | 46469 | 2000 cycles for H20 output plus at least 20 cycles spent in the pipe.
+Molecular Foundry | Least Cycles - Windows - N Reactors | (**7088**/**1**/92) goshisanniichi | 75190 | 
+Gas Works Park | Least Cycles - Windows - N Reactors | [(**5173**/**1**/78) ShadowTheAge](http://youtube.com/watch?v=YQjXu7uIx0k) | 76699 | My solution of 1R. Similar idea but the whole new realization. Lots of symbols are reusable, very few sync and scan instructions, blue waldo never stop for a sync. It could possible be improved but i've tired of this puzzle :/
+More than Machine | Least Cycles - Windows - N Reactors | (**2797**/**2**/73) ShadowTheAge | 76700 | Lazy blue waldos :D
+Challenge: KOHCTPYKTOP | Least Cycles - N Reactors | (**3351**/**3**/105) Andy | 30500 | 
+Don't Fear the Reaper | Least Cycles - N Reactors | (**7446**/**2**/31) mbishop94479 | 83078 | Shamelessly ripped off the top solution, but have fewer cycles for some reason...
+Freedom of Choice | Least Cycles - N Reactors | (**4260**/**3**/89) GuavaMoment | 30486 | This should be the minimum possible time.
+End of the Line | Least Cycles - N Reactors | (**2152**/**3**/145) cake-pie | 41828 | 
+Teleporters | Least Cycles - N Reactors | (**988**/**2**/43) Spiff | 73609 | *** 1st (2R)
+Precursor Compounds | Least Cycles - Windows - N Reactors | (**38087**/**1**/146) CaitSith2 | 26831 | Managed to remove two symbols and cycles per red input/grab loop, from SnapDragon's reactor.
+Collapsar | Least Cycles - N Reactors | (**3297**/**2**/74) ToughThought | 74707 | 
+Thinner Line | Least Cycles - N Reactors | (**1862**/**1**/51) GuavaMoment | 19189 | 
+Decomposition of Ethanolamine | Least Cycles - Windows - N Reactors | [(**1821**/**3**/50) pieceofmind](http://www.youtube.com/watch?hd=1&v=sWa1x9HmsyE) | 24682 | Waste pipe spiral is cosmetic.
+Anesthetics | Least Cycles - Windows - N Reactors | (**155132**/**3**/275) RYANSUPERGENIUS1123 | 82076 | 
+Fertigprodukt | Least Cycles - Windows - N Reactors | (**9199**/**3**/109) Sniper_John_Uk | 20700 | 
+Novel Semiconductor | Least Cycles - Windows - N Reactors | (**2968**/**3**/100) Steve42 | 24045 | 
+Combustion Engine | Least Cycles - Windows - N Reactors | (**2346**/**2**/55) snuffy | 60500 | 
+Smelting Iron | Least Cycles - Windows - N Reactors | (**1502**/**3**/103) cake-pie | 22003 | 
+Fuel Production | Least Cycles - Windows - N Reactors | (**5300**/**3**/109) Zemyla | 81308 | 
+Siliconheart Piece | Least Cycles - N Reactors | (**1099**/**1**/33) gggol | 74620 | 
+Raygun Mechanism | Least Cycles - N Reactors | (**1061**/**3**/91) ants280 | 76199 | 
+Sulfuric Acid | Least Cycles - N Reactors | (**4678**/**1**/39) RYANSUPERGENIUS1123 | 82098 | 
+Fuming Nitric Acid | Least Cycles - N Reactors | (**2662**/**2**/115) myon | 40600 | 
+Rocket Fuel | Least Cycles - Windows - N Reactors | (**38428**/**1**/113) RYANSUPERGENIUS1123 | 82097 | 
+Hydroxides | Least Cycles - Windows - N Reactors | (**1046**/**2**/67) cake-pie | 22516 | 
+Nobility | Least Cycles - Windows - N Reactors | (**12885**/**2**/107) Zemyla | 80448 | 
+Radiation Treatment | Least Cycles - N Reactors | (**1425**/**1**/40) cake-pie | 25130 | 
+Boron Compounds | Least Cycles - N Reactors | (**3088**/**5**/142) iteration2 | 42403 | 
+Photovoltaic Cells | Least Cycles - N Reactors | (**24368**/**3**/192) WildFilch | 39053 | 
+Elementary | Least Cycles - N Reactors | (**711**/**2**/57) Blueeyedrat | 63089 | 
+Mixed Acids | Least Cycles - Windows - N Reactors | (**12603**/**2**/192) Sniper_John_Uk | 39755 | 
+Misproportioned | Least Cycles - Windows - N Reactors | (**5485**/**1**/20) AgainstTedium | 68552 | 
+Narkotikum | Least Cycles - Windows - N Reactors | (**826**/**2**/46) Andy | 23037 | 
+Vereinheitlichung | Least Cycles - Windows - N Reactors | (**2837**/**2**/80) Elvis | 36419 | 
+Haber-Bosch | Least Cycles - Windows - N Reactors | (**5403**/**2**/91) ants280 | 76206 | 
+Sharing is Caring | Least Cycles - Windows - N Reactors | (**5507**/**2**/94) keyyek | 32774 | 
+Reassembly | Least Cycles - N Reactors | (**1657**/**2**/102) AgainstTedium | 68560 | 
+Ethandiamin | Least Cycles - N Reactors | (**3986**/**1**/62) xyuzhg | 60788 | 
+Radikal | Least Cycles - Windows - N Reactors | (**1998**/**3**/85) Regory | 37114 | 
+Kreisalkanol | Least Cycles - N Reactors | (**2307**/**1**/41) gggol | 35120 | 
+Inorganic Pigments | Least Cycles - Windows - N Reactors | (**6813**/**3**/174) Sniper_John_Uk | 39772 | 
+Miller-Urey | Least Cycles - Windows - N Reactors | (**144752**/**2**/191) Krackor | 74190 | 
+Novichok | Least Cycles - N Reactors | (**2580**/**1**/65) xyuzhg | 61996 | 
+Knockout Drops | Least Cycles - N Reactors | (**4055**/**2**/56) davenger | 26203 | 
+Strong Acids | Least Cycles - N Reactors | (**2638**/**1**/56) gggol | 76692 | 
+Vitamin B3 | Least Cycles - N Reactors | (**17502**/**2**/169) WildFilch | 41416 | 
+Yellowcake | Least Cycles - Windows - N Reactors | (**1754**/**2**/58) cake-pie | 29607 | 
+Thiourea | Least Cycles - N Reactors | (**811**/**1**/20) cearn | 46049 | (4-8-2 Thiouria)
+Condensation | Least Cycles - N Reactors | (**1875**/**2**/105) gggol | 35920 | 
+Nuclear Medicine | Least Cycles - N Reactors | (**2018**/**1**/60) Steve42 | 33985 | 

@@ -1,0 +1,207 @@
+Of Pancakes and Spaceships | Least Cycles | (**45**/1/14) toi333 | 1105 | 
+Slightly Different | Least Cycles | (**45**/1/14) toi333 | 1098 | 
+Crossover | Least Cycles | (**136**/1/36) Alien | 947 | 
+An Introduction to Bonding | Least Cycles | (**75**/1/20) Woode | 348 | 
+A Brief History of SpaceChem | Least Cycles | (**75**/1/20) Woode | 344 | 
+Removing Bonds | Least Cycles | (**27**/1/13) hailstone | 10070 | 
+Double Bonds | Least Cycles | [(**56**/1/18) Sahishar](http://www.youtube.com/watch?v=rrkyR8F4Ohs) | 3072 | 
+Best Left Unanswered | Least Cycles | [(**42**/1/50) Sahishar](http://www.youtube.com/watch?v=bEy7c9I4PMc) | 62010 | 
+Multiple Outputs | Least Cycles | (**50**/1/59) harbinger | 84279 | While trying to optimise the start location on the old solution I copied (thanks for the idea) to reduce symbol count I noticed that blue was lacking work after it dropped the carbon line and perhaps it could do the rotation instead ...
+An Introduction to Pipelines | Least Cycles | (**407**/0/0) Andy | 93 | 
+There's Something in the Fishcake | Least Cycles | (**412**/1/14) hailstone | 10127 | 
+Sleepless on Sernimir IV | Least Cycles | [(**805**/2/48) Sahishar](http://www.youtube.com/watch?v=6ebQ_DWPfk0) | 64424 | This solution uses the hailstone's awesome idea, which we can resume by : "Give anyone a lever long enough and they can change the world."
+Every Day is the First Day | Least Cycles | [(**103**/1/41) Sahishar](http://www.youtube.com/watch?v=W3IgEvqkOkg) | 3067 | 
+It Takes Three | Least Cycles | (**102**/1/34) Andy | 224 | 
+Split Before Bonding | Least Cycles | (**73**/1/24) Andy | 48 | 
+Settling into the Routine | Least Cycles | [(**820**/3/34) Sahishar](http://www.youtube.com/watch?v=oHcDZZ977rQ) | 3089 | 
+Nothing Works | Least Cycles | (**413**/4/60) hailstone | 34239 | 
+A Most Unfortunate Malfunction | Least Cycles | (**2465**/2/22) Spiff | 47941 | *** 1st / 1st (2R) / Ugly solution with LOTS of manual toggling / required outputs by cycle: 0-70 R1t; 70-270 R2t; 270-1030 R2b; 1030-1710 R1t; after 1710 waldo cycles once in R1; then 1x R1b; then 1x R1t
+Challenge: In-Place Swap | Least Cycles | (**423**/3/59) Spiff | 47283 | *** 1st / 1st (3R)
+An Introduction to Sensing | Least Cycles - Windows | (**136**/1/27) toi333 | 1101 | 
+Prelude to a Migraine | Least Cycles - Windows | (**67**/1/14) hailstone | 21212 | 
+Random Oxides | Least Cycles - Windows | [(**176**/1/46) Sahishar](http://www.youtube.com/watch?v=1Ayss3sS4hU) | 47445 | I've just optimized the symbols of Andy's solution (176-1-49).
+No Ordinary Headache | Least Cycles - Windows | (**819**/2/44) Spiff | 51658 | *** 6th / 2nd (2R) / Windows 7 / Uses long pipeline instead of recycler
+No Thanks Necessary | Least Cycles - Windows | (**791**/5/131) Spiff | 53869 | *** 1st / 1st (5R) / Windows 7
+No Need for Introductions | Least Cycles - Windows | (**2435**/3/45) Yiwei | 70223 | 
+Challenge: Going Green | Least Cycles - Windows | (**1219**/3/85) kuroi_neko | 47192 | Once the oxygen flow had been put right thanks to harbinger reactor #2 synchro, I noticed the final H2S04 output could still be slightly improved by using blue waldo as a last minute helper :)
+Ice to Meet You | Least Cycles | [(**44**/1/48) Sahishar](http://www.youtube.com/watch?v=6aHmycCdxwo) | 47596 | 
+Under the Ice | Least Cycles | (**78**/1/39) Andy | 57 | 
+Unknown Sender | Least Cycles | (**124**/1/33) Andy | 62 | 
+Falling | Least Cycles | [(**875**/5/242) whoever314](http://www.youtube.com/watch?hd=1&v=Ln2vHkU9HMI) | 76472 | (ref: Enigma,24848)(ref: Sahishar,44180) Reactor#2 is modified from Enigma's. Reactor#4 is modified from Sahishar's. Reactors 3&5 were reverse-engineered from Sahishar's.
+Exploding Head Syndrome | Least Cycles | (**2107**/2/62) cearn | 37553 | (ref: cearn,26645; Caitsith2,26799). Cleaned up my old solution and incorporated Caitsith2's 6/34+8/14 timings (but again, don't just copy; please link to the original). Switches: 61:A, 401:~AB, 411:~B, 481:A, 621:B, 631:~B, 641:~A
+Challenge: Applied Fusion | Least Cycles | (**2020**/2/72) CaitSith2 | 75584 | Removed the syncs from reactor #2.
+Like a Boss | Least Cycles | [(**152**/1/52) Sahishar](http://www.youtube.com/watch?v=K_MuYPkDlUM) | 3782 | 
+Sacré Bleu! | Least Cycles | [(**138**/1/54) ToughThought](http://youtu.be/7Qrevdzcw_Y) | 69947 | 
+The Plot Thickens | Least Cycles | [(**419**/1/57) danullom](http://www.youtube.com/watch?v=hv-kPzc9pc4&feature=youtu.be) | 83589 | I made this 2011-08-20
+Danger Zone | Least Cycles - Windows | [(**154**/1/24) Sahishar](http://www.youtube.com/watch?v=VJ-VrcQbxpk) | 56043 | 
+Molecular Foundry | Least Cycles - Windows | (**1627**/3/86) kuroi_neko | 47027 | Considering Fe2 path, I can't see a way to go faster than this. May well be doable with less symbols, though.
+Gas Works Park | Least Cycles - Windows | [(**822**/4/60) cearn](http://www.youtube.com/watch?hd=1&v=m5BsSfh28M4) | 70593 | (ref: cearn,22077,70008; pieceofmind,27590, serbaldrig). Credits are getting long on this one :). Linearize all the things!
+More than Machine | Least Cycles - Windows | (**1797**/3/69) cearn | 47582 | (ref: cearn,18689, Matrix21,45569, GuavaMoment,47550) Thanks to Matrix' for his off the beat double-crystal solution, resulting in double damage. And to GuavaMoment for telling the rest of us about it. Laser cooldown is 250c; pipe length is 96.
+Challenge: KOHCTPYKTOP | Least Cycles | (**3351**/3/105) Andy | 30500 | 
+The Blue Danube | Least Cycles - Windows | [(**154**/1/24) Sahishar](http://www.youtube.com/watch?v=o0Y2EE07PwQ) | 56046 | 
+No Stomach for Lunch | Least Cycles | (**143**/1/39) iestyn | 60236 | 
+No Employment Record Found | Least Cycles - Windows | [(**366**/1/66) Sahishar](http://www.youtube.com/watch?v=iSCWO0M0NH8) | 54613 | 
+Right All Along | Least Cycles | (**682**/1/53) Fox | 84251 | 
+Accidents Happen | Least Cycles - Windows | (**306**/1/54) CaitSith2 | 29604 | Figured out how to get rid of one of the syncs.
+Don't Fear the Reaper | Least Cycles | (**7241**/3/57) cearn | 70761 | (ref: cearn,15178). Completely redesigned #1 and #2 for fewer symbols. #2's firing is pretty evil. Use A to control getting a new CH4 and then A/~A to direct it to either psi or omega.
+Special Assignment | Least Cycles | [(**193**/1/39) Sahishar](http://www.youtube.com/watch?v=_fRc74KIm7o) | 56052 | 
+Suspicious Behavior | Least Cycles | (**1101**/1/63) Andy | 63 | 
+I Told You So | Least Cycles | (**193**/1/85) Fox | 84310 | 
+Ω-Pseudoethyne | Least Cycles - Windows | (**829**/2/121) Lemonymous | 84698 | 
+Σ-Ethylene | Least Cycles | [(**2011**/2/91) ToughThought](http://youtu.be/A7N5_tuZLjg) | 69981 | Thanks for the compliment, cearn.
+Freedom of Choice | Least Cycles | (**4260**/3/89) GuavaMoment | 30486 | This should be the minimum possible time.
+End of the Line | Least Cycles | [(**1429**/6/243) kuroi_neko](http://youtu.be/LNkhruFbawU) | 77839 | New hydrogen handling, fully automated and way faster. Same fusion system as before. The laser reactor eats up the annoying omega-pseudoethyne extra carbon while firing :)
+Moustachium 602 | Least Cycles | [(**37**/1/44) Sahishar](http://www.youtube.com/watch?v=0ZFOoNA2bXg) | 40671 | 
+Moustachium 604 | Least Cycles | [(**63**/1/41) ToughThought](http://youtu.be/gtClEF1l-rc) | 74708 | 
+Moustachium 608 | Least Cycles | [(**172**/1/49) ToughThought](http://youtu.be/cEsbx62XcaU) | 74885 | 
+QT-1 | Least Cycles | (**15**/1/14) Andy | 13653 | 
+QT-2 | Least Cycles | [(**80**/1/13) ToughThought](http://youtu.be/nt2EIw27fvM) | 70706 | 
+Teleporters | Least Cycles | (**983**/3/48) GuavaMoment | 30055 | 
+QT-3 | Least Cycles | [(**161**/1/27) Sahishar](http://www.youtube.com/watch?v=eRdHjzJyCT4) | 38762 | 
+QT-4 | Least Cycles | (**246**/1/49) AapOpSokken | 77269 | 
+Precursor Compounds | Least Cycles - Windows | [(**1053**/4/113) Sahishar](http://www.youtube.com/watch?v=q-x-YXkX4Eo) | 65366 | Second reactor from Andy's solution.
+Collapsar | Least Cycles | (**2998**/3/85) Lemonymous | 84533 | 
+Tunnels I | Least Cycles | (**15**/1/20) Andy | 24 | 
+Tunnels II | Least Cycles | (**72**/1/36) Sahishar | 54652 | 
+Tunnels III | Least Cycles | (**103**/1/38) Sahishar | 54664 | 
+Fission I | Least Cycles | (**27**/1/13) hailstone | 1907 | 
+Fission II | Least Cycles | (**75**/1/20) Andy | 21 | 
+Fission III | Least Cycles | [(**28**/1/30) ToughThought](http://youtu.be/uNtNqq5Ez9g) | 74805 | Improvement over my 31-symbol solution (74802) uses idea from Gymble (66928) and JFB1000 (74237).
+Chloroform | Least Cycles | [(**488**/1/88) ToughThought](http://youtu.be/eXTGwp-AY28) | 74889 | 
+Cycloaddition | Least Cycles | [(**192**/1/41) ToughThought](http://youtu.be/EM_EthnUCFs) | 75048 | 
+KOHCTPYKTOP++ | Least Cycles - Windows | (**350**/1/65) Andy | 14527 | 
+Quantum Decomposition | Least Cycles | [(**173**/1/40) ToughThought](http://youtu.be/4LfHJ_sL9Es) | 75205 | 
+Propane Accessories | Least Cycles | (**218**/1/46) Andy | 2829 | 
+Benzoic Acid | Least Cycles | [(**227**/1/49) ToughThought](http://youtu.be/eUg-P13lsCQ) | 75334 | 
+Electrophilic Addition | Least Cycles | (**110**/1/34) toi333 | 1087 | 
+Diethyl Ether | Least Cycles | (**130**/1/25) Andy | 25 | 
+2-Hexene | Least Cycles | [(**295**/1/59) ToughThought](http://youtu.be/MB8VyjiLSrk) | 75633 | 
+Mazeite' | Least Cycles | (**92**/1/19) Andy | 76 | 
+Silica | Least Cycles | [(**320**/1/41) ToughThought](http://youtu.be/B75se7kRI5o) | 75702 | 
+Galvanization | Least Cycles | (**896**/1/112) Andy | 77 | 
+Industrial Methanol | Least Cycles | (**106**/1/40) Andy | 28 | 
+Glyoxylic Acid | Least Cycles | [(**167**/1/23) ToughThought](http://youtu.be/GUz4sihkigQ) | 75833 | 
+Bioplastic | Least Cycles | [(**337**/1/64) ToughThought](http://youtu.be/0NFuDDbD7JE) | 75954 | 
+Chlorination | Least Cycles | [(**580**/1/61) Andy](http://www.youtube.com/watch?v=TbYW7zTA8eQ) | 4735 | 
+Sulfuric Acid | Least Cycles | [(**250**/1/52) cearn](http://www.youtube.com/watch?hd=1&v=iz11YosvhVI) | 64621 | (ref:64433) Removed syncs by using a delay flipflop instead.
+Bad Times | Least Cycles | (**529**/1/102) Andy | 3845 | 
+Friedel-Crafts | Least Cycles | (**110**/1/23) Sahishar | 59088 | 
+Wöhler Synthesis | Least Cycles | (**129**/1/34) Andy | 41 | 
+Diels-Alder | Least Cycles | [(**178**/1/30) ToughThought](http://youtu.be/QHv87Ie5BTw) | 76491 | 
+Bad Times, Part II | Least Cycles | [(**183**/1/62) ToughThought](http://youtu.be/68a0Rcs5nNA) | 76579 | 
+Freon | Least Cycles - Windows | (**112**/1/63) Andy | 22113 | 
+Benzene Derivatives | Least Cycles - Windows | (**315**/1/44) Andy | 38 | 
+Portland Cement | Least Cycles | [(**253**/1/45) ToughThought](http://youtu.be/JVXoXnrpujQ) | 76761 | 
+Solder Coarsening | Least Cycles | (**348**/1/63) Andy | 36126 | 
+Graphene | Least Cycles | [(**561**/1/78) Andy](http://www.youtube.com/watch?v=7reuWxbASGc) | 14859 | 
+The Big Cleanup | Least Cycles - Windows | (**194**/1/31) Steve42 | 3061 | 
+Going Green Part II | Least Cycles | [(**107**/1/61) ToughThought](http://youtu.be/Xgs8f2Blpgc) | 76940 | 
+Waste Treatment | Least Cycles - Windows | [(**395**/1/41) cearn](http://youtu.be/QITO8S0IG64?hd=1) | 70685 | 
+Pyridine | Least Cycles | [(**123**/1/31) ToughThought](http://youtu.be/x3ujTCnE2HE) | 77270 | 
+Breakdown | Least Cycles | [(**35**/1/46) ToughThought](http://youtu.be/SSKgcLEa6y8) | 77349 | 
+Vitamin B3 | Least Cycles | [(**222**/1/42) ToughThought](http://youtu.be/Vs0wQAYAwe8) | 77350 | 
+PVC | Least Cycles | [(**517**/1/52) ToughThought](http://youtu.be/DhGLDn7QJAo) | 77849 | 
+PVA | Least Cycles | (**423**/1/49) Andy | 4435 | 
+Naphthalene | Least Cycles | [(**378**/1/81) ToughThought](http://youtu.be/znVqkHAoHEo) | 77851 | 
+Anthraquinone | Least Cycles | (**360**/1/64) Andy | 6093 | 
+Soap | Least Cycles | [(**172**/1/35) ToughThought](http://youtu.be/JQIKNlsASaI) | 77893 | 
+Glucose | Least Cycles | (**424**/1/41) Andy | 8455 | 
+PZA | Least Cycles | [(**230**/1/74) ToughThought](http://youtu.be/u2H8ktOJsYI) | 78104 | 
+INH | Least Cycles | (**252**/1/42) Andy | 9228 | 
+PAS | Least Cycles | (**245**/1/44) Andy | 8921 | 
+Fusion - Germane | Least Cycles | (**227**/1/40) Andy | 7284 | 
+Fusion - Silane | Least Cycles | (**178**/1/40) Andy | 6091 | 
+Fermentation | Least Cycles | [(**157**/1/57) ToughThought](http://youtu.be/3xQYtaxjocU) | 78425 | 
+Hydrazine | Least Cycles | (**182**/1/34) Andy | 16119 | 
+Organometallics | Least Cycles | (**244**/1/31) Andy | 11023 | 
+Nonsense! | Least Cycles - Windows | (**427**/1/43) Andy | 14481 | 
+Iron and Ozone | Least Cycles | (**87**/1/32) Andy | 9735 | 
+Normalization | Least Cycles - Windows | (**151**/1/34) cearn | 67434 | 
+Decomposition | Least Cycles | (**92**/1/40) GuavaMoment | 41392 | 
+Phenol | Least Cycles | (**133**/1/43) Andy | 15781 | 
+Uracil | Least Cycles | (**243**/1/43) Oldman | 53503 | 
+Pyridine | Least Cycles - Windows | (**437**/1/53) Andy | 16381 | 
+Phosgene | Least Cycles | (**368**/1/48) gggol | 69082 | 
+Ignoble | Least Cycles | (**445**/1/62) Andy | 15784 | 
+Alchemy | Least Cycles | (**207**/1/45) GuavaMoment | 59555 | 
+Bosch-Meiser | Least Cycles | (**256**/1/43) Andy | 36105 | 
+Beckmann Rearrangement | Least Cycles | (**122**/1/24) Andy | 15778 | 
+Stock-Pohland | Least Cycles | (**569**/1/49) RYANSUPERGENIUS1123 | 82067 | 
+Swapite | Least Cycles | (**52**/1/20) Andy | 17214 | 
+Hardening | Least Cycles | (**156**/1/31) Andy | 16872 | 
+Keying In | Least Cycles - Windows | (**255**/1/84) Andy | 16839 | 
+Ethane | Least Cycles | (**205**/1/40) Andy | 16594 | 
+Cyclobutane | Least Cycles | (**262**/1/57) Andy | 24061 | 
+Styrene | Least Cycles | (**217**/1/46) Andy | 17623 | 
+Thinner Line | Least Cycles | (**681**/2/77) Andy | 19894 | 
+Decomposition of Ethanolamine | Least Cycles - Windows | (**628**/4/128) Andy | 20318 | 
+Anesthetics | Least Cycles - Windows | (**2869**/6/287) FromEarth | 61465 | I could probably shave off a dozen cycles or so by changing the placements of the reactors.
+Fertigprodukt | Least Cycles - Windows | (**3254**/5/217) RYANSUPERGENIUS1123 | 82077 | 
+Novel Semiconductor | Least Cycles - Windows | (**1664**/4/152) Andy | 18947 | 
+Passivation | Least Cycles - Windows | (**299**/1/52) Andy | 18982 | 
+Life: Prep Work | Least Cycles | (**322**/1/54) Andy | 18950 | 
+Life: Cytosine | Least Cycles | (**448**/1/98) gggol | 68980 | 
+Life: Thymine | Least Cycles | (**185**/1/41) gggol | 69053 | 
+Cyanamide | Least Cycles | (**430**/3/75) cearn | 61016 | (3-4-1 Cyanimide)
+Acetic Acid | Least Cycles | (**1613**/2/48) cearn | 67837 | (3-4-2 Acetic Acid)
+Combustion Engine | Least Cycles - Windows | (**628**/3/84) Andy | 20547 | 
+Smelting Iron | Least Cycles - Windows | (**822**/4/127) Andy | 20550 | 
+Neodymium Magnet | Least Cycles | (**596**/1/103) gggol | 56157 | 
+Carbide Swap | Least Cycles | (**331**/1/82) Andy | 20736 | 
+Fuel Production | Least Cycles - Windows | (**5298**/4/122) Andy | 20549 | 
+Siliconheart Piece | Least Cycles | (**429**/3/88) Zemyla | 81307 | 
+Raygun Mechanism | Least Cycles | (**444**/5/166) Andy | 20558 | 
+Sulfuric Acid | Least Cycles | (**640**/4/100) Andy | 22677 | 
+Fuming Nitric Acid | Least Cycles | (**1027**/4/75) JYPark1101 | 46989 | 
+Rocket Fuel | Least Cycles - Windows | (**1649**/3/127) Andy | 22676 | 
+Hydroxides | Least Cycles - Windows | (**836**/3/66) GuavaMoment | 56078 | 
+Nobility | Least Cycles - Windows | (**2756**/4/202) GuavaMoment | 80573 | 
+Sortite | Least Cycles - Windows | (**308**/1/64) Andy | 22678 | 
+Radiation Treatment | Least Cycles | (**842**/2/60) Zemyla | 81300 | 
+Boron Compounds | Least Cycles | (**1222**/6/141) Leylite | 72247 | A tribute to miscellaneous optimization tricks (and removing some symbols).
+Photovoltaic Cells | Least Cycles | (**4820**/5/107) JYPark1101 | 83323 | 
+Elementary | Least Cycles | [(**428**/3/75) cearn](http://www.youtube.com/watch?hd=1&v=Xd35wRKvCzw) | 47943 | (3-10-1 Elementary)
+Mixed Acids | Least Cycles - Windows | (**2478**/3/138) Andy | 22837 | 
+Squaric Acid | Least Cycles | (**476**/1/71) gggol | 43518 | 
+Misproportioned | Least Cycles - Windows | (**2293**/3/108) Zemyla | 80753 | 
+Narkotikum | Least Cycles - Windows | (**826**/2/46) Andy | 23037 | 
+Vereinheitlichung | Least Cycles - Windows | [(**1232**/3/94) cearn](http://youtu.be/HBK2rSEAH28?hd=1) | 69999 | (3-11-3 Vereinheitlichung)
+Haber-Bosch | Least Cycles - Windows | (**853**/4/184) Andy | 24644 | 
+Mustard Oil | Least Cycles | (**436**/4/117) GuavaMoment | 41394 | 
+Nano Electric Motor | Least Cycles | (**257**/1/39) gggol | 76693 | 
+Count | Least Cycles | (**288**/1/66) Andy | 24024 | 
+Sharing is Caring | Least Cycles - Windows | (**1145**/4/143) Andy | 24352 | 
+Reassembly | Least Cycles | (**519**/3/114) Andy | 24025 | 
+Cyanogen | Least Cycles | [(**219**/1/43) cearn](http://www.youtube.com/watch?hd=1&v=xFb8yFjPSoI) | 54442 | (4-2-1 Cyanogen)
+Chloromethylsilane | Least Cycles | (**139**/1/25) Andy | 32723 | 
+Glyceraldehyde | Least Cycles | (**223**/1/41) Andy | 23728 | 
+Ethandiamin | Least Cycles | [(**831**/3/73) cearn](http://www.youtube.com/watch?hd=1&v=iK6_GIBvZ5w) | 69647 | (4-3-1 Ethandiamin)
+Radikal | Least Cycles - Windows | (**1234**/5/79) Andy | 24191 | 
+Kreisalkanol | Least Cycles | (**1630**/2/58) Andy | 23721 | 
+Inorganic Pigments | Least Cycles - Windows | (**3224**/4/120) Andy | 24268 | 
+Miller-Urey | Least Cycles - Windows | (**1245**/5/143) GuavaMoment | 24347 | 
+Getting Pumped | Least Cycles | (**755**/1/132) iteration2 | 42432 | 
+Lewisite | Least Cycles | (**155**/1/47) Andy | 24064 | 
+Novichok | Least Cycles | (**449**/3/122) Andy | 24267 | 
+Ribulose | Least Cycles | (**529**/1/71) Andy | 24269 | 
+Knockout Drops | Least Cycles | (**826**/5/82) gggol | 76691 | 
+Strong Acids | Least Cycles | (**838**/4/98) Andy | 24192 | 
+Vitamin B3 | Least Cycles | (**2174**/5/222) Andy | 24193 | 
+1,2,3-Triphenol | Least Cycles | (**528**/1/41) Andy | 27515 | 
+1,3-Dimetoxibencene | Least Cycles | (**353**/1/57) Andy | 26793 | 
+Think in Spirals | Least Cycles | (**500**/1/76) gggol | 35122 | 
+Yellowcake | Least Cycles - Windows | (**838**/3/75) Andy | 25933 | 
+Thiourea | Least Cycles | (**519**/3/102) GuavaMoment | 26160 | 
+Downgrade | Least Cycles | (**67**/1/22) Andy | 25931 | 
+Wood Alcohol | Least Cycles | (**373**/1/33) Andy | 26400 | 
+Allyl Alcohol | Least Cycles | (**113**/1/23) Andy | 26396 | 
+Propargyl Alcohol | Least Cycles | (**249**/1/34) Andy | 27466 | 
+Condensation | Least Cycles | (**444**/4/138) Andy | 29821 | 
+Silane | Least Cycles | (**457**/1/62) Andy | 30020 | 
+Phosphine | Least Cycles | (**324**/1/37) Andy | 32600 | 
+Nuclear Medicine | Least Cycles | (**458**/4/109) Andy | 29827 | 
+Oxygen Supply | Least Cycles | (**204**/1/79) WildM | 77617 | 
+Red Cross | Least Cycles | (**409**/1/80) Andy | 29978 | 
+Fluoromethanes | Least Cycles - Windows | (**257**/1/64) GuavaMoment | 30490 | 
+Exercise | Least Cycles | (**270**/1/41) Andy | 34306 | 
+Nanoboxes | Least Cycles | (**360**/1/49) J0Ren | 43937 | Found an extra cycle at the expense of an extra symbol. 
