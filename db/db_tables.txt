@@ -1,0 +1,54 @@
+    table_name    |    column_name    | ordinal_position | is_nullable |          data_type          
+------------------+-------------------+------------------+-------------+-----------------------------
+ members          | member_id         |                1 | NO          | integer
+ members          | component_id      |                2 | YES         | integer
+ members          | type              |                3 | YES         | character varying
+ members          | arrow_dir         |                4 | YES         | integer
+ members          | choice            |                5 | YES         | integer
+ members          | layer             |                6 | YES         | integer
+ members          | x                 |                7 | YES         | integer
+ members          | y                 |                8 | YES         | integer
+ members          | element_type      |                9 | YES         | integer
+ members          | element           |               10 | YES         | integer
+
+ pipes            | pipe_id           |                1 | NO          | integer
+ pipes            | component_id      |                2 | YES         | integer
+ pipes            | output_id         |                3 | YES         | integer
+ pipes            | x                 |                4 | YES         | integer
+ pipes            | y                 |                5 | YES         | integer
+
+ components       | component_id      |                1 | NO          | integer
+ components       | solution_id       |                2 | YES         | integer
+ components       | type              |                3 | YES         | character varying
+ components       | x                 |                4 | YES         | integer
+ components       | y                 |                5 | YES         | integer
+ 
+ -- Decodifica il level_id in nome/numero
+ levels           | level_id          |                1 | NO          | integer
+ levels           | name              |                2 | YES         | character varying
+ levels           | internal_name     |                3 | YES         | character varying
+ levels           | number            |                4 | YES         | character varying
+ levels           | slug              |                5 | YES         | character varying
+ levels           | order1            |                6 | YES         | integer
+ levels           | order2            |                7 | YES         | integer
+ levels           | category          |                8 | YES         | character varying
+ levels           | outside_view      |                9 | NO          | boolean
+
+-- Decodifica lo user_id in username
+ users            | user_id           |                1 | NO          | integer
+ users            | username          |                2 | YES         | character varying
+ users            | email             |                3 | YES         | character varying
+ users            | password          |                4 | YES         | character varying
+ 
+-- Praticamente il CSV originale
+ solutions        | solution_id       |                1 | NO          | integer
+ solutions        | file_id           |                2 | YES         | integer
+ solutions        | user_id           |                3 | YES         | integer
+ solutions        | level_id          |                4 | YES         | integer
+ solutions        | cycle_count       |                5 | YES         | integer
+ solutions        | symbol_count      |                6 | YES         | integer
+ solutions        | reactor_count     |                7 | YES         | integer
+ solutions        | upload_time       |                8 | YES         | timestamp without time zone
+ solutions        | description       |                9 | YES         | character varying
+ solutions        | youtube           |               10 | YES         | character varying
+ solutions        | approved          |               11 | NO          | boolean

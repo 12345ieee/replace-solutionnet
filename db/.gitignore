@@ -1,0 +1,8 @@
+# input dump
+solutionnet_cleaned_dump.sql
+
+# test saves
+saves
+
+# build artifacts
+scores.txt
