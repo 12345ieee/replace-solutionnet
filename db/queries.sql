@@ -6,3 +6,11 @@
        order by category, order1, order2, reactor_count, cycle_count, symbol_count, upload_time)
 to 'score_dump2.csv'
 with csv delimiter ',' header;
+
+-- Gets seeds (SQLite only)
+select c.type, p.output_id, p.x, p.y
+from component c, pipe p
+where c.rowid = p.component_id
+group by c.type, output_id
+having min(p.rowid)
+order by c.type
