@@ -201,17 +201,18 @@ def parse_wiki():
         with open(wikifolder + f) as infile:
             lines.extend(infile.readlines())
     
-    level_reg = re.compile(r'^(?P<level>.+?)(?: - (?P<OS>Windows|Linux|Unknown OS))?(?: - (?P<reactors>\d) Reactors?)?\s*$')
-    score_reg = re.compile(r'^\s*\[?\(\**(?P<cycles>[?\d,]+)\**(?P<OSmark>\\\*)?/\**(?P<reactors>\d+)\**/\**(?P<symbols>\d+)\**\)'
-                           r'\s+(?P<user>[^\]]+?)(?:\]\((?P<link>[^\)]+)\).*?)?\s*$')
-    single_score_reg = re.compile(r'^\s*\**(?P<score>[\d,]+)\**\s*$')
+    level_reg = re.compile(r'^(?P<level>.+?)(?: - (?P<OS>Windows|Linux|Unknown OS))?(?: - (?P<reactors>\d) Reactors?)?$')
+    score_reg = re.compile(r'^\[?\(\**(?P<cycles>[?\d,]+)\**(?P<OSmark>\\\*)?/\**(?P<reactors>\d+)\**/\**(?P<symbols>\d+)\**\)'
+                           r'\s+(?P<user>[^\]]+?)(?:\]\((?P<link>[^\)]+)\).*?)?$')
+    single_score_reg = re.compile(r'^\**(?P<score>[\d,]+)\**$')
+    extra_stuff_reg = re.compile(r'^←+|X|† \[\(')
     
     it = iter(levels)
     
     for line in lines:
-        table_cols = line.split('|')[1:]
+        table_cols = re.split(r'\s*\|\s*', line)[1:]
         if len(table_cols) >= 5:
-            name_col = table_cols[0].strip()
+            name_col = table_cols[0]
             if name_col not in {'Name', ':-'}:
                 level_match = level_reg.match(name_col)
                 best_reactors = level_match.group('reactors')
@@ -275,6 +276,9 @@ def parse_wiki():
                                           'Youtube Link': ''}
                                 
                             add_score(level_id, this_score, playerOS, False)
+                        else:
+                            if not extra_stuff_reg.match(tm):
+                                print(tm)
 
 def print_scores(printset, no_separator=False, no_video=False):
 
