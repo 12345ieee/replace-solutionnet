@@ -73,25 +73,18 @@ def insert_score(this_score, scores, category, stats):
     if category not in scores or tiebreak(this_score, scores[category], *stats):
         scores[category] = this_score
 
-def add_score(level_id, this_score, playerOS, test_reject=True):
+def add_score(level_id, this_score, test_reject=True):
 
     props = id2level[level_id]
 
     if test_reject and should_reject(this_score):
         return
 
-    if props['isDeterministic']:
-        insert_score(this_score, levels[level_id], 'Least Cycles', ['Cycle Count', 'Reactor Count', 'Symbol Count'])
-        insert_score(this_score, levels[level_id], 'Least Symbols', ['Symbol Count', 'Reactor Count', 'Cycle Count'])
-        if props['type'] in {'production', 'boss'}:
-            insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count'])
-            insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count'])
-    else:
-        insert_score(this_score, levels[level_id], 'Least Cycles - {}'.format(playerOS), ['Cycle Count', 'Reactor Count', 'Symbol Count'])
-        insert_score(this_score, levels[level_id], 'Least Symbols - {}'.format(playerOS), ['Symbol Count', 'Reactor Count', 'Cycle Count'])
-        if props['type'] in {'production', 'boss'}:
-            insert_score(this_score, levels[level_id], 'Least Cycles - {} - N Reactors'.format(playerOS), ['Reactor Count', 'Cycle Count', 'Symbol Count'])
-            insert_score(this_score, levels[level_id], 'Least Symbols - {} - N Reactors'.format(playerOS), ['Reactor Count', 'Symbol Count', 'Cycle Count'])
+    insert_score(this_score, levels[level_id], 'Least Cycles', ['Cycle Count', 'Reactor Count', 'Symbol Count'])
+    insert_score(this_score, levels[level_id], 'Least Symbols', ['Symbol Count', 'Reactor Count', 'Cycle Count'])
+    if props['type'] in {'production', 'boss'}:
+        insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count'])
+        insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count'])
 
 def should_reject(this_score):
     # In, Out, 2 arrows, Swap = 5 min
@@ -106,7 +99,7 @@ fmt_scores_with_bold = ['({}/{}/{}) {}', '({}/{}/**{}**) {}', '({}/**{}**/{}) {}
                         '(**{}**/{}/{}) {}', '(**{}**/{}/**{}**) {}', '(**{}**/**{}**/{}) {}',
                         '(**{}**/**{}**/**{}**) {}']
 
-def printscore(score, bold=0, suffix='', printvideo=True):
+def printscore(score, bold=0b000, suffix='', printvideo=True):
     fmt_score = fmt_scores_with_bold[bold].format(score['Cycle Count'], score['Reactor Count'], score['Symbol Count'],
                                                   score['Username'])
     if printvideo and score['Youtube Link']:
@@ -154,14 +147,14 @@ def parse_solnet():
             else:
                 userOS = 'Unknown OS'
             
-            add_score(level_id, this_score, userOS)
+            if id2level[level_id]['isDeterministic'] or userOS == 'Windows':
+                add_score(level_id, this_score)
 
 
 def parse_saves():
 
-    for playersave in os.listdir(saves_folder):
-        player, playerOS = playersave.rsplit('_', 1)
-        player_folder = os.path.join(saves_folder, playersave)
+    for player in os.listdir(saves_folder):
+        player_folder = os.path.join(saves_folder, player)
         for save in os.listdir(player_folder):
             conn = sqlite3.connect(os.path.join(player_folder, save))
             conn.row_factory = sqlite3.Row
@@ -181,7 +174,7 @@ def parse_saves():
                               'Upload Time': nowstring,
                               'Youtube Link': ''}
                 
-                add_score(level_id, this_score, playerOS)
+                add_score(level_id, this_score)
             
             conn.close()
 
@@ -201,11 +194,11 @@ def parse_wiki():
         with open(wikifolder + f) as infile:
             lines.extend(infile.readlines())
     
-    level_reg = re.compile(r'^(?P<level>.+?)(?: - (?P<OS>Windows|Linux|Unknown OS))?(?: - (?P<reactors>\d) Reactors?)?$')
-    score_reg = re.compile(r'^\[?\(\**(?P<cycles>[?\d,]+)\**(?P<OSmark>\\\*)?/\**(?P<reactors>\d+)\**/\**(?P<symbols>\d+)\**\)'
+    level_reg = re.compile(r'^(?P<level>.+?)(?: - (?P<reactors>\d|N) Reactors?)?$')
+    score_reg = re.compile(r'^\[?\(\**(?P<cycles>[\d,]+)\**(?:\\\*)?/\**(?P<reactors>\d+)\**/\**(?P<symbols>\d+)\**\)'
                            r'\s+(?P<user>[^\]]+?)(?:\]\((?P<link>[^\)]+)\).*?)?$')
     single_score_reg = re.compile(r'^\**(?P<score>[\d,]+)\**$')
-    extra_stuff_reg = re.compile(r'^←+|X|† \[\(')
+    extra_stuff_reg = re.compile(r'^(?:←+|X|† \[\()')
     
     it = iter(levels)
     
@@ -216,41 +209,25 @@ def parse_wiki():
             if name_col not in {'Name', ':-'}:
                 level_match = level_reg.match(name_col)
                 best_reactors = level_match.group('reactors')
-                playerOS = level_match.group('OS')
-                if not best_reactors and playerOS not in {'Linux', 'Unknown OS'}:
+                if not best_reactors:
                     level_id = next(it)
                     while id2level[level_id]['type'] == 'boss':
                         level_id = next(it)
-                elif best_reactors:
-                    reactors_placeholder_score = {'Username': "Unknown User",
-                                                  'Cycle Count': 99999999,
-                                                  'Reactor Count': int(best_reactors),
-                                                  'Symbol Count': 9999,
-                                                  'Upload Time': '0',
-                                                  'Youtube Link': ''}
-                    add_score(level_id, reactors_placeholder_score, playerOS, False)
+                
                 scores = table_cols[1:]
                 cols = len(scores)
                 assert cols in {4,6}, "Level {level_id} has {cols} cols".format_map(locals())
                 for idx, tm in enumerate(scores):
                     score_match = score_reg.match(tm)
                     if score_match:
-                        if score_match.group('OSmark'):
-                            username = score_match.group('OSmark') + score_match.group('user')
-                        else:
-                            username = score_match.group('user')
-                        if '?' in score_match.group('cycles'):
-                            cycles = 99999999
-                        else:
-                            cycles = int(score_match.group('cycles').replace(',', ''))
-                        this_score = {'Username': username,
-                                      'Cycle Count': cycles,
+                        this_score = {'Username': score_match.group('user'),
+                                      'Cycle Count': int(score_match.group('cycles').replace(',', '')),
                                       'Reactor Count': int(score_match.group('reactors')),
                                       'Symbol Count': int(score_match.group('symbols')),
                                       'Upload Time': '0',
                                       'Youtube Link': score_match.group('link') if score_match.group('link') else ''}
                                       
-                        add_score(level_id, this_score, playerOS)
+                        add_score(level_id, this_score)
                     else:
                         single_score_match = single_score_reg.match(tm)
                         if single_score_match:
@@ -275,7 +252,7 @@ def parse_wiki():
                                           'Upload Time': nowstring,
                                           'Youtube Link': ''}
                                 
-                            add_score(level_id, this_score, playerOS, False)
+                            add_score(level_id, this_score, False)
                         else:
                             if not extra_stuff_reg.match(tm):
                                 print(tm)
@@ -294,24 +271,25 @@ def print_scores(printset, no_separator=False, no_video=False):
         if level['type'] not in printset:
             continue
         score_header = '| Min Cycles | Min Symbols' if no_separator else \
-                       '| Min Cycles | Min Cycles - No Bugs | Min Symbols | Min Symbols - No Bugs'
+                       '| Min Cycles | Min Cycles - No Bugs | Min Symbols | Min Symbols - No Bugs' if level['isDeterministic'] else \
+                       '| Min Cycles | Min Cycles - No Bugs | Min Cycles - No Precognition ' + \
+                       '| Min Symbols | Min Symbols - No Bugs | Min Symbols - No Precognition'
         print('|{} - {}'.format(*level_id).ljust(20) + score_header)
 
-        for OSstring in ['', ' - Windows', ' - Linux', ' - Unknown OS']:
-            score_separator = '' if no_separator else ' | N/A | N/A' if OSstring else ' | N/A'
-            printblock(scores, '|{name}{OS} '.format(**level, OS=OSstring),
-                       'Least Cycles{}'.format(OSstring), 'Least Symbols{}'.format(OSstring),
-                       0b100, 0b001, score_separator, not no_video)
-            printblock(scores, '|{name}{OS} - N Reactors '.format(**level, OS=OSstring),
-                       'Least Cycles{} - N Reactors'.format(OSstring), 'Least Symbols{} - N Reactors'.format(OSstring),
-                       0b110, 0b011, score_separator, not no_video)
+        score_separator = '' if no_separator else ' | N/A' if level['isDeterministic'] else ' | N/A | N/A'
+        printblock(scores, '|{name} '.format(**level),
+                   'Least Cycles', 'Least Symbols',
+                   0b100, 0b001, score_separator, not no_video)
+        printblock(scores, '|{name} - N Reactors '.format(**level),
+                   'Least Cycles - N Reactors', 'Least Symbols - N Reactors',
+                   0b110, 0b011, score_separator, not no_video)
         print()
 
 def print_leaderboard():
     leaderboard = Counter()
     for scores in levels.values():
         for score in scores.values():
-            name = score['Username'].replace('\*', '')
+            name = score['Username']
             leaderboard[name] += 1
 
     print('{} scores by {} users'.format(sum(leaderboard.values()), len(leaderboard)))

@@ -339,3 +339,40 @@ saveId, category, number, name, type, isDeterministic
 "published-91-1", "researchnet", "8-15-1", "Precious Tears", "production", 1
 "published-91-2", "researchnet", "8-15-2", "Desperate Measures", "production", 0
 "published-91-3", "researchnet", "8-15-3", "Hydrocarbon Stitch", "research", 0
+
+"published-92-1", "researchnet", "9-1-1", "Prime Time", "research", 1
+"published-92-2", "researchnet", "9-1-2", "Water not WAtEr", "production", 1
+"published-92-3", "researchnet", "9-1-3", "Carbon Products", "production", 1
+"published-93-1", "researchnet", "9-2-1", "Martian Respiration", "research", 1
+"published-93-2", "researchnet", "9-2-2", "Blockheads", "research", 1
+"published-93-3", "researchnet", "9-2-3", "Greed", "research", 1
+"published-94-1", "researchnet", "9-3-1", "Comet Chemistry", "research", 1
+"published-94-2", "researchnet", "9-3-2", "Ferrous Wheel", "research", 1
+"published-94-3", "researchnet", "9-3-3", "Barbituric Acid", "research", 1
+"published-95-1", "researchnet", "9-4-1", "Really Easy", "production", 1
+"published-95-2", "researchnet", "9-4-2", "Modern Alchemy", "production", 1
+"published-95-3", "researchnet", "9-4-3", "Gem Factory", "production", 1
+"published-96-1", "researchnet", "9-5-1", "Unlikely", "research", 1
+"published-96-2", "researchnet", "9-5-2", "Chalcogens", "research", 1
+"published-96-3", "researchnet", "9-5-3", "Chlorine and Ammonia", "research", 1
+"published-97-1", "researchnet", "9-6-1", "Combustion", "research", 1
+"published-97-2", "researchnet", "9-6-2", "Low Power Polymers", "research", 1
+"published-97-3", "researchnet", "9-6-3", "Photosynthesis", "research", 1
+"published-98-1", "researchnet", "9-7-1", "Break Up", "research", 1
+"published-98-2", "researchnet", "9-7-2", "Chemotherapy", "research", 1
+"published-98-3", "researchnet", "9-7-3", "Stuck Together", "research", 0
+"published-99-1", "researchnet", "9-8-1", "Antimony Mining", "research", 1
+"published-99-2", "researchnet", "9-8-2", "What a Waste", "research", 1
+"published-99-3", "researchnet", "9-8-3", "AC without AGW", "research", 1
+"published-100-1", "researchnet", "9-9-1", "Strong Dimerization", "research", 1
+"published-100-2", "researchnet", "9-9-2", "Philosopher's Cleanup", "research", 1
+"published-100-3", "researchnet", "9-9-3", "Upscale Downscale", "research", 1
+"published-101-1", "researchnet", "9-10-1", "Molting", "research", 1
+"published-101-2", "researchnet", "9-10-2", "Unpacking", "research", 1
+"published-101-3", "researchnet", "9-10-3", "Unpleasant Dreams", "production", 1
+"published-102-1", "researchnet", "9-11-1", "Electroplating", "research", 1
+"published-102-2", "researchnet", "9-11-2", "Doping", "research", 1
+"published-102-3", "researchnet", "9-11-3", "Mass of Osmium", "research", 1
+"published-103-1", "researchnet", "9-12-1", "Spaghetti Hoops", "research", 0
+"published-103-2", "researchnet", "9-12-2", "Handle With Care", "research", 1
+"published-103-3", "researchnet", "9-12-3", "The Greatest Honor", "production", 0
