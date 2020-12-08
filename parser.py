@@ -156,15 +156,19 @@ def parse_saves():
     for player in os.listdir(saves_folder):
         player_folder = os.path.join(saves_folder, player)
         for save in os.listdir(player_folder):
-            conn = sqlite3.connect(os.path.join(player_folder, save))
+            try:
+                conn = sqlite3.connect(os.path.join(player_folder, save))
+            except sqlite3.OperationalError:
+                continue
             conn.row_factory = sqlite3.Row
-            dbcursor = conn.execute("SELECT * FROM {}".format('Level'))
+            # we use cycles > 0 as a good proxy for finished
+            dbcursor = conn.execute("SELECT * FROM Level WHERE cycles != 0")
 
             for row in dbcursor:
-                if row['passed'] == 0:
-                    continue
-                if row['id'] in save2id:
-                    level_id = save2id[row['id']]
+                # CE extra sols are stored as `id!progressive`
+                clean_id = row['id'].split('!')[0]
+                if clean_id in save2id:
+                    level_id = save2id[clean_id]
                 else:
                     continue
                 this_score = {'Username': player,
