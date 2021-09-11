@@ -6,3 +6,7 @@ saves
 
 # Dump
 *.pickle
+
+# Editor
+.vscode
+.idea

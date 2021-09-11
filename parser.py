@@ -104,7 +104,7 @@ def printscore(score, bold=0b000, suffix='', printvideo=True):
                                                   score['Username'])
     if printvideo and score['Youtube Link']:
         fmt_score = '[{}]({})'.format(fmt_score, score['Youtube Link'])
-    print('| {:20}{suffix}'.format(fmt_score, suffix=suffix), end=' ')
+    print(f'| {fmt_score:20}{suffix}', end=' ')
 
 def printblock(scores, header, cat1, cat2, bold1, bold2, suffix='', printvideo=True):
     if cat1 in scores and cat2 in scores:
@@ -124,29 +124,29 @@ def parse_solnet():
     with open(scoresfile) as scorescsv:
         reader = csv.DictReader(scorescsv)
         for row in reader:
-            
+
             if row['Level Category'] == 'researchnet' and \
                row['Level Number'].count('-') == 1:
                     longissue, assign = map(int, row['Level Number'].split('-'))
                     volume, issue = (longissue-1)//12+1, (longissue-1)%12+1
-                    level_id = ('researchnet', '{}-{}-{}'.format(volume, issue, assign))
+                    level_id = ('researchnet', f'{volume}-{issue}-{assign}')
             else:
                 level_id = (row['Level Category'], row['Level Number'])
-            
+
             this_score = {'Username': row['Username'],
                           'Cycle Count': int(row['Cycle Count']),
                           'Reactor Count': int(row['Reactor Count']),
                           'Symbol Count': int(row['Symbol Count']),
                           'Upload Time': row['Upload Time'],
                           'Youtube Link': row['Youtube Link']}
-            
+
             if '@' in this_score['Username']:
                 this_score['Username'], userOS = this_score['Username'].split('@')
             elif this_score['Username'] in user2OS:
                 userOS = user2OS[this_score['Username']]
             else:
                 userOS = 'Unknown OS'
-            
+
             if id2level[level_id]['isDeterministic'] or userOS == 'Windows':
                 add_score(level_id, this_score)
 
@@ -162,24 +162,22 @@ def parse_saves():
                 continue
             conn.row_factory = sqlite3.Row
             # we use cycles > 0 as a good proxy for finished
-            dbcursor = conn.execute("SELECT * FROM Level WHERE cycles != 0")
-
+            dbcursor = conn.execute("SELECT id, cycles, reactors, symbols "
+                                    "FROM Level "
+                                    "WHERE id not like 'custom-%' and cycles != 0")
             for row in dbcursor:
                 # CE extra sols are stored as `id!progressive`
                 clean_id = row['id'].split('!')[0]
-                if clean_id in save2id:
-                    level_id = save2id[clean_id]
-                else:
-                    continue
+                level_id = save2id[clean_id]
                 this_score = {'Username': player,
                               'Cycle Count': row['cycles'],
                               'Reactor Count': row['reactors'],
                               'Symbol Count': row['symbols'],
                               'Upload Time': nowstring,
                               'Youtube Link': ''}
-                
+
                 add_score(level_id, this_score)
-            
+
             conn.close()
 
 def dump_scores():
@@ -192,20 +190,25 @@ def load_scores():
         levels = pickle.load(dumpdest)
 
 def parse_wiki():
-    
+
     lines = []
     for f in wikifiles:
         with open(wikifolder + f) as infile:
             lines.extend(infile.readlines())
-    
-    level_reg = re.compile(r'^(?P<level>.+?)(?: - (?P<reactors>\d|N) Reactors?)?$')
-    score_reg = re.compile(r'^\[?\(\**(?P<cycles>[\d,]+)\**(?:\\\*)?/\**(?P<reactors>\d+)\**/\**(?P<symbols>\d+)\**\)'
-                           r'\s+(?P<user>[^\]]+?)(?:\]\((?P<link>[^\)]+)\).*?)?$')
-    single_score_reg = re.compile(r'^\**(?P<score>[\d,]+)\**$')
-    extra_stuff_reg = re.compile(r'^(?:←+|X|† \[\()')
-    
+
+    level_reg = re.compile(r'^(?P<level>.+?)(?: - (?P<reactors>\d) Reactors?)?$')
+    score_reg = re.compile(r'^\[📄\]\(.+\.txt\)\s+'
+                           r'(?:† )?'
+                           r'\[\(\**(?P<cycles>[\d,]+)\**(?:\\\*)?/'
+                           r'\**(?P<reactors>\d+)\**/'
+                           r'\**(?P<symbols>\d+)\**'
+                           r'(?:/B?P?)?\)\s+'
+                           r'(?P<user>[^\]]+?)\]'
+                           r'\((?P<link>[^\)]+)\).*?$')
+    extra_stuff_reg = re.compile(r'^(?:←+|X)')
+
     it = iter(levels)
-    
+
     for line in lines:
         table_cols = re.split(r'\s*\|\s*', line)[1:]
         if len(table_cols) >= 5:
@@ -217,11 +220,11 @@ def parse_wiki():
                     level_id = next(it)
                     while id2level[level_id]['type'] == 'boss':
                         level_id = next(it)
-                
+
                 scores = table_cols[1:]
                 cols = len(scores)
-                assert cols in {4,6}, "Level {level_id} has {cols} cols".format_map(locals())
-                for idx, tm in enumerate(scores):
+                assert cols in {4,6}, f"Level {level_id} has {cols} cols"
+                for tm in scores:
                     score_match = score_reg.match(tm)
                     if score_match:
                         this_score = {'Username': score_match.group('user'),
@@ -230,42 +233,17 @@ def parse_wiki():
                                       'Symbol Count': int(score_match.group('symbols')),
                                       'Upload Time': '0',
                                       'Youtube Link': score_match.group('link') if score_match.group('link') else ''}
-                                      
+
                         add_score(level_id, this_score)
                     else:
-                        single_score_match = single_score_reg.match(tm)
-                        if single_score_match:
-                            
-                            score = int(single_score_match.group('score').replace(',', ''))
-                            if 0 <= idx < cols/2:
-                                c,s = score, 9999
-                            elif cols/2 <= idx < cols:
-                                c,s = 99999999, score
-                            else:
-                                raise IndexError('Score {score} at idx {idx}'.format_map(locals()))
-                            
-                            if id2level[level_id]['type'] == 'research':
-                                r = 1
-                            else:
-                                r = 7
-
-                            this_score = {'Username': 'Unknown User',
-                                          'Cycle Count': c,
-                                          'Reactor Count': r,
-                                          'Symbol Count': s,
-                                          'Upload Time': nowstring,
-                                          'Youtube Link': ''}
-                                
-                            add_score(level_id, this_score, False)
-                        else:
-                            if not extra_stuff_reg.match(tm):
-                                print(tm)
+                        if not extra_stuff_reg.match(tm):
+                            print(tm)
 
 def print_scores(printset, no_separator=False, no_video=False):
 
     if not printset:
         return
-    
+
     for level_id in levels:
         scores = levels[level_id]
         if not scores:
@@ -299,7 +277,7 @@ def print_leaderboard():
     print('{} scores by {} users'.format(sum(leaderboard.values()), len(leaderboard)))
     print('Name                 Scores')
     for name, count in sorted(leaderboard.items(), key=lambda item: (-item[1], item[0].lower())):
-        print('{name:24}{count:3}'.format_map(locals()))
+        print(f'{name:24}{count:3}')
 
 if __name__ == '__main__':
 
@@ -328,8 +306,8 @@ if __name__ == '__main__':
         parse_saves()
     if args.dump:
         dump_scores()
-    
+
     print_scores(set(args.print) - set(args.no_print), args.no_print_separator, args.no_print_video)
-    
+
     if args.leaderboard:
         print_leaderboard()
