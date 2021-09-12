@@ -3,6 +3,7 @@ __pycache__
 
 # Saves
 saves
+exports
 
 # Dump
 *.pickle
