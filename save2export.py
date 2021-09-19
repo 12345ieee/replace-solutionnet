@@ -9,14 +9,14 @@ import sqlite3
 
 import schem
 
-from db.write_backends import ExportWriteBackend
+from write_backends import ExportWriteBackend
 
 
 def main():
     id2name = dict()
     name2id = dict()
 
-    with open('levels.csv') as levels_csv:
+    with open('config/levels.csv') as levels_csv:
         reader = csv.DictReader(levels_csv, skipinitialspace=True)
         for row in reader:
             id2name[row['saveId']] = row['name']

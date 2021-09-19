@@ -13,7 +13,7 @@ from collections import Counter
 
 ### Configuration block
 
-scoresfile = r"score_dump.csv"
+scoresfile = r"data/score_dump.csv"
 saves_folder = r'saves'
 
 dumpfile = r'dump.pickle'
@@ -39,7 +39,7 @@ def init():
 
     global save2id, id2level, levels
 
-    with open('levels.csv') as levelscsv:
+    with open('config/levels.csv') as levelscsv:
         reader = csv.DictReader(levelscsv, skipinitialspace=True)
         for row in reader:
             id_tuple = (row['category'], row['number'])
@@ -117,7 +117,7 @@ def parse_solnet():
 
     user2OS = {}
 
-    with open('users.csv') as userscsv:
+    with open('config/users.csv') as userscsv:
         reader = csv.DictReader(userscsv, skipinitialspace=True)
         user2OS = {row['User']: row['OS'] for row in reader}
 

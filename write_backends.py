@@ -62,21 +62,19 @@ class SaveWriteBackend(AbstractWriteBackend):
             db_level_id = db_level_name + '!' + target
             self.sv_cur.execute(r"""INSERT INTO Level
                                     VALUES (?, 0, ?, ?, ?, ?, 0, 0, 0)""",
-                                    [db_level_id, description, *score])
+                                    [db_level_id, description or 'Unnamed Solution', *score])
         return db_level_id
 
     def delete_solution(self, db_level_id):
         # delete everything (Component, Member, Annotation, Pipe, UndoPtr, Undo) about the old solution
         self.sv_cur.execute(r'SELECT rowid FROM Component WHERE level_id = ?', (db_level_id,))
-        comp_ids = [row[0] for row in self.sv_cur.fetchall()]
-        if not comp_ids:
-            # no solution to delete
-            return
-        qm_list = ','.join('?'*len(comp_ids))
-        for table in ['Member', 'Annotation', 'Pipe']:
-            self.sv_cur.execute(fr'DELETE FROM {table} WHERE component_id in ({qm_list})', comp_ids)
-        for table in ['Component', 'UndoPtr', 'Undo']:
-            self.sv_cur.execute(fr'DELETE FROM {table} WHERE level_id = ?', (db_level_id,))
+        comp_ids = [row[0] for row in self.sv_cur]
+        if comp_ids:
+            qm_list = ','.join('?'*len(comp_ids))
+            for table in ['Member', 'Annotation', 'Pipe']:
+                self.sv_cur.execute(fr'DELETE FROM {table} WHERE component_id in ({qm_list})', comp_ids)
+            for table in ['Component', 'UndoPtr', 'Undo']:
+                self.sv_cur.execute(fr'DELETE FROM {table} WHERE level_id = ?', (db_level_id,))
 
         # delete the solution itself
         self.sv_cur.execute(r'DELETE FROM Level WHERE id = ?', (db_level_id,))

@@ -3,7 +3,6 @@
 import argparse
 import collections
 import csv
-import os
 import sys
 
 import psycopg2
@@ -105,12 +104,18 @@ def main():
     write_backend = SaveWriteBackend(args.savefile)
 
     # populate seeds map
-    with open(script_dir + '/seeds.csv') as levelscsv:
+    with open('config/seeds.csv') as levelscsv:
         reader = csv.DictReader(levelscsv, skipinitialspace=True)
         for row in reader:
             seeds[(row['type'], int(row['output']))] = Point(int(row['x']), int(row['y']))
 
-    for sol_id in args.sol_ids:
+    if args.all:
+        sn_cur.execute(r'SELECT solution_id FROM solutions ORDER BY 1')
+        sol_ids = [s[0] for s in sn_cur]
+    else:
+        sol_ids = args.sol_ids
+
+    for sol_id in sol_ids:
         print(f'Loading solution {sol_id}')
         load_solution(sol_id, args.replace_sols)
 
@@ -118,12 +123,10 @@ def main():
 
 
 if __name__ == '__main__':
-    # script directory
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-
     parser = argparse.ArgumentParser()
-    parser.add_argument("-s", "--savefile", action="store", default=script_dir + r'/../saves/12345ieee/111.user')
-    parser.add_argument("--no-replace-sols", action="store_false", dest='replace_sols')
+    parser.add_argument("-s", "--savefile", action="store", default=r'data/solnet.user')
+    parser.add_argument("--replace-sols", default=True, action=argparse.BooleanOptionalAction)
+    parser.add_argument("--all", action="store_true")
     parser.add_argument("sol_ids", nargs='*', type=int, default=[47424])
     args = parser.parse_args()
 
