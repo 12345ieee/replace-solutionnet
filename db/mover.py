@@ -51,7 +51,7 @@ def reorder_pipe(pipe, seed):
             return output
 
 
-def load_solution(sol_id, replace_old_score):
+def load_solution(sol_id, replace_base_sol):
     # get the level and the score
     sn_cur.execute(r'''select internal_name, description, cycle_count, symbol_count, reactor_count
                          from solutions s, levels l
@@ -62,7 +62,8 @@ def load_solution(sol_id, replace_old_score):
         print(f'ERROR: Invalid solution id: {sol_id}')
         sys.exit()
 
-    write_level_id = write_backend.write_solution(solution, replace_old_score)
+    db_level_name, comment, *score = solution
+    write_level_id = write_backend.write_solution(db_level_name, score, comment, replace_base_sol)
 
     # get the reactors from db
     sn_cur.execute(r"""  select component_id, type, x, y
@@ -76,7 +77,7 @@ def load_solution(sol_id, replace_old_score):
         write_comp_id = write_backend.write_component(write_level_id, reactor)
 
         # get all its pipes
-        sn_cur.execute(r"select * from pipes where component_id = %s;", (comp_id,))
+        sn_cur.execute(r"select output_id, x, y from pipes where component_id = %s;", (comp_id,))
         pipes = ([], [])
         for pipe_point in sn_cur:
             pipes[pipe_point['output_id']].append(Point(pipe_point['x'], pipe_point['y']))
@@ -111,7 +112,7 @@ def main():
 
     for sol_id in args.sol_ids:
         print(f'Loading solution {sol_id}')
-        load_solution(sol_id, args.replace_scores)
+        load_solution(sol_id, args.replace_sols)
 
     write_backend.close()
 
@@ -122,7 +123,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--savefile", action="store", default=script_dir + r'/../saves/12345ieee/111.user')
-    parser.add_argument("--no-replace-scores", action="store_false", dest='replace_scores')
+    parser.add_argument("--no-replace-sols", action="store_false", dest='replace_sols')
     parser.add_argument("sol_ids", nargs='*', type=int, default=[47424])
     args = parser.parse_args()
 

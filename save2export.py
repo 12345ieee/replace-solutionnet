@@ -7,8 +7,9 @@ import pathlib
 import shutil
 import sqlite3
 
-import io
 import schem
+
+from db.write_backends import ExportWriteBackend
 
 
 def main():
@@ -28,9 +29,9 @@ def main():
         conn.row_factory = sqlite3.Row
         # we use cycles != 0 as a good proxy for finished
         if args.levels is None:
-            levels = conn.execute(f"SELECT id, cycles, reactors, symbols, mastered "
-                                  f"FROM Level "
-                                  f"WHERE id not like 'custom-%' AND cycles != 0 ")
+            levels = conn.execute("SELECT id, cycles, reactors, symbols, mastered "
+                                  "FROM Level "
+                                  "WHERE id not like 'custom-%' AND cycles != 0 ")
         else:
             levels = conn.execute(f"SELECT id, cycles, reactors, symbols, mastered "
                                   f"FROM Level "
@@ -54,12 +55,8 @@ def main():
 
 
 def read_solution(clean_id, conn, level, save2name) -> str:
-    f = io.StringIO()
-
-    level_name = save2name[clean_id]
-    comma_name = ',' + level['mastered'] if level['mastered'] != 0 else ''
-    print(f"SOLUTION:{level_name},{args.player_name},"
-          f"{level['cycles']}-{level['reactors']}-{level['symbols']}{comma_name}", file=f)
+    write_backend = ExportWriteBackend(args.player_name, save2name)
+    write_backend.write_solution(clean_id, level[1:4], level['mastered'])
 
     components = conn.execute("SELECT rowid,type,x,y,name "
                               "FROM component "
@@ -67,35 +64,29 @@ def read_solution(clean_id, conn, level, save2name) -> str:
                               "ORDER BY rowid",
                               (level["id"],))
     for component in components:
-        print("COMPONENT:'{0}',{1},{2},''".format(component["type"], component["x"], component["y"]), file=f)
+        write_backend.write_component(None, component)
+
         members = conn.execute("SELECT type,arrow_dir,choice,layer,x,y,element_type,element "
                                "FROM Member "
                                "WHERE component_id=? "
                                "ORDER BY rowid",
                                (component["rowid"],))
-        for member in members:
-            print("MEMBER:'{}',{},{},{},{},{},{},{}".format(member["type"], member["arrow_dir"],
-                                                            member["choice"], member["layer"],
-                                                            member["x"], member["y"],
-                                                            member["element_type"], member["element"]), file=f)
+        write_backend.write_members(None, members)
+
         pipes = conn.execute("SELECT output_id,x,y "
                              "FROM Pipe "
                              "WHERE component_id=? "
                              "ORDER BY rowid",
                              (component["rowid"],))
-        for pipe in pipes:
-            print("PIPE:{},{},{}".format(pipe["output_id"], pipe["x"], pipe["y"]), file=f)
+        write_backend.write_pipes(None, pipes)
 
         annotations = conn.execute("SELECT output_id,expanded,x,y,annotation "
                                    "FROM Annotation "
                                    "WHERE component_id=?",
                                    (component["rowid"],))
-        for annotation in annotations:
-            annotation_str = annotation["annotation"].replace("\n", "\\n").replace("\r", "\\r")
-            print("ANNOTATION:{},{},{},{},'{}'".format(annotation["output_id"], annotation["expanded"],
-                                                       annotation["x"], annotation["y"], annotation_str), file=f)
+        write_backend.write_annotations(None, annotations)
 
-    return f.getvalue()
+    return write_backend.close()
 
 
 if __name__ == '__main__':

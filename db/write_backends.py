@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
-from abc import ABC, abstractmethod
 import sqlite3
+from abc import ABC, abstractmethod
+from io import StringIO
+
 
 class AbstractWriteBackend(ABC):
 
     @abstractmethod
-    def write_solution(self, solution, replace_base) -> str:
+    def write_solution(self, db_level_name, score, description, replace_base) -> str:
         pass
 
     @abstractmethod
@@ -18,7 +20,15 @@ class AbstractWriteBackend(ABC):
         pass
 
     @abstractmethod
+    def write_pipes(self, write_comp_id, pipes):
+        pass
+
+    @abstractmethod
     def write_members(self, write_comp_id, members):
+        pass
+
+    @abstractmethod
+    def write_annotations(self, write_comp_id, annotations):
         pass
 
     @abstractmethod
@@ -30,8 +40,7 @@ class SaveWriteBackend(AbstractWriteBackend):
         self.sv_conn = sqlite3.connect(savefile)
         self.sv_cur = self.sv_conn.cursor()
 
-    def write_solution(self, solution, replace_base=True) -> str:
-        db_level_name, comment, *triplet = solution
+    def write_solution(self, db_level_name, score, description, replace_base=True) -> str:
 
         if replace_base:
             # delete base sol
@@ -41,7 +50,7 @@ class SaveWriteBackend(AbstractWriteBackend):
             db_level_id = db_level_name
             self.sv_cur.execute(r"""INSERT INTO Level
                                     VALUES (?, 1, 0, ?, ?, ?, ?, ?, ?)""",
-                                    [db_level_id, *triplet, *triplet])
+                                    [db_level_id, *score, *score])
         else:
             # find the largest CE sol used
             self.sv_cur.execute(r"""SELECT MAX(CAST(SUBSTR(id, INSTR(id, '!') + 1) AS int))
@@ -52,8 +61,8 @@ class SaveWriteBackend(AbstractWriteBackend):
 
             db_level_id = db_level_name + '!' + target
             self.sv_cur.execute(r"""INSERT INTO Level
-                                    VALUES (?, 0, ?, ?, ?, ?, ?, ?, ?)""",
-                                    [db_level_id, comment, *triplet, 0, 0, 0])
+                                    VALUES (?, 0, ?, ?, ?, ?, 0, 0, 0)""",
+                                    [db_level_id, description, *score])
         return db_level_id
 
     def delete_solution(self, db_level_id):
@@ -88,11 +97,67 @@ class SaveWriteBackend(AbstractWriteBackend):
         pipe = [(write_comp_id, out_id, pipe_point.x, pipe_point.y) for pipe_point in ordered_pipe]
         self.sv_cur.executemany(r"INSERT INTO Pipe VALUES (?, ?, ?, ?)", pipe)
 
+    def write_pipes(self, write_comp_id, pipes):
+        db_pipes = [(write_comp_id, pipe_point.output_id, pipe_point.x, pipe_point.y) for pipe_point in pipes]
+        self.sv_cur.executemany(r"INSERT INTO Pipe VALUES (?, ?, ?, ?)", db_pipes)
+
+
     def write_members(self, write_comp_id, members):
         db_members = [(write_comp_id, *member) for member in members]
         self.sv_cur.executemany(r"""INSERT INTO Member
-                                VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", db_members)
+                                    VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", db_members)
+
+    def write_annotations(self, write_comp_id, annotations):
+        db_annotations = [(write_comp_id, annotation["output_id"], annotation["expanded"],
+                           annotation["x"], annotation["y"], annotation["annotation"])
+                          for annotation in annotations]
+        self.sv_cur.executemany(r"""INSERT INTO Annotation
+                                    VALUES (?, ?, ?, ?, ?, ?)""", db_annotations)
 
     def close(self):
         self.sv_conn.commit()
         self.sv_conn.close()
+
+class ExportWriteBackend(AbstractWriteBackend):
+    def __init__(self, player_name, save2name) -> None:
+        self.f = StringIO()
+        self.player_name = player_name
+        self.save2name = save2name
+
+    def write_solution(self, db_level_name, score, description, replace_base=None):
+        level_name = self.save2name[db_level_name]
+        comma_name = ',' + description if description != 0 else ''
+        print(f"SOLUTION:{level_name},{self.player_name},{'-'.join(map(str, score))}{comma_name}",
+              file=self.f)
+
+    def write_component(self, write_level_id, component):
+        print("COMPONENT:'{0}',{1},{2},''".format(component["type"], component["x"], component["y"]),
+              file=self.f)
+
+    def write_pipe(self, write_comp_id, out_id, ordered_pipe):
+        for pipe_point in ordered_pipe:
+            print("PIPE:{},{},{}".format(out_id, pipe_point["x"], pipe_point["y"]),
+                  file=self.f)
+
+    def write_pipes(self, write_comp_id, pipes):
+        for pipe_point in pipes:
+            print("PIPE:{},{},{}".format(pipe_point["output_id"], pipe_point["x"], pipe_point["y"]),
+                  file=self.f)
+
+    def write_members(self, write_comp_id, members):
+        for member in members:
+            print("MEMBER:'{}',{},{},{},{},{},{},{}".format(member["type"], member["arrow_dir"],
+                                                            member["choice"], member["layer"],
+                                                            member["x"], member["y"],
+                                                            member["element_type"], member["element"]),
+                  file=self.f)
+
+    def write_annotations(self, write_comp_id, annotations):
+        for annotation in annotations:
+            annotation_str = annotation["annotation"].replace("\n", "\\n").replace("\r", "\\r")
+            print("ANNOTATION:{},{},{},{},'{}'".format(annotation["output_id"], annotation["expanded"],
+                                                       annotation["x"], annotation["y"], annotation_str),
+                  file=self.f)
+
+    def close(self) -> str:
+        return self.f.getvalue()
