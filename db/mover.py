@@ -3,16 +3,18 @@
 import argparse
 import collections
 import csv
-import sqlite3
 import os
+import sys
 
 import psycopg2
 import psycopg2.extras
 
+from write_backends import SaveWriteBackend
+
 Point = collections.namedtuple('Point', ['x', 'y'])
 
 sn_cur = None
-sv_cur = None
+write_backend = None
 seeds = {}
 
 def reorder_pipe(pipe, seed):
@@ -51,43 +53,16 @@ def reorder_pipe(pipe, seed):
 
 def load_solution(sol_id, replace_old_score):
     # get the level and the score
-    sn_cur.execute(r'''select internal_name, cycle_count, symbol_count, reactor_count
+    sn_cur.execute(r'''select internal_name, description, cycle_count, symbol_count, reactor_count
                          from solutions s, levels l
                         where s.level_id = l.level_id
                           and s.solution_id = %s;''', (sol_id,))
     solution = sn_cur.fetchone()
     if solution is None:
         print(f'ERROR: Invalid solution id: {sol_id}')
-        exit()
-    int_level_name = solution['internal_name']
-    triplet = solution[1:]
+        sys.exit()
 
-    # check if the level has a solution already
-    sv_cur.execute(r"SELECT count(*) from Level where id = ?", (int_level_name,))
-    count = sv_cur.fetchone()[0]
-    if count == 0:
-        # need to insert the level
-        print(f'Adding new solution to {int_level_name}')
-        sv_cur.execute(r"""INSERT INTO Level
-                           VALUES (?, 1, 0, ?, ?, ?, ?, ?, ?)""", [int_level_name, *triplet, *triplet])
-    else:
-        # there's already a solution (possibly empty) in the file
-        if not replace_old_score:
-            print(f'There\'s already a solution to {int_level_name}, doing nothing')
-            return
-
-        print(f'Replacing previous solution to {int_level_name}')
-        sv_cur.execute(r"""UPDATE Level
-                           SET passed = 1, mastered = 0, cycles = ?, symbols = ?, reactors = ?
-                           WHERE id = ?""", triplet + [int_level_name])
-        # delete everything (Component, Member, Annotation, Pipe, UndoPtr, Undo) about the old solution
-        sv_cur.execute(r'SELECT rowid FROM Component WHERE level_id = ?', (int_level_name,))
-        comp_ids = [row[0] for row in sv_cur.fetchall()]
-        qm_list = ','.join('?'*len(comp_ids))
-        for table in ['Member', 'Annotation', 'Pipe']:
-            sv_cur.execute(fr'DELETE FROM {table} WHERE component_id in ({qm_list})', comp_ids)
-        for table in ['Component', 'UndoPtr', 'Undo']:
-            sv_cur.execute(fr'DELETE FROM {table} WHERE level_id = ?', (int_level_name,))
+    write_level_id = write_backend.write_solution(solution, replace_old_score)
 
     # get the reactors from db
     sn_cur.execute(r"""  select component_id, type, x, y
@@ -98,10 +73,7 @@ def load_solution(sol_id, replace_old_score):
 
     for reactor in reactors:
         comp_id = reactor['component_id']
-        sv_cur.execute(r"""INSERT INTO Component
-                           VALUES (NULL, ?, ?, ?, ?, NULL, 200, 255, 0)""",
-                                  [int_level_name, reactor['type'], reactor['x'], reactor['y']])
-        seq_comp = sv_cur.lastrowid
+        write_comp_id = write_backend.write_component(write_level_id, reactor)
 
         # get all its pipes
         sn_cur.execute(r"select * from pipes where component_id = %s;", (comp_id,))
@@ -112,30 +84,27 @@ def load_solution(sol_id, replace_old_score):
             if not pipe:
                 continue
             reordered_pipe = reorder_pipe(pipe, seeds[(reactor['type'], out_id)])
-            for pipe_point in reordered_pipe:
-                sv_cur.execute(r"INSERT INTO Pipe VALUES (?, ?, ?, ?)", (seq_comp, out_id, pipe_point.x, pipe_point.y))
+            write_backend.write_pipe(write_comp_id, out_id, reordered_pipe)
 
         # get all its symbols
-        sn_cur.execute(r"select * from members where component_id = %s;", (comp_id,))
-        for symbol in sn_cur:
-            sv_cur.execute(r"""INSERT INTO Member
-                               VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                               [seq_comp] + symbol[2:])
+        sn_cur.execute(r"""SELECT type, arrow_dir, choice, layer, x, y, element_type, element
+                           FROM members
+                           WHERE component_id = %s;""", (comp_id,))
+        write_backend.write_members(write_comp_id, sn_cur)
 
 def main():
     global sn_cur
-    global sv_cur
+    global write_backend
     global seeds
 
     # connections
     sn_conn = psycopg2.connect(dbname='solutionnet')
     sn_cur = sn_conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-    sv_conn = sqlite3.connect(args.savefile)
-    sv_cur = sv_conn.cursor()
+    write_backend = SaveWriteBackend(args.savefile)
 
     # populate seeds map
-    with open('seeds.csv') as levelscsv:
+    with open(script_dir + '/seeds.csv') as levelscsv:
         reader = csv.DictReader(levelscsv, skipinitialspace=True)
         for row in reader:
             seeds[(row['type'], int(row['output']))] = Point(int(row['x']), int(row['y']))
@@ -144,14 +113,15 @@ def main():
         print(f'Loading solution {sol_id}')
         load_solution(sol_id, args.replace_scores)
 
-    sv_conn.commit()
-    sv_conn.close()
+    write_backend.close()
 
 
 if __name__ == '__main__':
-    save_path = os.path.dirname(os.path.realpath(__file__)) + r'/../saves/12345ieee/111.user'
+    # script directory
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+
     parser = argparse.ArgumentParser()
-    parser.add_argument("-s", "--savefile", action="store", default=save_path)
+    parser.add_argument("-s", "--savefile", action="store", default=script_dir + r'/../saves/12345ieee/111.user')
     parser.add_argument("--no-replace-scores", action="store_false", dest='replace_scores')
     parser.add_argument("sol_ids", nargs='*', type=int, default=[47424])
     args = parser.parse_args()
