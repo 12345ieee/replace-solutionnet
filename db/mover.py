@@ -23,13 +23,13 @@ def reorder_pipe(pipe, seed):
     field = [[0]*y_size for _ in range(x_size)]
     for pt in pipe:
         field[pt.x][pt.y] = 1
-    
+
     output = [seed]
     if field[seed.x][seed.y] == 0:
         # bad stuff happened
         print(f'Seed {seed} not found')
         return output
-    
+
     prev = None
     curr = seed
     while True:
@@ -48,7 +48,7 @@ def reorder_pipe(pipe, seed):
             if len(output) != len(pipe):
                 print('Incomplete piping')
             return output
-    
+
 
 def load_solution(sol_id, replace_old_score):
     global seq_comp
@@ -64,7 +64,7 @@ def load_solution(sol_id, replace_old_score):
         exit()
     int_level_name = solution['internal_name']
     triplet = solution[1:]
-    
+
     # check if the level has a solution already
     sv_cur.execute(r"SELECT count(*) from Level where id = ?", (int_level_name,))
     count = sv_cur.fetchone()[0]
@@ -78,7 +78,7 @@ def load_solution(sol_id, replace_old_score):
         if not replace_old_score:
             print(f'There\'s already a solution to {int_level_name}, doing nothing')
             return
-        
+
         print(f'Replacing previous solution to {int_level_name}')
         sv_cur.execute(r"""UPDATE Level
                            SET passed = 1, mastered = 0, cycles = ?, symbols = ?, reactors = ?
@@ -91,7 +91,7 @@ def load_solution(sol_id, replace_old_score):
             sv_cur.execute(fr'DELETE FROM {table} WHERE component_id in ({qm_list})', comp_ids)
         for table in ['Component', 'UndoPtr', 'Undo']:
             sv_cur.execute(fr'DELETE FROM {table} WHERE level_id = ?', (int_level_name,))
-    
+
     # get the reactors from db
     sn_cur.execute(r"""  select component_id, type, x, y
                            from components
@@ -105,7 +105,7 @@ def load_solution(sol_id, replace_old_score):
         sv_cur.execute(r"""INSERT INTO Component
                            VALUES (?, ?, ?, ?, ?, NULL, 200, 255, 0)""",
                                   [seq_comp, int_level_name, reactor['type'], reactor['x'], reactor['y']])
-        
+
         # get all its pipes
         sn_cur.execute(r"select * from pipes where component_id = %s;", (comp_id,))
         pipes = ([], [])
@@ -117,7 +117,7 @@ def load_solution(sol_id, replace_old_score):
             reordered_pipe = reorder_pipe(pipe, seeds[(reactor['type'], out_id)])
             for pipe_point in reordered_pipe:
                 sv_cur.execute(r"INSERT INTO Pipe VALUES (?, ?, ?, ?)", (seq_comp, out_id, pipe_point.x, pipe_point.y))
-        
+
         # get all its symbols
         sn_cur.execute(r"select * from members where component_id = %s;", (comp_id,))
         for symbol in sn_cur:
@@ -132,28 +132,28 @@ def main(args):
     global seq_comp
     global seq_memb
     global seeds
-    
+
     # connections
     sn_conn = psycopg2.connect(dbname='solutionnet')
     sn_cur = sn_conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    
+
     sv_conn = sqlite3.connect(args.savefile)
     sv_cur = sv_conn.cursor()
-    
+
     # get the sequences
     seqs = sv_cur.execute('select seq from sqlite_sequence order by 1')
     seq_comp, seq_memb = (int(seq[0]) for seq in seqs)
-    
+
     # populate seeds map
     with open('seeds.csv') as levelscsv:
         reader = csv.DictReader(levelscsv, skipinitialspace=True)
         for row in reader:
             seeds[(row['type'], int(row['output']))] = Point(int(row['x']), int(row['y']))
-    
+
     for sol_id in args.sol_ids:
         print(f'Loading solution {sol_id}')
         load_solution(sol_id, args.replace_scores)
-    
+
     # write sequences
     sv_cur.execute(fr"""UPDATE sqlite_sequence
                         SET seq = CASE
@@ -165,7 +165,7 @@ def main(args):
 
 
 if __name__ == '__main__':
-    
+
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--savefile", action="store", default=r'saves/111.user')
     parser.add_argument("--no-replace-scores", action="store_false", dest='replace_scores')

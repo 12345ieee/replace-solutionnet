@@ -2,6 +2,13 @@
 
 set -e
 
+function init {
+    sudo apt install postgresql
+    sudo -u postgres createuser -s $(whoami)
+    createdb -T template0 solutionnet
+    psql solutionnet < solutionnet_cleaned_dump.sql
+}
+
 function get_scores {
     echo "Writing scores file"
     (cd '..'; ./parser.py --no-wiki -n > db/scores.txt)
@@ -10,7 +17,7 @@ function get_scores {
 # Build list files
 function build {
     echo "Building file lists"
-    
+
     grep -P '^[^|]+? \| Least Cycles(?: - Windows)? \|'    scores.txt > results/cycles_win.txt
     grep -P '^[^|]+? \| Least Cycles(?: - Linux)? \|'      scores.txt > results/cycles_lin.txt
     grep -P '^[^|]+? \| Least Cycles(?: - Unknown OS)? \|' scores.txt > results/cycles_uos.txt
@@ -31,7 +38,7 @@ function build {
 # Transfer solutions
 function transfer {
     echo "Filling saves"
-    
+
     rm results/*_reac.user
     for file in results/*.user; do cp $file ${file%.user}_reac.user; done
 
