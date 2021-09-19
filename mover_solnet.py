@@ -3,16 +3,15 @@
 import argparse
 import collections
 import csv
-import sys
 
 import psycopg2
 import psycopg2.extras
 
-from write_backends import SaveWriteBackend
+from write_backends import ExportWriteBackend, SaveWriteBackend, make_level_dicts
 
 Point = collections.namedtuple('Point', ['x', 'y'])
 
-sn_cur = None
+sn_cur: psycopg2.extensions.cursor
 write_backend = None
 seeds = {}
 
@@ -50,19 +49,10 @@ def reorder_pipe(pipe, seed):
             return output
 
 
-def load_solution(sol_id, replace_base_sol):
-    # get the level and the score
-    sn_cur.execute(r'''select internal_name, description, cycle_count, symbol_count, reactor_count
-                         from solutions s, levels l
-                        where s.level_id = l.level_id
-                          and s.solution_id = %s;''', (sol_id,))
-    solution = sn_cur.fetchone()
-    if solution is None:
-        print(f'ERROR: Invalid solution id: {sol_id}')
-        sys.exit()
-
-    db_level_name, comment, *score = solution
-    write_level_id = write_backend.write_solution(db_level_name, score, comment, replace_base_sol)
+def load_solution(solution, replace_base_sol):
+    sol_id, db_level_name, player_name, comment, c, s, r = solution
+    write_level_id = write_backend.write_solution(db_level_name, player_name, c, s, r,
+                                                  comment, replace_base_sol)
 
     # get the reactors from db
     sn_cur.execute(r"""  select component_id, type, x, y
@@ -75,6 +65,12 @@ def load_solution(sol_id, replace_base_sol):
         comp_id = reactor['component_id']
         write_comp_id = write_backend.write_component(write_level_id, reactor)
 
+        # get all its members
+        sn_cur.execute(r"""SELECT type, arrow_dir, choice, layer, x, y, element_type, element
+                           FROM members
+                           WHERE component_id = %s;""", (comp_id,))
+        write_backend.write_members(write_comp_id, sn_cur)
+
         # get all its pipes
         sn_cur.execute(r"select output_id, x, y from pipes where component_id = %s;", (comp_id,))
         pipes = ([], [])
@@ -86,11 +82,7 @@ def load_solution(sol_id, replace_base_sol):
             reordered_pipe = reorder_pipe(pipe, seeds[(reactor['type'], out_id)])
             write_backend.write_pipe(write_comp_id, out_id, reordered_pipe)
 
-        # get all its symbols
-        sn_cur.execute(r"""SELECT type, arrow_dir, choice, layer, x, y, element_type, element
-                           FROM members
-                           WHERE component_id = %s;""", (comp_id,))
-        write_backend.write_members(write_comp_id, sn_cur)
+    write_backend.commit(db_level_name if args.group_exports_by_level else sol_id, args.schem)
 
 def main():
     global sn_cur
@@ -101,7 +93,11 @@ def main():
     sn_conn = psycopg2.connect(dbname='solutionnet')
     sn_cur = sn_conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-    write_backend = SaveWriteBackend(args.savefile)
+    if args.file_save:
+        write_backend = SaveWriteBackend(args.file_save)
+    elif args.export_folder:
+        id2name, _ = make_level_dicts()
+        write_backend = ExportWriteBackend(id2name, args.export_folder)
 
     # populate seeds map
     with open('config/seeds.csv') as levelscsv:
@@ -109,25 +105,35 @@ def main():
         for row in reader:
             seeds[(row['type'], int(row['output']))] = Point(int(row['x']), int(row['y']))
 
+    query = r'''SELECT solution_id, internal_name, username, description,
+                       cycle_count, symbol_count, reactor_count
+                FROM solutions NATURAL JOIN levels NATURAL JOIN users'''
     if args.all:
-        sn_cur.execute(r'SELECT solution_id FROM solutions ORDER BY 1')
-        sol_ids = [s[0] for s in sn_cur]
+        sn_cur.execute(query + ' ORDER BY 1')
     else:
-        sol_ids = args.sol_ids
+        sn_cur.execute(query + ' WHERE solution_id in (%s)', (args.sol_ids,))
 
-    for sol_id in sol_ids:
+    solutions = sn_cur.fetchall()
+
+    for solution in solutions:
+        sol_id = solution['solution_id']
         print(f'Loading solution {sol_id}')
-        load_solution(sol_id, args.replace_sols)
+        load_solution(solution, args.replace_sols)
 
     write_backend.close()
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("-s", "--savefile", action="store", default=r'data/solnet.user')
+    gr_out = parser.add_mutually_exclusive_group(required=True)
+    gr_out.add_argument("-f", "--file-save", nargs="?", const=r'data/solnet.user')
+    gr_out.add_argument("-e", "--export-folder", nargs="?", const=r'exports')
+    gr_in = parser.add_mutually_exclusive_group()
+    gr_in.add_argument("--all", action="store_true")
+    gr_in.add_argument("sol_ids", nargs='*', type=int, default=[47424])
     parser.add_argument("--replace-sols", default=True, action=argparse.BooleanOptionalAction)
-    parser.add_argument("--all", action="store_true")
-    parser.add_argument("sol_ids", nargs='*', type=int, default=[47424])
+    parser.add_argument("--group-exports-by-level", default=False, action=argparse.BooleanOptionalAction)
+    parser.add_argument("-s", "--schem", default=False, action=argparse.BooleanOptionalAction)
     args = parser.parse_args()
 
     main()

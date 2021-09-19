@@ -13,7 +13,7 @@ function transfer {
     echo "Filling save"
 
     cp data/{new,solnet}.user
-    ./mover.py -s data/solnet.user --no-replace-sols --all
+    ./solnet_mover.py -s data/solnet.user --no-replace-sols --all
 }
 
 transfer

@@ -1,29 +1,14 @@
 #!/usr/bin/python3
 
 import argparse
-import csv
-import os
 import pathlib
-import shutil
 import sqlite3
 
-import schem
-
-from write_backends import ExportWriteBackend
+from write_backends import ExportWriteBackend, make_level_dicts
 
 
 def main():
-    id2name = dict()
-    name2id = dict()
-
-    with open('config/levels.csv') as levels_csv:
-        reader = csv.DictReader(levels_csv, skipinitialspace=True)
-        for row in reader:
-            id2name[row['saveId']] = row['name']
-            name2id[row['name']] = row['saveId']
-
-    shutil.rmtree('exports')
-    os.mkdir('exports')
+    id2name, name2id = make_level_dicts()
 
     with sqlite3.connect(args.file) as conn:
         conn.row_factory = sqlite3.Row
@@ -38,26 +23,19 @@ def main():
                                   f"WHERE id in ({','.join('?' * len(args.levels))}) AND cycles != 0 ",
                                   [name2id[lev] for lev in args.levels])
 
+        write_backend = ExportWriteBackend(id2name, 'exports')
+
         for level in levels:
             # CE extra sols are stored as `id!progressive`
             clean_id = level['id'].split('!')[0]
-            export = read_solution(clean_id, conn, level, id2name)
-
-            if args.schem:
-                try:
-                    schem.validate(export, verbose=True)
-                except Exception as e:
-                    print(f"{type(e).__name__}: {e}")
-                    continue
-
-            with open(f"exports/{clean_id}.txt", "a") as f:
-                print(export, file=f, end='')
+            write_backend.write_solution(clean_id, args.player_name, level['cycles'],
+                                         level['symbols'], level['reactors'], level['mastered'])
+            read_solution(conn, level, write_backend)
+            write_backend.commit(clean_id, args.schem)
+        write_backend.close()
 
 
-def read_solution(clean_id, conn, level, save2name) -> str:
-    write_backend = ExportWriteBackend(args.player_name, save2name)
-    write_backend.write_solution(clean_id, level[1:4], level['mastered'])
-
+def read_solution(conn, level, write_backend):
     components = conn.execute("SELECT rowid,type,x,y,name "
                               "FROM component "
                               "WHERE level_id=? "
@@ -85,8 +63,6 @@ def read_solution(clean_id, conn, level, save2name) -> str:
                                    "WHERE component_id=?",
                                    (component["rowid"],))
         write_backend.write_annotations(None, annotations)
-
-    return write_backend.close()
 
 
 if __name__ == '__main__':
