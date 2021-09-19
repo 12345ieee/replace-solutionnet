@@ -4,6 +4,7 @@ import argparse
 import collections
 import csv
 import sqlite3
+import os
 
 import psycopg2
 import psycopg2.extras
@@ -12,8 +13,6 @@ Point = collections.namedtuple('Point', ['x', 'y'])
 
 sn_cur = None
 sv_cur = None
-seq_comp = None
-seq_memb = None
 seeds = {}
 
 def reorder_pipe(pipe, seed):
@@ -51,8 +50,6 @@ def reorder_pipe(pipe, seed):
 
 
 def load_solution(sol_id, replace_old_score):
-    global seq_comp
-    global seq_memb
     # get the level and the score
     sn_cur.execute(r'''select internal_name, cycle_count, symbol_count, reactor_count
                          from solutions s, levels l
@@ -101,10 +98,10 @@ def load_solution(sol_id, replace_old_score):
 
     for reactor in reactors:
         comp_id = reactor['component_id']
-        seq_comp += 1
         sv_cur.execute(r"""INSERT INTO Component
-                           VALUES (?, ?, ?, ?, ?, NULL, 200, 255, 0)""",
-                                  [seq_comp, int_level_name, reactor['type'], reactor['x'], reactor['y']])
+                           VALUES (NULL, ?, ?, ?, ?, NULL, 200, 255, 0)""",
+                                  [int_level_name, reactor['type'], reactor['x'], reactor['y']])
+        seq_comp = sv_cur.lastrowid
 
         # get all its pipes
         sn_cur.execute(r"select * from pipes where component_id = %s;", (comp_id,))
@@ -121,16 +118,13 @@ def load_solution(sol_id, replace_old_score):
         # get all its symbols
         sn_cur.execute(r"select * from members where component_id = %s;", (comp_id,))
         for symbol in sn_cur:
-            seq_memb += 1
             sv_cur.execute(r"""INSERT INTO Member
-                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                               [seq_memb, seq_comp] + symbol[2:])
+                               VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                               [seq_comp] + symbol[2:])
 
-def main(args):
+def main():
     global sn_cur
     global sv_cur
-    global seq_comp
-    global seq_memb
     global seeds
 
     # connections
@@ -139,10 +133,6 @@ def main(args):
 
     sv_conn = sqlite3.connect(args.savefile)
     sv_cur = sv_conn.cursor()
-
-    # get the sequences
-    seqs = sv_cur.execute('select seq from sqlite_sequence order by 1')
-    seq_comp, seq_memb = (int(seq[0]) for seq in seqs)
 
     # populate seeds map
     with open('seeds.csv') as levelscsv:
@@ -154,22 +144,16 @@ def main(args):
         print(f'Loading solution {sol_id}')
         load_solution(sol_id, args.replace_scores)
 
-    # write sequences
-    sv_cur.execute(fr"""UPDATE sqlite_sequence
-                        SET seq = CASE
-                                        WHEN name = 'Component' THEN {seq_comp}
-                                        WHEN name = 'Member'    THEN {seq_memb}
-                                  END""")
     sv_conn.commit()
     sv_conn.close()
 
 
 if __name__ == '__main__':
-
+    save_path = os.path.dirname(os.path.realpath(__file__)) + r'/../saves/12345ieee/111.user'
     parser = argparse.ArgumentParser()
-    parser.add_argument("-s", "--savefile", action="store", default=r'saves/111.user')
+    parser.add_argument("-s", "--savefile", action="store", default=save_path)
     parser.add_argument("--no-replace-scores", action="store_false", dest='replace_scores')
     parser.add_argument("sol_ids", nargs='*', type=int, default=[47424])
     args = parser.parse_args()
 
-    main(args)
+    main()
