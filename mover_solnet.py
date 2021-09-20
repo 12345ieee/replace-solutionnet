@@ -3,6 +3,8 @@
 import argparse
 import collections
 import csv
+import itertools
+import operator
 
 import psycopg2
 import psycopg2.extras
@@ -11,8 +13,6 @@ from write_backends import ExportWriteBackend, SaveWriteBackend, make_level_dict
 
 Point = collections.namedtuple('Point', ['x', 'y'])
 
-sn_cur: psycopg2.extensions.cursor
-write_backend = None
 seeds = {}
 
 def reorder_pipe(pipe, seed):
@@ -49,7 +49,7 @@ def reorder_pipe(pipe, seed):
             return output
 
 
-def load_solution(solution, replace_base_sol):
+def load_solution(sn_cur, write_backend, solution, replace_base_sol):
     sol_id, db_level_name, player_name, comment, c, s, r = solution
     write_level_id = write_backend.write_solution(db_level_name, player_name, c, s, r,
                                                   comment, replace_base_sol)
@@ -84,9 +84,30 @@ def load_solution(solution, replace_base_sol):
 
     write_backend.commit(db_level_name if args.group_exports_by_level else sol_id, args.schem)
 
+def clean_to_pareto(level_sols):
+    result = []
+    for _, solutions in level_sols:
+        pareto = []
+        for solution in solutions:
+            new_pareto = []
+            for stored in pareto:
+                if solution[4] >= stored[4] and solution[5] >= stored[5] and solution[6] >= stored[6]:
+                    # we are beaten by a solution in the stack
+                    break
+                elif solution[4] <= stored[4] and solution[5] <= stored[5] and solution[6] <= stored[6]:
+                    # we win against the old sol, we'll add once at the end
+                    pass
+                else:
+                    # no one won, we keep the old
+                    new_pareto.append(stored)
+            else:
+                # we didn't get beat, so we replace the paretos
+                new_pareto.append(solution)
+                pareto = new_pareto
+        result += pareto
+    return result
+
 def main():
-    global sn_cur
-    global write_backend
     global seeds
 
     # connections
@@ -109,16 +130,21 @@ def main():
                        cycle_count, symbol_count, reactor_count
                 FROM solutions NATURAL JOIN levels NATURAL JOIN users'''
     if args.all:
-        sn_cur.execute(query + ' ORDER BY 1')
+        if (args.pareto_only):
+            sn_cur.execute(query + ' ORDER BY internal_name')
+            level_sols = itertools.groupby(sn_cur, operator.itemgetter('internal_name'))
+            solutions = clean_to_pareto(level_sols)
+        else:
+            sn_cur.execute(query + ' ORDER BY 1')
+            solutions = sn_cur.fetchall()
     else:
         sn_cur.execute(query + ' WHERE solution_id in (%s)', (args.sol_ids,))
-
-    solutions = sn_cur.fetchall()
+        solutions = sn_cur.fetchall()
 
     for solution in solutions:
         sol_id = solution['solution_id']
         print(f'Loading solution {sol_id}')
-        load_solution(solution, args.replace_sols)
+        load_solution(sn_cur, write_backend, solution, args.replace_sols)
 
     write_backend.close()
 
@@ -133,6 +159,7 @@ if __name__ == '__main__':
     gr_in.add_argument("sol_ids", nargs='*', type=int, default=[47424])
     parser.add_argument("--replace-sols", default=True, action=argparse.BooleanOptionalAction)
     parser.add_argument("--group-exports-by-level", default=False, action=argparse.BooleanOptionalAction)
+    parser.add_argument("--pareto-only", default=False, action=argparse.BooleanOptionalAction)
     parser.add_argument("-s", "--schem", default=False, action=argparse.BooleanOptionalAction)
     args = parser.parse_args()
 
