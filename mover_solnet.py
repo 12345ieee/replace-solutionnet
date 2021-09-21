@@ -9,7 +9,7 @@ import operator
 import psycopg2
 import psycopg2.extras
 
-from write_backends import ExportWriteBackend, SaveWriteBackend, make_level_dicts
+from write_backends import AbstractWriteBackend, ExportWriteBackend, SaveWriteBackend, make_level_dicts
 
 Point = collections.namedtuple('Point', ['x', 'y'])
 
@@ -49,30 +49,29 @@ def reorder_pipe(pipe, seed):
             return output
 
 
-def load_solution(sn_cur, write_backend, solution, replace_base_sol):
+def load_solution(sn_cur, write_backend: AbstractWriteBackend, solution, replace_base_sol):
     sol_id, db_level_name, player_name, comment, c, s, r = solution
-    write_level_id = write_backend.write_solution(db_level_name, player_name, c, s, r,
-                                                  comment, replace_base_sol)
+    write_backend.write_solution(db_level_name, player_name, c, s, r, comment, replace_base_sol)
 
     # get the reactors from db
-    sn_cur.execute(r"""  select component_id, type, x, y
-                           from components
-                          where solution_id = %s
-                       order by component_id;""", (sol_id,))
+    sn_cur.execute(r"""  SELECT component_id, type, x, y
+                           FROM components
+                          WHERE solution_id = %s
+                       ORDER BY component_id""", (sol_id,))
     reactors = sn_cur.fetchall()
 
     for reactor in reactors:
         comp_id = reactor['component_id']
-        write_comp_id = write_backend.write_component(write_level_id, reactor)
+        write_backend.write_component(reactor)
 
         # get all its members
         sn_cur.execute(r"""SELECT type, arrow_dir, choice, layer, x, y, element_type, element
                            FROM members
-                           WHERE component_id = %s;""", (comp_id,))
-        write_backend.write_members(write_comp_id, sn_cur)
+                           WHERE component_id = %s""", (comp_id,))
+        write_backend.write_members(sn_cur)
 
         # get all its pipes
-        sn_cur.execute(r"select output_id, x, y from pipes where component_id = %s;", (comp_id,))
+        sn_cur.execute(r"SELECT output_id, x, y FROM pipes WHERE component_id = %s", (comp_id,))
         pipes = ([], [])
         for pipe_point in sn_cur:
             pipes[pipe_point['output_id']].append(Point(pipe_point['x'], pipe_point['y']))
@@ -80,9 +79,9 @@ def load_solution(sn_cur, write_backend, solution, replace_base_sol):
             if not pipe:
                 continue
             reordered_pipe = reorder_pipe(pipe, seeds[(reactor['type'], out_id)])
-            write_backend.write_pipe(write_comp_id, out_id, reordered_pipe)
+            write_backend.write_pipe(out_id, reordered_pipe)
 
-    write_backend.commit(db_level_name if args.group_exports_by_level else sol_id, args.schem)
+    write_backend.commit(db_level_name if args.group_exports_by_level else sol_id, args.schem, args.check_precog)
 
 def clean_to_pareto(level_sols):
     result = []
@@ -104,7 +103,7 @@ def clean_to_pareto(level_sols):
                 # we didn't get beat, so we replace the paretos
                 new_pareto.append(solution)
                 pareto = new_pareto
-        result += pareto
+        result += sorted(pareto, key=operator.itemgetter(4,6,5)) #crs
     return result
 
 def main():
@@ -116,7 +115,7 @@ def main():
 
     if args.file_save:
         write_backend = SaveWriteBackend(args.file_save)
-    elif args.export_folder:
+    else:
         id2name, _ = make_level_dicts()
         write_backend = ExportWriteBackend(id2name, args.export_folder)
 
@@ -130,7 +129,7 @@ def main():
                        cycle_count, symbol_count, reactor_count
                 FROM solutions NATURAL JOIN levels NATURAL JOIN users'''
     if args.all:
-        if (args.pareto_only):
+        if args.pareto_only:
             sn_cur.execute(query + ' ORDER BY internal_name')
             level_sols = itertools.groupby(sn_cur, operator.itemgetter('internal_name'))
             solutions = clean_to_pareto(level_sols)
@@ -161,6 +160,7 @@ if __name__ == '__main__':
     parser.add_argument("--group-exports-by-level", default=False, action=argparse.BooleanOptionalAction)
     parser.add_argument("--pareto-only", default=False, action=argparse.BooleanOptionalAction)
     parser.add_argument("-s", "--schem", default=False, action=argparse.BooleanOptionalAction)
+    parser.add_argument("--check-precog", default=False, action=argparse.BooleanOptionalAction)
     args = parser.parse_args()
 
     main()
