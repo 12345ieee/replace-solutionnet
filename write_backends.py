@@ -78,7 +78,8 @@ class SaveWriteBackend(AbstractWriteBackend):
             self.sv_cur.execute(r"""INSERT INTO Level
                                     VALUES (?, 0, ?, ?, ?, ?, 0, 0, 0)""",
                                     [db_level_id,
-                                     re.sub(r'\r?\n', ' ', description.strip()) or 'Unnamed Solution',
+                                     re.sub(r'\r?\n', ' ', description.strip())
+                                        if description else 'Unnamed Solution',
                                      c, s, r])
         self.db_level_id = db_level_id
 
