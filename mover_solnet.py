@@ -19,9 +19,9 @@ def reorder_pipe(pipe, seed):
     """Bounds: -24;30;-18;21"""
     x_size = 56
     y_size = 41
-    field = [[0]*y_size for _ in range(x_size)]
+    field = [['.']*y_size for _ in range(x_size)]
     for pt in pipe:
-        field[pt.x][pt.y] = 1
+        field[pt.x][pt.y] = 'p'
 
     output = [seed]
     if field[seed.x][seed.y] == 0:
@@ -29,23 +29,25 @@ def reorder_pipe(pipe, seed):
         print(f'Seed {seed} not found')
         return output
 
-    prev = None
+    def find_neighbours(curr):
+        return [Point(curr.x+dx, curr.y+dy) for dx,dy in [(1,0), (-1,0), (0,1), (0,-1)]
+                                            if field[curr.x+dx][curr.y+dy] == 'p']
+
     curr = seed
+    field[seed.x][seed.y] = 's'
     while True:
-        adiacence = [(curr.x+dx, curr.y+dy, field[curr.x+dx][curr.y+dy]) for dx,dy in [(1,0), (-1,0), (0,1), (0,-1)]]
-        s = sum(val[2] for val in adiacence)
-        if prev is None and s == 1:
-            # starting, good case
-            prev,curr = curr,Point(*([(x,y) for x,y,o in adiacence if o == 1][0]))
+        neighbours = find_neighbours(curr)
+        if len(neighbours) == 1:
+            # single direction, good case
+            curr = neighbours[0]
             output.append(curr)
-        elif prev is not None and s == 2:
-            # continuing, good case
-            prev,curr = curr,Point(*([(x,y) for x,y,o in adiacence if o == 1 and not (x == prev.x and y == prev.y)][0]))
-            output.append(curr)
+            # delete point from map
+            field[curr.x][curr.y] = 'a'
         else:
             # see if we've finished all the pipes
-            if len(output) != len(pipe):
-                print('Incomplete piping')
+            if len(neighbours) != 0:
+                #print('\n'.join(''.join(r[-18:] + r[:-18]) for r in field[-24:] + field[:-24]))
+                print(f'Incomplete piping ({len(pipe) - len(output)})')
             return output
 
 
