@@ -131,15 +131,17 @@ def main():
                        cycle_count, symbol_count, reactor_count
                 FROM solutions NATURAL JOIN levels NATURAL JOIN users'''
     if args.all:
-        if args.pareto_only:
-            sn_cur.execute(query + ' ORDER BY internal_name')
-            level_sols = itertools.groupby(sn_cur, operator.itemgetter('internal_name'))
-            solutions = clean_to_pareto(level_sols)
-        else:
-            sn_cur.execute(query + ' ORDER BY 1')
-            solutions = sn_cur.fetchall()
+        params = ()
     else:
-        sn_cur.execute(query + ' WHERE solution_id in (%s)', (args.sol_ids,))
+        query += ' WHERE solution_id in %s'
+        params = (tuple(args.sol_ids),)
+
+    if args.pareto_only:
+        sn_cur.execute(query + ' ORDER BY internal_name', params)
+        level_sols = itertools.groupby(sn_cur, operator.itemgetter('internal_name'))
+        solutions = clean_to_pareto(level_sols)
+    else:
+        sn_cur.execute(query + ' ORDER BY 1', params)
         solutions = sn_cur.fetchall()
 
     for solution in solutions:

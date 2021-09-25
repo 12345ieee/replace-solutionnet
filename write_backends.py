@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
+import csv
+import operator
 import os
+import re
 import shutil
 import sqlite3
-import csv
-import re
 
 from abc import ABC, abstractmethod
 from io import StringIO
@@ -14,6 +15,10 @@ import schem
 
 
 class AbstractWriteBackend(ABC):
+
+    @staticmethod
+    def encode(s: str) -> str:
+        return f"'{s}'" if ',' in s else s
 
     @abstractmethod
     def write_solution(self, db_level_name, player_name, c, s, r, description, replace_base):
@@ -40,12 +45,13 @@ class AbstractWriteBackend(ABC):
         pass
 
     @abstractmethod
-    def commit(self, name, validate=False, check_precog=False):
+    def commit(self, file_name, validate=False, check_precog=False):
         pass
 
     @abstractmethod
     def close(self):
         pass
+
 
 class SaveWriteBackend(AbstractWriteBackend):
     def __init__(self, savefile) -> None:
@@ -65,7 +71,7 @@ class SaveWriteBackend(AbstractWriteBackend):
             db_level_id = db_level_name
             self.sv_cur.execute(r"""INSERT INTO Level
                                     VALUES (?, 1, 0, ?, ?, ?, ?, ?, ?)""",
-                                    [db_level_id, c, s, r, c, s, r])
+                                [db_level_id, c, s, r, c, s, r])
         else:
             # find the largest CE sol used
             self.sv_cur.execute(r"""SELECT MAX(CAST(SUBSTR(id, INSTR(id, '!') + 1) AS int))
@@ -77,10 +83,10 @@ class SaveWriteBackend(AbstractWriteBackend):
             db_level_id = db_level_name + '!' + target
             self.sv_cur.execute(r"""INSERT INTO Level
                                     VALUES (?, 0, ?, ?, ?, ?, 0, 0, 0)""",
-                                    [db_level_id,
-                                     re.sub(r'\r?\n', ' ', description.strip())
-                                        if description else 'Unnamed Solution',
-                                     c, s, r])
+                                [db_level_id,
+                                 re.sub(r'\r?\n', ' ', description.strip())
+                                 if description else 'Unnamed Solution',
+                                 c, s, r])
         self.db_level_id = db_level_id
 
     def delete_solution(self, db_level_id):
@@ -102,7 +108,6 @@ class SaveWriteBackend(AbstractWriteBackend):
         for db_level_id in self.sv_cur.fetchall():
             self.delete_solution(db_level_id)
 
-
     def write_component(self, component):
         self.sv_cur.execute(r"""INSERT INTO Component
                                 VALUES (NULL, ?, ?, ?, ?, NULL, 200, 255, 0)""",
@@ -114,9 +119,9 @@ class SaveWriteBackend(AbstractWriteBackend):
         self.sv_cur.executemany(r"INSERT INTO Pipe VALUES (?, ?, ?, ?)", pipe)
 
     def write_pipes(self, pipes):
-        db_pipes = [(self.comp_id, pipe_point.output_id, pipe_point['x'], pipe_point['y']) for pipe_point in pipes]
+        db_pipes = [(self.comp_id, pipe_point.output_id, pipe_point['x'], pipe_point['y'])
+                    for pipe_point in pipes]
         self.sv_cur.executemany(r"INSERT INTO Pipe VALUES (?, ?, ?, ?)", db_pipes)
-
 
     def write_members(self, members):
         db_members = [(self.comp_id, *member) for member in members]
@@ -130,13 +135,14 @@ class SaveWriteBackend(AbstractWriteBackend):
         self.sv_cur.executemany(r"""INSERT INTO Annotation
                                     VALUES (?, ?, ?, ?, ?, ?)""", db_annotations)
 
-    def commit(self, name, validate=False, check_precog=False):
+    def commit(self, file_name, validate=False, check_precog=False):
         self.db_level_id = None
         self.comp_id = None
 
     def close(self):
         self.sv_conn.commit()
         self.sv_conn.close()
+
 
 class ExportWriteBackend(AbstractWriteBackend):
     def __init__(self, id2name, folder) -> None:
@@ -148,7 +154,7 @@ class ExportWriteBackend(AbstractWriteBackend):
         os.mkdir(folder)
 
     def write_solution(self, db_level_name, player_name, c, s, r, description: str, replace_base=None):
-        level_name = self.id2name[db_level_name]
+        level_name = self.encode(self.id2name[db_level_name])
         comma_name = ',' + re.sub(r'\r?\n', ' ', description.strip()) if (description and description != 0) else ''
         print(f"SOLUTION:{level_name},{player_name},{c}-{r}-{s}{comma_name}",
               file=self.f)
@@ -182,17 +188,29 @@ class ExportWriteBackend(AbstractWriteBackend):
                                                        annotation["x"], annotation["y"], annotation_str),
                   file=self.f)
 
-    def commit(self, name, validate=False, check_precog=False) -> str:
+    def commit(self, file_name, validate=False, check_precog=False) -> str:
         export = self.f.getvalue()
         if validate:
             try:
-                schem.run(export, validate_expected_score=True, check_precog=check_precog, verbose=True)
+                res = schem.run(export, validate_expected_score=False, return_json=True,
+                                check_precog=check_precog, verbose=True)
+
+                level_name, _, c, r, s, author, sol_name = operator.itemgetter('level_name', 'resnet_id',
+                    'cycles', 'reactors', 'symbols', 'author', 'solution_name')(res)
+                if check_precog and res['precog']:
+                    sol_name = '/P ' + (sol_name if sol_name else '')
+                comma_name = ',' + self.encode(sol_name) if sol_name else ''
+                export = re.sub(r"^(SOLUTION:(?:[^,]+|'(?:[^']|'')+'),[^,]+),"
+                                r"(?:\d+-\d+-\d+)"
+                                r"(?:,.*)?$",
+                                rf"\1,{c}-{r}-{s}{comma_name}", export, 1, re.MULTILINE)
+                print(f'Validated [{level_name}] {c}-{r}-{s} by {author}')
             except Exception as e:
                 print(f"{type(e).__name__}: {e}")
                 self.f = StringIO()
                 return export
 
-        with open(f"{self.folder}/{name}.txt", "a") as f:
+        with open(f"{self.folder}/{file_name}.txt", "a") as f:
             print(export, file=f, end='')
 
         self.f = StringIO()
