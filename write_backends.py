@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import csv
 import operator
 import os
@@ -145,6 +143,21 @@ class SaveWriteBackend(AbstractWriteBackend):
 
 
 class ExportWriteBackend(AbstractWriteBackend):
+
+    @staticmethod
+    def make_level_dicts() -> Tuple[dict, dict]:
+        """ Returns id2name, name2id"""
+        id2name = dict()
+        name2id = dict()
+
+        with open('config/levels.csv') as levels_csv:
+            reader = csv.DictReader(levels_csv, skipinitialspace=True)
+            for row in reader:
+                id2name[row['saveId']] = row['name']
+                name2id[row['name']] = row['saveId']
+
+        return id2name, name2id
+
     def __init__(self, id2name, folder) -> None:
         self.f = StringIO()
         self.id2name = id2name
@@ -220,15 +233,28 @@ class ExportWriteBackend(AbstractWriteBackend):
         pass
 
 
-def make_level_dicts() -> Tuple[dict, dict]:
-    """ Returns id2name, name2id"""
-    id2name = dict()
-    name2id = dict()
+class NoopWriteBackend(AbstractWriteBackend):
 
-    with open('config/levels.csv') as levels_csv:
-        reader = csv.DictReader(levels_csv, skipinitialspace=True)
-        for row in reader:
-            id2name[row['saveId']] = row['name']
-            name2id[row['name']] = row['saveId']
+    def write_solution(self, db_level_name, player_name, c, s, r, description, replace_base):
+        pass
 
-    return id2name, name2id
+    def write_component(self, component):
+        pass
+
+    def write_pipe(self, out_id, ordered_pipe):
+        pass
+
+    def write_pipes(self, pipes):
+        pass
+
+    def write_members(self, members):
+        pass
+
+    def write_annotations(self, annotations):
+        pass
+
+    def commit(self, file_name, validate=False, check_precog=False):
+        pass
+
+    def close(self):
+        pass

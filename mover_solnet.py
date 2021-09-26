@@ -9,7 +9,7 @@ import operator
 import psycopg2
 import psycopg2.extras
 
-from write_backends import AbstractWriteBackend, ExportWriteBackend, SaveWriteBackend, make_level_dicts
+from write_backends import AbstractWriteBackend, ExportWriteBackend, NoopWriteBackend, SaveWriteBackend
 
 Point = collections.namedtuple('Point', ['x', 'y'])
 
@@ -23,32 +23,48 @@ def reorder_pipe(pipe, seed):
     for pt in pipe:
         field[pt.x][pt.y] = 'p'
 
-    output = [seed]
-    if field[seed.x][seed.y] == 0:
-        # bad stuff happened
-        print(f'Seed {seed} not found')
-        return output
-
     def find_neighbours(curr):
         return [Point(curr.x+dx, curr.y+dy) for dx,dy in [(1,0), (-1,0), (0,1), (0,-1)]
                                             if field[curr.x+dx][curr.y+dy] == 'p']
 
+    def print_board(header, field):
+        print(header + '\n' + '\n'.join(l for l in (''.join(r[-18:] + r[:-18])
+                                                    for r in field[-24:] + field[:-24])
+                                          if l != '.' * 41))
+
     curr = seed
+    output = [seed]
     field[seed.x][seed.y] = 's'
+    backtracking_stack = []
+    backtracking_counter = 0
     while True:
         neighbours = find_neighbours(curr)
-        if len(neighbours) == 1:
-            # single direction, good case
-            curr = neighbours[0]
-            output.append(curr)
-            # delete point from map
-            field[curr.x][curr.y] = 'a'
-        else:
+        if len(neighbours) == 0:
             # see if we've finished all the pipes
-            if len(neighbours) != 0:
-                #print('\n'.join(''.join(r[-18:] + r[:-18]) for r in field[-24:] + field[:-24]))
-                print(f'Incomplete piping ({len(pipe) - len(output)})')
-            return output
+            if len(pipe) == len(output):
+                return output
+
+            # know when to fold em
+            backtracking_counter += 1
+            if backtracking_counter == 2000:
+                res = output[:-len(backtracking_stack)]
+                print_board(f'Incomplete piping ({len(res)}, {len(pipe) - len(res)})', field)
+                return res
+
+            # find divergence point
+            while not neighbours:
+                curr = output.pop()
+                field[curr.x][curr.y] = 'p'
+                neighbours = backtracking_stack.pop()
+
+        # we try one, if needed backtrack later
+        curr = neighbours[0]
+        output.append(curr)
+        if len(neighbours) > 1 or len(backtracking_stack) > 0:
+            backtracking_stack.append(neighbours[1:])
+            field[curr.x][curr.y] = 't'
+        else:
+            field[curr.x][curr.y] = 'a'
 
 
 def load_solution(sn_cur, write_backend: AbstractWriteBackend, solution, replace_base_sol):
@@ -117,9 +133,11 @@ def main():
 
     if args.file_save:
         write_backend = SaveWriteBackend(args.file_save)
-    else:
-        id2name, _ = make_level_dicts()
+    elif args.export_folder:
+        id2name, _ = ExportWriteBackend.make_level_dicts()
         write_backend = ExportWriteBackend(id2name, args.export_folder)
+    else:
+        write_backend = NoopWriteBackend()
 
     # populate seeds map
     with open('config/seeds.csv') as levelscsv:
@@ -154,9 +172,8 @@ def main():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    gr_out = parser.add_mutually_exclusive_group(required=True)
-    gr_out.add_argument("-f", "--file-save", nargs="?", const=r'data/solnet.user')
-    gr_out.add_argument("-e", "--export-folder", nargs="?", const=r'exports')
+    parser.add_argument("-f", "--file-save", nargs="?", const=r'data/solnet.user')
+    parser.add_argument("-e", "--export-folder", nargs="?", const=r'exports')
     gr_in = parser.add_mutually_exclusive_group()
     gr_in.add_argument("--all", action="store_true")
     gr_in.add_argument("sol_ids", nargs='*', type=int, default=[47424])

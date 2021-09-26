@@ -4,11 +4,11 @@ import argparse
 import pathlib
 import sqlite3
 
-from write_backends import ExportWriteBackend, make_level_dicts
+from write_backends import ExportWriteBackend
 
 
 def main():
-    id2name, name2id = make_level_dicts()
+    id2name, name2id = ExportWriteBackend.make_level_dicts()
 
     with sqlite3.connect(args.file) as conn:
         conn.row_factory = sqlite3.Row
