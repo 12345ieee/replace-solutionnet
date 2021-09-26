@@ -19,7 +19,7 @@ class AbstractWriteBackend(ABC):
         return f"'{s}'" if ',' in s else s
 
     @abstractmethod
-    def write_solution(self, db_level_name, player_name, c, s, r, description, replace_base):
+    def write_solution(self, db_level_name, author, c, s, r, description, replace_base):
         pass
 
     @abstractmethod
@@ -27,15 +27,11 @@ class AbstractWriteBackend(ABC):
         pass
 
     @abstractmethod
-    def write_pipe(self, out_id, ordered_pipe):
+    def write_members(self, members):
         pass
 
     @abstractmethod
     def write_pipes(self, pipes):
-        pass
-
-    @abstractmethod
-    def write_members(self, members):
         pass
 
     @abstractmethod
@@ -59,7 +55,7 @@ class SaveWriteBackend(AbstractWriteBackend):
         self.db_level_id: str
         self.comp_id: int
 
-    def write_solution(self, db_level_name, player_name, c, s, r, description: str, replace_base=True):
+    def write_solution(self, db_level_name, author, c, s, r, description: str, replace_base=True):
 
         if replace_base:
             # delete base sol
@@ -112,19 +108,14 @@ class SaveWriteBackend(AbstractWriteBackend):
                             [self.db_level_id, component['type'], component['x'], component['y']])
         self.comp_id = self.sv_cur.lastrowid
 
-    def write_pipe(self, out_id, ordered_pipe):
-        pipe = [(self.comp_id, out_id, pipe_point.x, pipe_point.y) for pipe_point in ordered_pipe]
-        self.sv_cur.executemany(r"INSERT INTO Pipe VALUES (?, ?, ?, ?)", pipe)
-
-    def write_pipes(self, pipes):
-        db_pipes = [(self.comp_id, pipe_point.output_id, pipe_point['x'], pipe_point['y'])
-                    for pipe_point in pipes]
-        self.sv_cur.executemany(r"INSERT INTO Pipe VALUES (?, ?, ?, ?)", db_pipes)
-
     def write_members(self, members):
         db_members = [(self.comp_id, *member) for member in members]
         self.sv_cur.executemany(r"""INSERT INTO Member
                                     VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", db_members)
+
+    def write_pipes(self, pipes):
+        db_pipes = [(self.comp_id, output_id, x, y) for output_id, x, y in pipes]
+        self.sv_cur.executemany(r"INSERT INTO Pipe VALUES (?, ?, ?, ?)", db_pipes)
 
     def write_annotations(self, annotations):
         db_annotations = [(self.comp_id, annotation["output_id"], annotation["expanded"],
@@ -158,33 +149,23 @@ class ExportWriteBackend(AbstractWriteBackend):
 
         return id2name, name2id
 
-    def __init__(self, id2name, folder) -> None:
+    def __init__(self, folder, id2name=None) -> None:
         self.f = StringIO()
-        self.id2name = id2name
         self.folder = folder
+        self.id2name = id2name or self.make_level_dicts()[0]
 
         shutil.rmtree(folder, ignore_errors=True)
         os.mkdir(folder)
 
-    def write_solution(self, db_level_name, player_name, c, s, r, description: str, replace_base=None):
+    def write_solution(self, db_level_name, author, c, s, r, description: str, replace_base=None):
         level_name = self.encode(self.id2name[db_level_name])
         comma_name = ',' + re.sub(r'\r?\n', ' ', description.strip()) if (description and description != 0) else ''
-        print(f"SOLUTION:{level_name},{player_name},{c}-{r}-{s}{comma_name}",
+        print(f"SOLUTION:{level_name},{author},{c}-{r}-{s}{comma_name}",
               file=self.f)
 
     def write_component(self, component):
         print("COMPONENT:'{0}',{1},{2},''".format(component["type"], component["x"], component["y"]),
               file=self.f)
-
-    def write_pipe(self, out_id, ordered_pipe):
-        for pipe_point in ordered_pipe:
-            print("PIPE:{},{},{}".format(out_id, pipe_point.x, pipe_point.y),
-                  file=self.f)
-
-    def write_pipes(self, pipes):
-        for pipe_point in pipes:
-            print("PIPE:{},{},{}".format(pipe_point["output_id"], pipe_point["x"], pipe_point["y"]),
-                  file=self.f)
 
     def write_members(self, members):
         for member in members:
@@ -193,6 +174,10 @@ class ExportWriteBackend(AbstractWriteBackend):
                                                             member["x"], member["y"],
                                                             member["element_type"], member["element"]),
                   file=self.f)
+
+    def write_pipes(self, pipes):
+        for output_id, x, y in pipes:
+            print("PIPE:{},{},{}".format(output_id, x, y), file=self.f)
 
     def write_annotations(self, annotations):
         for annotation in annotations:
@@ -235,20 +220,19 @@ class ExportWriteBackend(AbstractWriteBackend):
 
 class NoopWriteBackend(AbstractWriteBackend):
 
-    def write_solution(self, db_level_name, player_name, c, s, r, description, replace_base):
-        pass
+    def write_solution(self, db_level_name, author, c, s, r, description, replace_base):
+        print(f'Read [{db_level_name}] {c}-{r}-{s} by {author}')
 
     def write_component(self, component):
         pass
 
-    def write_pipe(self, out_id, ordered_pipe):
+    def write_members(self, members):
         pass
 
     def write_pipes(self, pipes):
-        pass
-
-    def write_members(self, members):
-        pass
+        # force pipe read to ensure pipe computation
+        for _ in pipes:
+            pass
 
     def write_annotations(self, annotations):
         pass

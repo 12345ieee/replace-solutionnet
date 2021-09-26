@@ -2,68 +2,42 @@
 
 import argparse
 import pathlib
-import sqlite3
 
 from write_backends import ExportWriteBackend
+from read_backends import SaveReadBackend
 
 
 def main():
     id2name, name2id = ExportWriteBackend.make_level_dicts()
 
-    with sqlite3.connect(args.file) as conn:
-        conn.row_factory = sqlite3.Row
-        # we use cycles != 0 as a good proxy for finished
-        if args.levels is None:
-            levels = conn.execute("SELECT id, cycles, reactors, symbols, mastered "
-                                  "FROM Level "
-                                  "WHERE id not like 'custom-%' AND cycles != 0 ")
-        else:
-            levels = conn.execute(f"SELECT id, cycles, reactors, symbols, mastered "
-                                  f"FROM Level "
-                                  f"WHERE id in ({','.join('?' * len(args.levels))}) AND cycles != 0 ",
-                                  [name2id[lev] for lev in args.levels])
+    read_backend = SaveReadBackend(args.file)
+    write_backend = ExportWriteBackend('exports', id2name)
 
-        write_backend = ExportWriteBackend(id2name, 'exports')
+    level_ids = [name2id[lev] for lev in args.levels] if args.levels else None
+    levels = read_backend.read_solutions(level_ids, pareto_only=False)
 
-        for level in levels:
-            # CE extra sols are stored as `id!progressive`
-            clean_id = level['id'].split('!')[0]
-            write_backend.write_solution(clean_id, args.player_name, level['cycles'],
-                                         level['symbols'], level['reactors'], level['mastered'])
-            read_solution(conn, level, write_backend)
-            write_backend.commit(clean_id, args.schem)
-        write_backend.close()
+    for level in levels:
+        # CE extra sols are stored as `id!progressive`
+        clean_id = level['id'].split('!')[0]
+        write_backend.write_solution(clean_id, args.player_name, level['cycles'],
+                                    level['symbols'], level['reactors'], level['mastered'])
 
+        components = read_backend.read_components(level["id"])
+        for component in components:
+            comp_id = component['rowid']
+            write_backend.write_component(component)
 
-def read_solution(conn, level, write_backend):
-    components = conn.execute("SELECT rowid,type,x,y,name "
-                              "FROM component "
-                              "WHERE level_id=? "
-                              "ORDER BY rowid",
-                              (level["id"],))
-    for component in components:
-        write_backend.write_component(None, component)
+            members = read_backend.read_members(comp_id)
+            write_backend.write_members(members)
 
-        members = conn.execute("SELECT type,arrow_dir,choice,layer,x,y,element_type,element "
-                               "FROM Member "
-                               "WHERE component_id=? "
-                               "ORDER BY rowid",
-                               (component["rowid"],))
-        write_backend.write_members(None, members)
+            pipes = read_backend.read_pipes(comp_id)
+            write_backend.write_pipes(pipes)
 
-        pipes = conn.execute("SELECT output_id,x,y "
-                             "FROM Pipe "
-                             "WHERE component_id=? "
-                             "ORDER BY rowid",
-                             (component["rowid"],))
-        write_backend.write_pipes(None, pipes)
+            annotations = read_backend.read_annotations(comp_id)
+            write_backend.write_annotations(annotations)
 
-        annotations = conn.execute("SELECT output_id,expanded,x,y,annotation "
-                                   "FROM Annotation "
-                                   "WHERE component_id=?",
-                                   (component["rowid"],))
-        write_backend.write_annotations(None, annotations)
-
+        write_backend.commit(clean_id, args.schem)
+    write_backend.close()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
