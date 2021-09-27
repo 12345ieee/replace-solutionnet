@@ -2,13 +2,13 @@
 
 import argparse
 
-from read_backends import SolnetReadBackend
+from read_backends import ExportReadBackend, SolnetReadBackend
 from write_backends import ExportWriteBackend, NoopWriteBackend, SaveWriteBackend
 
 
 def main():
 
-    read_backend = SolnetReadBackend()
+    read_backend = ExportReadBackend(args.read_from_folder) if args.read_from_folder else SolnetReadBackend()
 
     if args.file_save:
         write_backend = SaveWriteBackend(args.file_save)
@@ -19,10 +19,8 @@ def main():
 
     solutions = read_backend.read_solutions(args.sol_ids, args.pareto_only)
     for solution in solutions:
-        sol_id = solution['solution_id']
-        print(f'Loading solution {sol_id}')
-
         sol_id, db_level_name, player_name, comment, c, s, r = solution
+        print(f'Loading solution {sol_id}')
         write_backend.write_solution(db_level_name, player_name, c, s, r, comment, args.replace_sols)
 
         reactors = read_backend.read_components(sol_id)
@@ -51,6 +49,7 @@ if __name__ == '__main__':
     parser.add_argument("--replace-sols", default=True, action=argparse.BooleanOptionalAction)
     parser.add_argument("--group-exports-by-level", default=False, action=argparse.BooleanOptionalAction)
     parser.add_argument("--pareto-only", default=False, action=argparse.BooleanOptionalAction)
+    parser.add_argument("--read-from-folder", nargs="?", const=r'exports')
     parser.add_argument("-s", "--schem", default=False, action=argparse.BooleanOptionalAction)
     parser.add_argument("--check-precog", default=False, action=argparse.BooleanOptionalAction)
     args = parser.parse_args()

@@ -14,10 +14,6 @@ import schem
 
 class AbstractWriteBackend(ABC):
 
-    @staticmethod
-    def encode(s: str) -> str:
-        return f"'{s}'" if ',' in s else s
-
     @abstractmethod
     def write_solution(self, db_level_name, author, c, s, r, description, replace_base):
         pass
@@ -134,6 +130,10 @@ class SaveWriteBackend(AbstractWriteBackend):
 
 
 class ExportWriteBackend(AbstractWriteBackend):
+
+    @staticmethod
+    def encode(s: str) -> str:
+        return "'" + s.replace("'", "''") + "'" if ',' in s else s
 
     @staticmethod
     def make_level_dicts() -> Tuple[dict, dict]:

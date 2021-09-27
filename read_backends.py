@@ -4,10 +4,12 @@ import itertools
 import operator
 import sqlite3
 from abc import ABC, abstractmethod
+from pathlib import Path
 from typing import Iterable
 
 import psycopg2
 import psycopg2.extras
+import schem
 
 
 class AbstractReadBackend(ABC):
@@ -82,7 +84,7 @@ class SaveReadBackend(AbstractReadBackend):
         self.cur.execute(query, params)
 
         if pareto_only:
-            level_sols = itertools.groupby(self.cur, operator.itemgetter('internal_name'))
+            level_sols = itertools.groupby(self.cur, operator.itemgetter('id'))
             return self.clean_to_pareto(level_sols)
         else:
             return self.cur.fetchall()
@@ -232,6 +234,7 @@ class SolnetReadBackend(AbstractReadBackend):
     @classmethod
     def _build_pipe(cls, field, starting_output, target_len, target_point=None, iterations=2000, clean=False) -> list:
 
+        find_neighbours = cls.find_neighbours
         def is_neighbour(pt1: cls.Point, pt2: cls.Point) -> bool:
             return abs(pt1.x - pt2.x) <= 1 and abs(pt1.y - pt2.y) <= 1
 
@@ -240,7 +243,7 @@ class SolnetReadBackend(AbstractReadBackend):
         backtracking_stack = []
         backtracking_counter = 0
         while True:
-            neighbours = cls.find_neighbours(curr, field)
+            neighbours = find_neighbours(curr, field)
             if len(neighbours) == 0:
                 # see if we've finished all the pipes
                 if len(output) == target_len and (not target_point or is_neighbour(output[-1], target_point)):
@@ -274,3 +277,41 @@ class SolnetReadBackend(AbstractReadBackend):
 
     def close(self):
         self.conn.close()
+
+class ExportReadBackend(AbstractReadBackend):
+
+    def __init__(self, folder:str) -> None:
+        self.folder = folder
+
+    def read_solutions(self, ids: list, pareto_only: bool) -> Iterable:
+        sols = self._read_solution_files(ids)
+        if pareto_only:
+            level_sols = itertools.groupby(sorted(sols, key=operator.itemgetter(1)), operator.itemgetter(1))
+            return self.clean_to_pareto(level_sols)
+        else:
+            return sols
+
+    def _read_solution_files(self, ids: list) -> Iterable:
+        sol_files = Path(self.folder).glob('*.txt')
+        for sol_file in sol_files:
+            sol_id = int(sol_file.stem)
+            if not ids or (sol_id in ids):
+                with sol_file.open('r') as f:
+                    sol = schem.load_solution(f.read())
+                yield int(sol_file.stem), sol.level_name, sol.author, sol.description, \
+                      sol.expected_score[0], sol.expected_score[2], sol.expected_score[1]
+
+    def read_components(self, sol_id) -> Iterable:
+        return []
+
+    def read_members(self, comp_id):
+        return []
+
+    def read_pipes(self, comp_id, component_type=None):
+        return []
+
+    def read_annotations(self, comp_id):
+        return []
+
+    def close(self):
+        pass
