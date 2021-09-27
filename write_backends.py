@@ -190,7 +190,7 @@ class ExportWriteBackend(AbstractWriteBackend):
         export = self.f.getvalue()
         if validate:
             try:
-                res = schem.run(export, validate_expected_score=False, return_json=True,
+                res = schem.run(export, return_json=True,
                                 check_precog=check_precog, verbose=True)
 
                 level_name, _, c, r, s, author, sol_name = operator.itemgetter('level_name', 'resnet_id',
