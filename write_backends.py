@@ -159,7 +159,8 @@ class ExportWriteBackend(AbstractWriteBackend):
 
     def write_solution(self, db_level_name, author, c, s, r, description: str, replace_base=None):
         level_name = self.encode(self.id2name[db_level_name])
-        comma_name = ',' + re.sub(r'\r?\n', ' ', description.strip()) if (description and description != 0) else ''
+        comma_name = ',' + self.encode(re.sub(r'\r?\n', ' ', description.strip())) \
+                     if (description and description != 0) else ''
         print(f"SOLUTION:{level_name},{author},{c}-{r}-{s}{comma_name}",
               file=self.f)
 
