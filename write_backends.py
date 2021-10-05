@@ -11,6 +11,18 @@ from typing import Tuple
 
 import schem
 
+def make_level_dicts() -> Tuple[dict, dict]:
+    """ Returns id2name, name2id"""
+    id2name = dict()
+    name2id = dict()
+
+    with open('config/levels.csv') as levels_csv:
+        reader = csv.DictReader(levels_csv, skipinitialspace=True)
+        for row in reader:
+            id2name[row['saveId']] = row['name']
+            name2id[row['name']] = row['saveId']
+
+    return id2name, name2id
 
 class AbstractWriteBackend(ABC):
 
@@ -135,24 +147,10 @@ class ExportWriteBackend(AbstractWriteBackend):
     def encode(s: str) -> str:
         return "'" + s.replace("'", "''") + "'" if ',' in s else s
 
-    @staticmethod
-    def make_level_dicts() -> Tuple[dict, dict]:
-        """ Returns id2name, name2id"""
-        id2name = dict()
-        name2id = dict()
-
-        with open('config/levels.csv') as levels_csv:
-            reader = csv.DictReader(levels_csv, skipinitialspace=True)
-            for row in reader:
-                id2name[row['saveId']] = row['name']
-                name2id[row['name']] = row['saveId']
-
-        return id2name, name2id
-
-    def __init__(self, folder, id2name=None) -> None:
+    def __init__(self, folder, id2name) -> None:
         self.f = StringIO()
         self.folder = folder
-        self.id2name = id2name or self.make_level_dicts()[0]
+        self.id2name = id2name
 
         shutil.rmtree(folder, ignore_errors=True)
         os.mkdir(folder)

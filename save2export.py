@@ -3,12 +3,12 @@
 import argparse
 import pathlib
 
-from write_backends import ExportWriteBackend
+from write_backends import ExportWriteBackend, make_level_dicts
 from read_backends import SaveReadBackend
 
 
 def main():
-    id2name, name2id = ExportWriteBackend.make_level_dicts()
+    id2name, name2id = make_level_dicts()
 
     read_backend = SaveReadBackend(args.file)
     write_backend = ExportWriteBackend('exports', id2name)

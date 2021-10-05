@@ -3,17 +3,22 @@
 import argparse
 
 from read_backends import ExportReadBackend, SolnetReadBackend
-from write_backends import ExportWriteBackend, NoopWriteBackend, SaveWriteBackend
+from write_backends import ExportWriteBackend, NoopWriteBackend, SaveWriteBackend, make_level_dicts
 
 
 def main():
+    if args.read_from_folder or args.export_folder:
+        id2name, name2id = make_level_dicts()
 
-    read_backend = ExportReadBackend(args.read_from_folder) if args.read_from_folder else SolnetReadBackend()
+    if args.read_from_folder:
+        read_backend = ExportReadBackend(args.read_from_folder, name2id)
+    else:
+        read_backend = SolnetReadBackend()
 
     if args.file_save:
         write_backend = SaveWriteBackend(args.file_save)
     elif args.export_folder:
-        write_backend = ExportWriteBackend(args.export_folder)
+        write_backend = ExportWriteBackend(args.export_folder, id2name)
     else:
         write_backend = NoopWriteBackend()
 

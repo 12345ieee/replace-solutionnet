@@ -153,7 +153,7 @@ class SolnetReadBackend(AbstractReadBackend):
             params = (tuple(ids),)
 
         if pareto_only:
-            self.cur.execute(query + ' ORDER BY internal_name', params)
+            self.cur.execute(query + ' ORDER BY internal_name, solution_id', params)
             level_sols = itertools.groupby(self.cur, operator.itemgetter('internal_name'))
             return self.clean_to_pareto(level_sols)
         else:
@@ -280,8 +280,9 @@ class SolnetReadBackend(AbstractReadBackend):
 
 class ExportReadBackend(AbstractReadBackend):
 
-    def __init__(self, folder:str) -> None:
+    def __init__(self, folder:str, name2id) -> None:
         self.folder = folder
+        self.name2id = name2id
 
     def read_solutions(self, ids: list, pareto_only: bool) -> Iterable:
         sols = self._read_solution_files(ids)
@@ -297,8 +298,8 @@ class ExportReadBackend(AbstractReadBackend):
             sol_id = int(sol_file.stem)
             if not ids or (sol_id in ids):
                 with sol_file.open('r') as f:
-                    sol = schem.load_solution(f.read())
-                yield int(sol_file.stem), sol.level_name, sol.author, sol.description, \
+                    sol = schem.load_solution(f.readline())
+                yield sol_id, self.name2id[sol.level_name], sol.author, sol.name, \
                       sol.expected_score[0], sol.expected_score[2], sol.expected_score[1]
 
     def read_components(self, sol_id) -> Iterable:
