@@ -3,9 +3,9 @@ set -e
 
 function init {
     sudo apt install postgresql
-    sudo -u postgres createuser -s $(whoami)
+    sudo -u postgres createuser -s "$(whoami)"
     createdb -T template0 solutionnet
-    psql solutionnet < solutionnet_cleaned_dump.sql
+    psql solutionnet < data/solutionnet_cleaned_dump.sql
 }
 
 # Transfer solutions

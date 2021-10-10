@@ -36,7 +36,7 @@ def main():
             annotations = read_backend.read_annotations(comp_id)
             write_backend.write_annotations(annotations)
 
-        write_backend.commit(clean_id, args.schem)
+        write_backend.commit(clean_id, args.schem, args.check_precog)
     write_backend.close()
 
 if __name__ == '__main__':
@@ -45,5 +45,6 @@ if __name__ == '__main__':
     parser.add_argument("-n", "--player-name", default="12345ieee")
     parser.add_argument("-l", "--levels", nargs='+')
     parser.add_argument("-s", "--schem", default=False, action=argparse.BooleanOptionalAction)
+    parser.add_argument("--check-precog", default=False, action=argparse.BooleanOptionalAction)
     args = parser.parse_args()
     main()

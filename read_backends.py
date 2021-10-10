@@ -75,9 +75,13 @@ class SaveReadBackend(AbstractReadBackend):
                    FROM Level
                    WHERE cycles != 0"""
         if not ids:
+            query += " AND id not like 'custom-%'"
             params = ()
         else:
-            query += f" AND id in ({','.join('?' * len(ids))})"
+            query += f""" AND iif(instr(id, '!') > 0,
+                                  substr(id, 0, instr(id, '!')),
+                                  id)
+                              in ({','.join('?' * len(ids))})"""
             params = ids
 
         query += ' ORDER BY id'
@@ -90,11 +94,12 @@ class SaveReadBackend(AbstractReadBackend):
             return self.cur.fetchall()
 
     def read_components(self, sol_id) -> Iterable:
-        return self.cur.execute("SELECT rowid,type,x,y,name "
-                                "FROM component "
-                                "WHERE level_id=? "
-                                "ORDER BY rowid",
-                                (sol_id,))
+        self.cur.execute("SELECT rowid,type,x,y,name "
+                         "FROM component "
+                         "WHERE level_id=? "
+                         "ORDER BY rowid",
+                         (sol_id,))
+        return self.cur.fetchall()
 
     def read_members(self, comp_id):
         return self.cur.execute("SELECT type, arrow_dir, choice, layer, x, y, element_type, element "
