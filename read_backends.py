@@ -5,7 +5,7 @@ import operator
 import sqlite3
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, List
 
 import psycopg2
 import psycopg2.extras
@@ -135,11 +135,6 @@ class SolnetReadBackend(AbstractReadBackend):
                     cls.Point(int(row['x']), int(row['y']))
                     for row in reader}
 
-    @classmethod
-    def find_neighbours(cls, curr, field):
-        return [cls.Point(curr.x+dx, curr.y+dy) for dx,dy in [(1,0), (-1,0), (0,1), (0,-1)]
-                                                if field[curr.x+dx][curr.y+dy] == 'p']
-
     def __init__(self) -> None:
         self.conn = psycopg2.connect(dbname='solutionnet')
         self.conn.set_session(readonly=True)
@@ -189,37 +184,82 @@ class SolnetReadBackend(AbstractReadBackend):
             reordered_pipe = self._reorder_pipe(pipe, self.seeds[component_type, out_id])
             yield from ((out_id, x, y) for x, y in reordered_pipe)
 
+    class Field:
+        # Bounds: -24;30;-18;21
+        size_x = 56
+        size_y = 41
+        size = size_x, size_y
+        base_x = -24
+        base_y = -18
+        base = base_x, base_y
+
+        def __init__(self) -> None:
+            self.field = [['.']*self.size_y for _ in range(self.size_x)]
+            self.counter_x = [0]*self.size_x
+            self.counter_y = [0]*self.size_y
+            self.counter = self.counter_x, self.counter_y
+
+        def __getitem__(self, pt: 'SolnetReadBackend.Point'):
+            return self.field[pt.x][pt.y]
+
+        def __setitem__(self, pt: 'SolnetReadBackend.Point', value: str):
+            self.field[pt.x][pt.y] = value
+            delta = 1 if value == 'p' else -1
+            self.counter_x[pt.x] += delta
+            self.counter_y[pt.y] += delta
+
+        def is_dead_end(self, pt: 'SolnetReadBackend.Point'):
+            for dim in [0, 1]:
+                if self.counter[dim][pt[dim]] == 1 and \
+                    pt[dim] + 1 < self.size[dim] and \
+                    sum(self.counter[dim][self.base[dim]:pt[dim]]) != 0 and \
+                    sum(self.counter[dim][pt[dim] + 1:self.base[dim]]) != 0:
+                    # we've about to break the field in 2, this is not going to work
+                    return True
+            return False
+
+
+        def find_neighbours(self, curr, check=False):
+            neighbours = [SolnetReadBackend.Point(curr.x+dx, curr.y+dy)
+                    for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]
+                    if self.field[curr.x+dx][curr.y+dy] == 'p']
+            if (check and len(neighbours) > 1):
+                return [n for n in neighbours if not self.is_dead_end(n)]
+            else:
+                return neighbours
+
+        def print(self, header=None):
+            if header:
+                print(header, sep='')
+            print('\n' + '\n'.join(l for l in (''.join(r[self.base_y:] + r[:self.base_y])
+                                               for r in self.field[self.base_x:] + self.field[:self.base_x])
+                                   if l != '.' * self.size_y))
+
+
     @classmethod
     def _reorder_pipe(cls, pipe, seed):
 
-        def print_board(header):
-            print(header + '\n' + '\n'.join(l for l in (''.join(r[-18:] + r[:-18])
-                                                        for r in field[-24:] + field[:-24])
-                                            if l != '.' * 41))
+        field = cls.Field()
 
-        # Bounds: -24;30;-18;21
-        x_size = 56
-        y_size = 41
-        field = [['.']*y_size for _ in range(x_size)]
         for pt in pipe:
-            field[pt.x][pt.y] = 'p'
+            field[pt] = 'p'
 
         # check if the pipe end is alone, so we can meet the pipe in the middle
         other_seed = None
         for pt in pipe:
-            if len(cls.find_neighbours(pt, field)) == 1 and pt != seed:
+            if len(field.find_neighbours(pt)) == 1 and pt != seed:
                 other_seed = pt
-                field[other_seed.x][other_seed.y] = 'e'
+                field[other_seed] = 'e'
                 break
 
         # mark the seed after we've found the other seed
-        field[seed.x][seed.y] = 's'
+        field[seed] = 's'
 
         if not other_seed:
             # do it on one side, 2k tries
             output = cls._build_pipe(field, [seed], len(pipe), None, 2000)
             if len(output) != len(pipe):
-                print_board(f'Incomplete piping ({len(output)}, {len(pipe) - len(output)})')
+                field.print(f'Incomplete piping ({len(output)}, {len(pipe) - len(output)})')
             return output
         else:
             # try meeting in the middle, 5*2*200 tries
@@ -232,23 +272,23 @@ class SolnetReadBackend(AbstractReadBackend):
                                                out_forward[-1], 200, clean=i != 5)
                 if len(out_forward) + len(out_backward) == len(pipe):
                     return out_forward + out_backward[::-1]
-            print_board(f'Incomplete piping ({len(out_forward)}, {len(pipe) - len(out_forward)})')
+            field.print(f'Incomplete piping ({len(out_forward)}, {len(pipe) - len(out_forward)})')
             return out_forward
 
 
     @classmethod
-    def _build_pipe(cls, field, starting_output, target_len, target_point=None, iterations=2000, clean=False) -> list:
+    def _build_pipe(cls, field: Field, starting_output: List[Point], target_len,
+                    target_point: Point = None, iterations=2000, clean=False) -> list:
 
-        find_neighbours = cls.find_neighbours
         def is_neighbour(pt1: cls.Point, pt2: cls.Point) -> bool:
-            return abs(pt1.x - pt2.x) <= 1 and abs(pt1.y - pt2.y) <= 1
+            return abs(pt1.x - pt2.x) + abs(pt1.y - pt2.y) == 1
 
         curr = starting_output[-1]
         output = starting_output[:]
         backtracking_stack = []
         backtracking_counter = 0
         while True:
-            neighbours = find_neighbours(curr, field)
+            neighbours = field.find_neighbours(curr, check=True)
             if len(neighbours) == 0:
                 # see if we've finished all the pipes
                 if len(output) == target_len and (not target_point or is_neighbour(output[-1], target_point)):
@@ -259,13 +299,13 @@ class SolnetReadBackend(AbstractReadBackend):
                 if backtracking_counter == iterations:
                     if clean:
                         for pt in output[-len(backtracking_stack):]: # clean up temps for next run
-                            field[pt.x][pt.y] = 'p'
+                            field[pt] = 'p'
                     return output[:-len(backtracking_stack)]
 
                 # find divergence point
                 while not neighbours:
                     curr = output.pop()
-                    field[curr.x][curr.y] = 'p'
+                    field[curr] = 'p'
                     neighbours = backtracking_stack.pop()
 
             # we try one, if needed backtrack later
@@ -273,9 +313,9 @@ class SolnetReadBackend(AbstractReadBackend):
             output.append(curr)
             if len(neighbours) > 1 or len(backtracking_stack) > 0:
                 backtracking_stack.append(neighbours[1:])
-                field[curr.x][curr.y] = 't'
+                field[curr] = 't'
             else:
-                field[curr.x][curr.y] = 'a'
+                field[curr] = 'a'
 
     def read_annotations(self, comp_id):
         pass
