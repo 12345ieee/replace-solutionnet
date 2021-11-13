@@ -189,11 +189,14 @@ class ExportWriteBackend(AbstractWriteBackend):
         export = self.f.getvalue()
         if validate:
             try:
-                res = schem.run(export, return_json=True,
-                                check_precog=check_precog, verbose=True)
+                sol = schem.Solution(export)
+                res = sol.run(return_json=True,
+                              check_precog=check_precog, verbose=True)
 
                 level_name, _, c, r, s, author, sol_name = operator.itemgetter('level_name', 'resnet_id',
                     'cycles', 'reactors', 'symbols', 'author', 'solution_name')(res)
+                if c is None:
+                    raise Exception('cycles is None')
                 if check_precog and res['precog']:
                     sol_name = '/P ' + (sol_name if sol_name else '')
                 comma_name = ',' + self.encode(sol_name) if sol_name else ''
@@ -201,7 +204,7 @@ class ExportWriteBackend(AbstractWriteBackend):
                                 r"(?:\d+-\d+-\d+)"
                                 r"(?:,.*)?$",
                                 rf"\1,{c}-{r}-{s}{comma_name}", export, 1, re.MULTILINE)
-                print(f'Validated [{level_name}] {c}-{r}-{s} by {author}')
+
             except Exception as e:
                 print(f"{type(e).__name__}: {e}")
                 self.f = StringIO()
