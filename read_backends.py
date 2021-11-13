@@ -185,55 +185,34 @@ class SolnetReadBackend(AbstractReadBackend):
             yield from ((out_id, x, y) for x, y in reordered_pipe)
 
     class Field:
-        # Bounds: -24;30;-18;21
+        """Bounds: -24;30;-18;21"""
         size_x = 56
         size_y = 41
-        size = size_x, size_y
         base_x = -24
         base_y = -18
-        base = base_x, base_y
 
         def __init__(self) -> None:
-            self.field = [['.']*self.size_y for _ in range(self.size_x)]
-            self.counter_x = [0]*self.size_x
-            self.counter_y = [0]*self.size_y
-            self.counter = self.counter_x, self.counter_y
+            self.field = [['.']*self.size_x for _ in range(self.size_y)]
 
         def __getitem__(self, pt: 'SolnetReadBackend.Point'):
-            return self.field[pt.x][pt.y]
+            return self.field[pt.y][pt.x]
 
         def __setitem__(self, pt: 'SolnetReadBackend.Point', value: str):
-            self.field[pt.x][pt.y] = value
-            delta = 1 if value == 'p' else -1
-            self.counter_x[pt.x] += delta
-            self.counter_y[pt.y] += delta
+            self.field[pt.y][pt.x] = value
 
-        def is_dead_end(self, pt: 'SolnetReadBackend.Point'):
-            for dim in [0, 1]:
-                if self.counter[dim][pt[dim]] == 1 and \
-                    pt[dim] + 1 < self.size[dim] and \
-                    sum(self.counter[dim][self.base[dim]:pt[dim]]) != 0 and \
-                    sum(self.counter[dim][pt[dim] + 1:self.base[dim]]) != 0:
-                    # we've about to break the field in 2, this is not going to work
-                    return True
-            return False
-
-
-        def find_neighbours(self, curr, check=False):
+        def find_neighbours(self, curr: 'SolnetReadBackend.Point',
+                            include_end: 'SolnetReadBackend.Point' = None):
             neighbours = [SolnetReadBackend.Point(curr.x+dx, curr.y+dy)
                     for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]
-                    if self.field[curr.x+dx][curr.y+dy] == 'p']
-            if (check and len(neighbours) > 1):
-                return [n for n in neighbours if not self.is_dead_end(n)]
-            else:
-                return neighbours
+                    if self.field[curr.y+dy][curr.x+dx] == 'p' or (curr.x+dx, curr.y+dy) == include_end]
+            return neighbours
 
         def print(self, header=None):
             if header:
                 print(header, sep='')
-            print('\n' + '\n'.join(l for l in (''.join(r[self.base_y:] + r[:self.base_y])
-                                               for r in self.field[self.base_x:] + self.field[:self.base_x])
-                                   if l != '.' * self.size_y))
+            print('\n' + '\n'.join(l for l in (''.join(r[self.base_x:] + r[:self.base_x])
+                                               for r in self.field[self.base_y:] + self.field[:self.base_y])
+                                   if l != '.' * self.size_x))
 
 
     @classmethod
@@ -258,22 +237,23 @@ class SolnetReadBackend(AbstractReadBackend):
         if not other_seed:
             # do it on one side, 2k tries
             output = cls._build_pipe(field, [seed], len(pipe), None, 2000)
-            if len(output) != len(pipe):
-                field.print(f'Incomplete piping ({len(output)}, {len(pipe) - len(output)})')
-            return output
+            if len(output) == len(pipe):
+                return output
         else:
-            # try meeting in the middle, 5*2*200 tries
+            # try meeting in the middle, 2*(1+2+3+4=10)*100 tries
             out_forward = [seed]
             out_backward = [other_seed]
-            for i in range(6):
+            for i in range(1, 5):
                 out_forward = cls._build_pipe(field, out_forward, len(pipe) - len(out_backward),
-                                              out_backward[-1], 200, clean=True)
+                                              out_backward[-1], i * 100, clean=True)
                 out_backward = cls._build_pipe(field, out_backward, len(pipe) - len(out_forward),
-                                               out_forward[-1], 200, clean=i != 5)
+                                               out_forward[-1], i * 100, clean=i != 4)
                 if len(out_forward) + len(out_backward) == len(pipe):
                     return out_forward + out_backward[::-1]
-            field.print(f'Incomplete piping ({len(out_forward)}, {len(pipe) - len(out_forward)})')
-            return out_forward
+            output = out_forward
+
+        field.print(f'Incomplete piping ({len(output)}, {len(pipe) - len(output)})')
+        return output
 
 
     @classmethod
@@ -288,7 +268,26 @@ class SolnetReadBackend(AbstractReadBackend):
         backtracking_stack = []
         backtracking_counter = 0
         while True:
-            neighbours = field.find_neighbours(curr, check=True)
+            neighbours = field.find_neighbours(curr)
+
+            # look 1 ahead to prune paths
+            if len(neighbours) > 1:
+                npaths = sorted([(len(field.find_neighbours(n, include_end=target_point)), n) for n in neighbours])
+                neighbours = []
+                for np in npaths:
+                    neighbour_paths = np[0]
+                    if neighbour_paths == 0:
+                        # we have a dead end and we're not finished, surrender so we backtrack
+                        break
+                    elif neighbour_paths == 1:
+                        # that's either the newly discovered end (so we can't go there now)
+                        # or it's a forced point of passage, so we go there now
+                        neighbours.append(np[1])
+                        if target_point:
+                            break
+                    else:
+                        neighbours.append(np[1])
+
             if len(neighbours) == 0:
                 # see if we've finished all the pipes
                 if len(output) == target_len and (not target_point or is_neighbour(output[-1], target_point)):
@@ -316,6 +315,7 @@ class SolnetReadBackend(AbstractReadBackend):
                 field[curr] = 't'
             else:
                 field[curr] = 'a'
+            # field.print()
 
     def read_annotations(self, comp_id):
         pass
@@ -343,8 +343,8 @@ class ExportReadBackend(AbstractReadBackend):
             sol_id = int(sol_file.stem)
             if not ids or (sol_id in ids):
                 with sol_file.open('r') as f:
-                    sol = schem.load_solution(f.readline())
-                yield sol_id, self.name2id[sol.level_name], sol.author, sol.name, \
+                    sol = schem.Solution(f.readline())
+                yield sol_id, self.name2id[sol.level.name], sol.author, sol.name, \
                       sol.expected_score[0], sol.expected_score[2], sol.expected_score[1]
 
     def read_components(self, sol_id) -> Iterable:
