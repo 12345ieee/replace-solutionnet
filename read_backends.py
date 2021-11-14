@@ -216,7 +216,7 @@ class SolnetReadBackend(AbstractReadBackend):
 
 
     @classmethod
-    def _reorder_pipe(cls, pipe, seed):
+    def _reorder_pipe(cls, pipe: List[Point], seed: Point):
 
         field = cls.Field()
 
@@ -338,7 +338,7 @@ class ExportReadBackend(AbstractReadBackend):
             return sols
 
     def _read_solution_files(self, ids: list) -> Iterable:
-        sol_files = Path(self.folder).glob('*.txt')
+        sol_files = sorted(Path(self.folder).glob('*.txt'), key=lambda f: int(f.stem))
         for sol_file in sol_files:
             sol_id = int(sol_file.stem)
             if not ids or (sol_id in ids):
