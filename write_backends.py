@@ -190,32 +190,30 @@ class ExportWriteBackend(AbstractWriteBackend):
         if validate:
             try:
                 sol = schem.Solution(export)
-                expected_cycles = sol.expected_score[0]
-                sol.expected_score = None
-                run_up_to = int(expected_cycles*1.2)
+                run_up_to = int(sol.expected_score.cycles*1.2)
                 score = sol.run(max_cycles=run_up_to)
+                sol.expected_score = score
 
                 sol_name = sol.name
                 if check_precog:
                     try:
-                        is_precog = sol.is_precognitive(max_cycles=run_up_to,
-                                                        just_run_cycle_count=score[0],
+                        is_precog = sol.is_precognitive(just_run_cycle_count=score.cycles,
                                                         verbose=True)
-                    except (TimeoutError): # mark timeouts as precog to be sure
+                    except TimeoutError as e: # mark timeouts as precog to be sure
+                        print(f"{type(e).__name__}: {e}")
                         is_precog = True
                     if is_precog:
                         sol_name = '/P ' + (sol_name if sol_name else '')
 
-                comma_name = ',' + self.encode(sol_name) if sol_name else ''
+                comma_name = ',' + self.encode(sol_name).replace('\\', r'\\') if sol_name else ''
                 export = re.sub(r"^(SOLUTION:(?:[^,]+|'(?:[^']|'')+'),[^,]+),"
                                 r"(?:\d+-\d+-\d+)"
                                 r"(?:,.*)?$",
                                 rf"\1,{score}{comma_name}", export, 1, re.MULTILINE)
-                level_name, author = sol.level.name, sol.author
-                print(f'Validated [{level_name}] {score} by {author}')
+                print(f'Validated {sol.description}')
 
             except (AssertionError, # used when solution exceeds the number of allowed reactors
-                    NotImplementedError,
+                    NotImplementedError, # defense missions
                     SolutionRunError,
                     ScoreError, # can't happen as we handle the declared score manually
                     SolutionImportError,

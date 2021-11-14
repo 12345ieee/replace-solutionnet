@@ -12,6 +12,7 @@ function pareto {
     ./mover_solnet.py -e exports_temp${suffix} --read-from-folder exports_checked${suffix} --pareto
     mkdir exports_pareto${suffix}
     find exports_temp${suffix} -name '*.txt' -execdir cp ../exports_checked${suffix}/{} ../exports_pareto${suffix} \;
+    rm -r exports_temp${suffix}
 }
 
 pareto
