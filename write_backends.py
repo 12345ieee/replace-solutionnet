@@ -1,5 +1,4 @@
 import csv
-import operator
 import os
 import re
 import shutil
@@ -10,6 +9,7 @@ from io import StringIO
 from typing import Tuple
 
 import schem
+from schem.exceptions import ScoreError, SolutionImportError, SolutionRunError
 
 def make_level_dicts() -> Tuple[dict, dict]:
     """ Returns id2name, name2id"""
@@ -190,22 +190,36 @@ class ExportWriteBackend(AbstractWriteBackend):
         if validate:
             try:
                 sol = schem.Solution(export)
-                res = sol.run(return_json=True,
-                              check_precog=check_precog, verbose=True)
+                expected_cycles = sol.expected_score[0]
+                sol.expected_score = None
+                run_up_to = int(expected_cycles*1.2)
+                score = sol.run(max_cycles=run_up_to)
 
-                level_name, _, c, r, s, author, sol_name = operator.itemgetter('level_name', 'resnet_id',
-                    'cycles', 'reactors', 'symbols', 'author', 'solution_name')(res)
-                if c is None:
-                    raise Exception('cycles is None')
-                if check_precog and res['precog']:
-                    sol_name = '/P ' + (sol_name if sol_name else '')
+                sol_name = sol.name
+                if check_precog:
+                    try:
+                        is_precog = sol.is_precognitive(max_cycles=run_up_to,
+                                                        just_run_cycle_count=score[0],
+                                                        verbose=True)
+                    except (TimeoutError): # mark timeouts as precog to be sure
+                        is_precog = True
+                    if is_precog:
+                        sol_name = '/P ' + (sol_name if sol_name else '')
+
                 comma_name = ',' + self.encode(sol_name) if sol_name else ''
                 export = re.sub(r"^(SOLUTION:(?:[^,]+|'(?:[^']|'')+'),[^,]+),"
                                 r"(?:\d+-\d+-\d+)"
                                 r"(?:,.*)?$",
-                                rf"\1,{c}-{r}-{s}{comma_name}", export, 1, re.MULTILINE)
+                                rf"\1,{score}{comma_name}", export, 1, re.MULTILINE)
+                level_name, author = sol.level.name, sol.author
+                print(f'Validated [{level_name}] {score} by {author}')
 
-            except Exception as e:
+            except (AssertionError, # used when solution exceeds the number of allowed reactors
+                    NotImplementedError,
+                    SolutionRunError,
+                    ScoreError, # can't happen as we handle the declared score manually
+                    SolutionImportError,
+                    TimeoutError) as e:
                 print(f"{type(e).__name__}: {e}")
                 self.f = StringIO()
                 return export
