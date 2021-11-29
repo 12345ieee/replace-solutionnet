@@ -158,7 +158,7 @@ class ExportWriteBackend(AbstractWriteBackend):
     def write_solution(self, db_level_name, author, c, s, r, description: str, replace_base=None):
         level_name = self.encode(self.id2name[db_level_name])
         comma_name = ',' + self.encode(re.sub(r'\r?\n', ' ', description.strip())) \
-                     if (description and description != 0) else ''
+                     if (description and isinstance(description, str)) else ''
         print(f"SOLUTION:{level_name},{author},{c}-{r}-{s}{comma_name}",
               file=self.f)
 
@@ -194,22 +194,16 @@ class ExportWriteBackend(AbstractWriteBackend):
                 score = sol.run(max_cycles=run_up_to)
                 sol.expected_score = score
 
-                sol_name = sol.name
                 if check_precog:
                     try:
-                        is_precog = sol.is_precognitive(just_run_cycle_count=score.cycles,
-                                                        verbose=True)
+                        is_precog = sol.is_precognitive(just_run_cycle_count=score.cycles)
                     except TimeoutError as e: # mark timeouts as precog to be sure
                         print(f"{type(e).__name__}: {e}")
                         is_precog = True
                     if is_precog:
-                        sol_name = '/P ' + (sol_name if sol_name else '')
+                        sol.name = ('/P ' + sol.name) if sol.name else '/P'
 
-                comma_name = ',' + self.encode(sol_name).replace('\\', r'\\') if sol_name else ''
-                export = re.sub(r"^(SOLUTION:(?:[^,]+|'(?:[^']|'')+'),[^,]+),"
-                                r"(?:\d+-\d+-\d+)"
-                                r"(?:,.*)?$",
-                                rf"\1,{score}{comma_name}", export, 1, re.MULTILINE)
+                export = sol.export_str()
                 print(f'Validated {sol.description}')
 
             except (AssertionError, # used when solution exceeds the number of allowed reactors
@@ -223,7 +217,7 @@ class ExportWriteBackend(AbstractWriteBackend):
                 return export
 
         with open(f"{self.folder}/{file_name}.txt", "a") as f:
-            print(export, file=f, end='')
+            print(export, file=f)
 
         self.f = StringIO()
         return export
