@@ -287,7 +287,7 @@ saveId, category, number, name, type, isDeterministic
 "published-74-1", "researchnet", "7-4-1", "Dessication Station", "research", 0
 "published-74-2", "researchnet", "7-4-2", "Vinegar Distillation", "production", 0
 "published-74-3", "researchnet", "7-4-3", "A Glass of Water", "production", 0
-"published-75-1", "researchnet", "7-5-1", "Pertetroxide Synthesis", "research", 1
+"published-75-1", "researchnet", "7-5-1", "Pertetroxide Synthesis EX", "research", 1
 "published-75-2", "researchnet", "7-5-2", "Fantastic Metals", "production", 1
 "published-75-3", "researchnet", "7-5-3", "Reppe Chemistry", "production", 0
 "published-76-1", "researchnet", "7-6-1", "Better Than Graphene", "research", 1
