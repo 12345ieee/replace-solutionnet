@@ -179,10 +179,15 @@ class SolnetReadBackend(AbstractReadBackend):
                            WHERE component_id = %s
                            ORDER BY output_id""", (comp_id,))
         pipes = itertools.groupby(self.cur, operator.itemgetter('output_id'))
+        seeds = []
+        reordered_pipes = []
         for out_id, raw_pipe in pipes:
             pipe = [self.Point(pipe_point['x'], pipe_point['y']) for pipe_point in raw_pipe]
-            reordered_pipe = self._reorder_pipe(pipe, self.seeds[component_type, out_id])
-            yield from ((out_id, x, y) for x, y in reordered_pipe)
+            seed: self.Point = self.seeds[component_type, out_id]
+            seeds.append((out_id, seed.x, seed.y))
+            reordered_pipes.extend((out_id, x, y) for x, y in self._reorder_pipe(pipe, seed)[1:])
+        # print seeds first to avoid the pipe bug
+        return seeds + reordered_pipes
 
     class Field:
         """Bounds: -24;30;-18;21"""
@@ -216,7 +221,7 @@ class SolnetReadBackend(AbstractReadBackend):
 
 
     @classmethod
-    def _reorder_pipe(cls, pipe: List[Point], seed: Point):
+    def _reorder_pipe(cls, pipe: List[Point], seed: Point) -> List[Point]:
 
         field = cls.Field()
 
@@ -258,7 +263,7 @@ class SolnetReadBackend(AbstractReadBackend):
 
     @classmethod
     def _build_pipe(cls, field: Field, starting_output: List[Point], target_len,
-                    target_point: Point = None, iterations=2000, clean=False) -> list:
+                    target_point: Point = None, iterations=2000, clean=False) -> List[Point]:
 
         def is_neighbour(pt1: cls.Point, pt2: cls.Point) -> bool:
             return abs(pt1.x - pt2.x) + abs(pt1.y - pt2.y) == 1
@@ -272,6 +277,7 @@ class SolnetReadBackend(AbstractReadBackend):
 
             # look 1 ahead to prune paths
             if len(neighbours) > 1:
+                # as a side effect the sort sorts same-path length by LUDR, which is exactly reverse-connection order
                 npaths = sorted([(len(field.find_neighbours(n, include_end=target_point)), n) for n in neighbours])
                 neighbours = []
                 for np in npaths:
