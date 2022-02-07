@@ -108,7 +108,7 @@ class SaveWriteBackend(AbstractWriteBackend):
     def delete_all_solutions(self, db_level_name):
         self.sv_cur.execute(r"""SELECT id FROM Level WHERE id like ?""", (db_level_name + '%',))
         for db_level_id in self.sv_cur.fetchall():
-            self.delete_solution(db_level_id)
+            self.delete_solution(db_level_id[0])
 
     def write_component(self, component):
         self.sv_cur.execute(r"""INSERT INTO Component
@@ -163,7 +163,7 @@ class ExportWriteBackend(AbstractWriteBackend):
               file=self.f)
 
     def write_component(self, component):
-        print("COMPONENT:'{0}',{1},{2},''".format(component["type"], component["x"], component["y"]),
+        print("COMPONENT:'{}',{},{},''".format(component["type"], component["x"], component["y"]),
               file=self.f)
 
     def write_members(self, members):
