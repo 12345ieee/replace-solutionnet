@@ -1,24 +1,20 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.10
 
-import os
+import argparse
+import bisect
 import csv
 import sqlite3
-import pickle
-import re
-import datetime
-import argparse
+import typing
+from collections import Counter, OrderedDict
+from pathlib import Path
+from typing import Dict, List
 
-from collections import OrderedDict
-from collections import Counter
+from read_backends import SaveReadBackend
 
 ### Configuration block
 
-scoresfile = r"data/score_dump.csv"
-saves_folder = r'saves'
-
-dumpfile = r'dump.pickle'
-wikifolder = r'../wiki/'
-wikifiles = [r'index.md', r'researchnet.md', r'researchnet2.md']
+saves_path = Path(r'saves')
+archive_path = Path(r'../archive/')
 
 """
 {'Username': '<user>', 'Level Category': '63corvi', 'Level Number': '1', 'Level Name': 'QT-1',
@@ -29,285 +25,235 @@ wikifiles = [r'index.md', r'researchnet.md', r'researchnet2.md']
 {'id': 'fusion-1', 'passed': 1, 'mastered': 0, 'cycles': 52, 'symbols': 38, 'reactors': 1, 'best_cycles': 52, 'best_symbols': 11, 'best_reactors': 1}
 """
 
-nowstring = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+Level = typing.NamedTuple('Level', [('name', str), ('type', str), ('is_deterministic', bool)])
 
-save2id = {}
-id2level = {}
-levels = OrderedDict()
+class Solution(typing.NamedTuple):
+    cycles: int
+    reactors: int
+    symbols: int
+    is_bugged: bool
+    is_precognitive: bool
+    author: str
+    display_link: str = ''
+    categories: str = '' # we won't actually find them, but we keep the ones from archive
+
+    def score(self) -> tuple:
+        return (self.cycles, self.reactors, self.symbols, self.is_bugged, self.is_precognitive)
+
+    def slash_flags(self):
+        if self.is_bugged or self.is_precognitive:
+            result = '/'
+            if self.is_bugged: result += 'B'
+            if self.is_precognitive: result += 'P'
+            return result
+        else:
+            return ''
+
+    def marshal(self) -> str:
+        return f'{self.cycles}/{self.reactors}/{self.symbols}{self.slash_flags()}|' + \
+               f'{self.author}|{self.display_link}||{self.categories}'
+
+    @classmethod
+    def unmarshal(cls, line: str):
+        score, author, display_link, video_only, categories = line.rstrip().split('|')
+        cycles_str, reactors_str, symbols_str, *flags = score.split('/')
+        cycles = int(cycles_str.replace(',', ''))
+        is_bugged = bool(flags and 'B' in flags[0])
+        is_precognitive = bool(flags and 'P' in flags[0])
+        return Solution(cycles, int(reactors_str), int(symbols_str), is_bugged, is_precognitive,
+                        author, display_link, categories)
+
+solnet2id: Dict[tuple, str] = {}
+id2level: Dict[str, Level] = {}
+level_solutions: Dict[str, List[Solution]] = OrderedDict()
 
 def init():
-
-    global save2id, id2level, levels
 
     with open('config/levels.csv') as levelscsv:
         reader = csv.DictReader(levelscsv, skipinitialspace=True)
         for row in reader:
-            id_tuple = (row['category'], row['number'])
-            save2id[row['saveId']] = id_tuple
-            id2level[id_tuple] = {'name': row['name'],
-                                  'type': row['type'],
-                                  'isDeterministic': int(row['isDeterministic'])}
-            levels[id_tuple] = {}
+            save_id = row['saveId']
+            solnet_id = (row['category'], row['number']) # ("main", "1-1")
+            solnet2id[solnet_id] = save_id
+            id2level[save_id] = Level(row['name'], row['type'], bool(int(row['isDeterministic'])))
+            level_solutions[save_id] = []
 
 
-def tiebreak(this_score, best_score, stat1, stat2, stat3):
-    return (this_score[stat1] < best_score[stat1] or
-            (this_score[stat1] == best_score[stat1] and
-             (this_score[stat2] < best_score[stat2] or
-              (this_score[stat2] == best_score[stat2] and
-               (this_score[stat3] < best_score[stat3] or
-                (this_score[stat3] == best_score[stat3] and
-                 (bool(this_score['Youtube Link']) > bool(best_score['Youtube Link']) or
-                  (bool(this_score['Youtube Link']) == bool(best_score['Youtube Link']) and
-                   this_score['Upload Time'] < best_score['Upload Time']
-                  )
-                 )
-                )
-               )
-              )
-             )
-            )
-           )
+def dominance_compare(s1: Solution, s2: Solution):
+    r1 = s1.cycles - s2.cycles
+    r2 = s1.reactors - s2.reactors
+    r3 = s1.symbols - s2.symbols
+    r4 = s1.is_bugged - s2.is_bugged
+    r5 = s1.is_precognitive - s2.is_precognitive
 
-def insert_score(this_score, scores, category, stats):
-    if category not in scores or tiebreak(this_score, scores[category], *stats):
-        scores[category] = this_score
+    if r1 <= 0 and r2 <= 0 and r3 <= 0 and r4 <= 0 and r5 <= 0:
+        if r1 == 0 and r2 == 0 and r3 == 0 and r4 == 0 and r5 == 0:
+            return 1 # preexisting sol wins
+        else:
+            return -1
+    elif r1 >= 0 and r2 >= 0 and r3 >= 0 and r4 >= 0 and r5 >= 0:
+        # sol2 dominates
+        return 1
+    else:
+        # equal is already captured by the 1st check, this is for "not comparable"
+        return 0
 
-def add_score(level_id, this_score, test_reject=True):
+def add_solution(save_id: str, candidate: Solution, test_reject=True, test_frontier=True):
 
-    props = id2level[level_id]
-
-    if test_reject and should_reject(this_score):
+    if test_reject and should_reject(candidate):
         return
 
-    insert_score(this_score, levels[level_id], 'Least Cycles', ['Cycle Count', 'Reactor Count', 'Symbol Count'])
-    insert_score(this_score, levels[level_id], 'Least Symbols', ['Symbol Count', 'Reactor Count', 'Cycle Count'])
-    if props['type'] in {'production', 'boss'}:
-        insert_score(this_score, levels[level_id], 'Least Cycles - N Reactors', ['Reactor Count', 'Cycle Count', 'Symbol Count'])
-        insert_score(this_score, levels[level_id], 'Least Symbols - N Reactors', ['Reactor Count', 'Symbol Count', 'Cycle Count'])
+    solutions = level_solutions[save_id]
+    if test_frontier:
+        for i in range(len(solutions)-1, -1, -1): # iterate backwards so we can delete things
+            solution = solutions[i]
+            r = dominance_compare(candidate, solution)
+            if r > 0:
+                return
+            elif r < 0:
+                # candidate.categories += solution.categories
+                del solutions[i]
 
-def should_reject(this_score):
+    bisect.insort(solutions, candidate, key=lambda s: s.score())
+
+
+def should_reject(solution: Solution) -> bool:
     # In, Out, 2 arrows, Swap = 5 min
     # Max of 2*2*80=320 symbols/reactor
     # In, Swap, Out /2 = 1.5
-    return this_score['Symbol Count'] < 5*this_score['Reactor Count'] or \
-           this_score['Symbol Count'] > 320*this_score['Reactor Count'] or \
-           this_score['Cycle Count'] < 1.5*this_score['Reactor Count']
-
-
-fmt_scores_with_bold = ['({}/{}/{}) {}', '({}/{}/**{}**) {}', '({}/**{}**/{}) {}', '({}/**{}**/**{}**) {}',
-                        '(**{}**/{}/{}) {}', '(**{}**/{}/**{}**) {}', '(**{}**/**{}**/{}) {}',
-                        '(**{}**/**{}**/**{}**) {}']
-
-def printscore(score, bold=0b000, suffix='', printvideo=True):
-    fmt_score = fmt_scores_with_bold[bold].format(score['Cycle Count'], score['Reactor Count'], score['Symbol Count'],
-                                                  score['Username'])
-    if printvideo and score['Youtube Link']:
-        fmt_score = '[{}]({})'.format(fmt_score, score['Youtube Link'])
-    print(f'| {fmt_score:20}{suffix}', end=' ')
-
-def printblock(scores, header, cat1, cat2, bold1, bold2, suffix='', printvideo=True):
-    if cat1 in scores and cat2 in scores:
-        print(header.ljust(20), end='')
-        printscore(scores[cat1], bold=bold1, suffix=suffix, printvideo=printvideo)
-        printscore(scores[cat2], bold=bold2, suffix=suffix, printvideo=printvideo)
-        print()
+    return solution.symbols < 5*solution.reactors or \
+           solution.symbols > 320*solution.reactors or \
+           solution.cycles < 1.5*solution.reactors
 
 def parse_solnet():
-
-    user2OS = {}
 
     with open('config/users.csv') as userscsv:
         reader = csv.DictReader(userscsv, skipinitialspace=True)
         user2OS = {row['User']: row['OS'] for row in reader}
 
-    with open(scoresfile) as scorescsv:
+    with open('data/score_dump.csv') as scorescsv:
         reader = csv.DictReader(scorescsv)
         for row in reader:
-
             if row['Level Category'] == 'researchnet' and \
                row['Level Number'].count('-') == 1:
                     longissue, assign = map(int, row['Level Number'].split('-'))
                     volume, issue = (longissue-1)//12+1, (longissue-1)%12+1
-                    level_id = ('researchnet', f'{volume}-{issue}-{assign}')
+                    solnet_id = ('researchnet', f'{volume}-{issue}-{assign}')
             else:
-                level_id = (row['Level Category'], row['Level Number'])
+                solnet_id = (row['Level Category'], row['Level Number'])
 
-            this_score = {'Username': row['Username'],
-                          'Cycle Count': int(row['Cycle Count']),
-                          'Reactor Count': int(row['Reactor Count']),
-                          'Symbol Count': int(row['Symbol Count']),
-                          'Upload Time': row['Upload Time'],
-                          'Youtube Link': row['Youtube Link']}
+            save_id = solnet2id[solnet_id]
+            level = id2level[save_id]
+            author = row['Username']
+            if not level.is_deterministic:
+                if '@' in author:
+                    author, userOS = author.split('@')
+                elif author in user2OS:
+                    userOS = user2OS[author]
+                else:
+                    userOS = 'Unknown OS'
 
-            if '@' in this_score['Username']:
-                this_score['Username'], userOS = this_score['Username'].split('@')
-            elif this_score['Username'] in user2OS:
-                userOS = user2OS[this_score['Username']]
-            else:
-                userOS = 'Unknown OS'
-
-            if id2level[level_id]['isDeterministic'] or userOS == 'Windows':
-                add_score(level_id, this_score)
+            if level.is_deterministic or userOS == 'Windows':
+                this_solution = Solution(cycles=int(row['Cycle Count']),
+                                         reactors=int(row['Reactor Count']),
+                                         symbols=int(row['Symbol Count']),
+                                         is_bugged=True,
+                                         is_precognitive=not level.is_deterministic,
+                                         author=author,
+                                         display_link=row['Youtube Link'])
+                add_solution(save_id, this_solution)
 
 
 def parse_saves():
 
-    for player in os.listdir(saves_folder):
-        player_folder = os.path.join(saves_folder, player)
-        for save in os.listdir(player_folder):
+    for player_path in saves_path.iterdir():
+        player: str = player_path.name
+        for save in player_path.glob('**/*.user'):
             try:
-                conn = sqlite3.connect(os.path.join(player_folder, save))
+                read_backend = SaveReadBackend(save)
             except sqlite3.OperationalError:
                 continue
-            conn.row_factory = sqlite3.Row
-            # we use cycles > 0 as a good proxy for finished
-            dbcursor = conn.execute("SELECT id, cycles, reactors, symbols "
-                                    "FROM Level "
-                                    "WHERE id not like 'custom-%' and cycles != 0")
-            for row in dbcursor:
+            for row in read_backend.read_solutions(ids=None, pareto_only=False):
                 # CE extra sols are stored as `id!progressive`
                 clean_id = row['id'].split('!')[0]
-                level_id = save2id[clean_id]
-                this_score = {'Username': player,
-                              'Cycle Count': row['cycles'],
-                              'Reactor Count': row['reactors'],
-                              'Symbol Count': row['symbols'],
-                              'Upload Time': nowstring,
-                              'Youtube Link': ''}
+                level = id2level[clean_id]
+                this_solution = Solution(cycles=row['cycles'],
+                                         reactors=row['reactors'],
+                                         symbols=row['symbols'],
+                                         is_bugged=True,
+                                         is_precognitive=not level.is_deterministic,
+                                         author=player,
+                                         display_link='')
 
-                add_score(level_id, this_score)
+                add_solution(clean_id, this_solution)
 
-            conn.close()
+            read_backend.close()
 
-def dump_scores():
-    with open(dumpfile, 'wb') as dumpdest:
-        pickle.dump(levels, dumpdest)
+def parse_archive():
 
-def load_scores():
-    global levels
-    with open(dumpfile, 'rb') as dumpdest:
-        levels = pickle.load(dumpdest)
+    for puzzle_path in archive_path.glob('[CMRT]*/*'):
+        if not puzzle_path.is_dir():
+            continue
+        level_id = puzzle_path.stem.replace('_', '-')
+        with open(puzzle_path / 'solutions.psv', 'r') as metadata_file:
+            for line in metadata_file:
+                this_solution = Solution.unmarshal(line)
+                add_solution(level_id, this_solution, test_reject=False)
 
-def parse_wiki():
-
-    lines = []
-    for f in wikifiles:
-        with open(wikifolder + f) as infile:
-            lines.extend(infile.readlines())
-
-    level_reg = re.compile(r'^(?P<level>.+?)(?: - (?P<reactors>\d) Reactors?)?$')
-    score_reg = re.compile(r'^\[📄\]\(.+\.txt\)\s+'
-                           r'(?:† )?'
-                           r'\[\(\**(?P<cycles>[\d,]+)\**(?:\\\*)?/'
-                           r'\**(?P<reactors>\d+)\**/'
-                           r'\**(?P<symbols>\d+)\**'
-                           r'(?:/B?P?)?\)\s+'
-                           r'(?P<user>[^\]]+?)\]'
-                           r'\((?P<link>[^\)]+)\).*?$')
-    extra_stuff_reg = re.compile(r'^(?:←+|X)')
-
-    it = iter(levels)
-
-    for line in lines:
-        table_cols = re.split(r'\s*\|\s*', line)[1:]
-        if len(table_cols) >= 5:
-            name_col = table_cols[0]
-            if name_col not in {'Name', ':-'}:
-                level_match = level_reg.match(name_col)
-                best_reactors = level_match.group('reactors')
-                if not best_reactors:
-                    level_id = next(it)
-                    while id2level[level_id]['type'] == 'boss':
-                        level_id = next(it)
-
-                scores = table_cols[1:]
-                cols = len(scores)
-                assert cols in {4,6}, f"Level {level_id} has {cols} cols"
-                for tm in scores:
-                    score_match = score_reg.match(tm)
-                    if score_match:
-                        this_score = {'Username': score_match.group('user'),
-                                      'Cycle Count': int(score_match.group('cycles').replace(',', '')),
-                                      'Reactor Count': int(score_match.group('reactors')),
-                                      'Symbol Count': int(score_match.group('symbols')),
-                                      'Upload Time': '0',
-                                      'Youtube Link': score_match.group('link') if score_match.group('link') else ''}
-
-                        add_score(level_id, this_score)
-                    else:
-                        if not extra_stuff_reg.match(tm):
-                            print(tm)
-
-def print_scores(printset, no_separator=False, no_video=False):
+def print_solutions(printset):
 
     if not printset:
         return
 
-    for level_id in levels:
-        scores = levels[level_id]
-        if not scores:
+    for level_id in level_solutions:
+        solutions = level_solutions[level_id]
+        if not solutions:
             continue
 
         level = id2level[level_id]
-        if level['type'] not in printset:
+        if level.type not in printset:
             continue
-        score_header = '| Min Cycles | Min Symbols' if no_separator else \
-                       '| Min Cycles | Min Cycles - No Bugs | Min Symbols | Min Symbols - No Bugs' if level['isDeterministic'] else \
-                       '| Min Cycles | Min Cycles - No Bugs | Min Cycles - No Precognition ' + \
-                       '| Min Symbols | Min Symbols - No Bugs | Min Symbols - No Precognition'
-        print('|{} - {}'.format(*level_id).ljust(20) + score_header)
 
-        score_separator = '' if no_separator else ' | N/A' if level['isDeterministic'] else ' | N/A | N/A'
-        printblock(scores, '|{name} '.format(**level),
-                   'Least Cycles', 'Least Symbols',
-                   0b100, 0b001, score_separator, not no_video)
-        printblock(scores, '|{name} - N Reactors '.format(**level),
-                   'Least Cycles - N Reactors', 'Least Symbols - N Reactors',
-                   0b110, 0b011, score_separator, not no_video)
+        print(f'{level.name} - {level_id}')
+        for solution in solutions:
+            print(solution.marshal())
         print()
 
-def print_leaderboard():
+def print_leaderboard(include_frontier: bool):
     leaderboard = Counter()
-    for scores in levels.values():
-        for score in scores.values():
-            name = score['Username']
-            leaderboard[name] += 1
+    for solutions in level_solutions.values():
+        for solution in solutions:
+            if include_frontier or solution.categories:
+                leaderboard[solution.author] += 1
 
-    print('{} scores by {} users'.format(sum(leaderboard.values()), len(leaderboard)))
-    print('Name                 Scores')
+    print('{} {} solutions by {} users'.format(sum(leaderboard.values()),
+                                               'frontier' if include_frontier else 'record',
+                                               len(leaderboard)))
+    print('Name              Solutions')
     for name, count in sorted(leaderboard.items(), key=lambda item: (-item[1], item[0].lower())):
         print(f'{name:24}{count:3}')
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-l", "--load", action="store_true")
-    parser.add_argument("--no-wiki", action="store_false", dest='wiki')
-    parser.add_argument("-w", "--wiki", action="store_true", dest='wiki')
-    parser.add_argument("-n", "--solnet", action="store_true")
-    parser.add_argument("-s", "--saves", action="store_true")
-    parser.add_argument("-d", "--dump", action="store_true")
+    parser.add_argument("-a", "--archive", default=True, action=argparse.BooleanOptionalAction)
+    parser.add_argument("-n", "--solnet", default=False, action=argparse.BooleanOptionalAction)
+    parser.add_argument("-s", "--saves", default=False, action=argparse.BooleanOptionalAction)
     parser.add_argument("-p", "--print", choices={'research', 'production', 'boss'}, nargs='+', default=['research', 'production', 'boss'])
     parser.add_argument("--no-print", choices={'research', 'production', 'boss'}, nargs='+', default=[])
-    parser.add_argument("--no-print-separator", action="store_true")
-    parser.add_argument("--no-print-video", action="store_true")
-    parser.add_argument("--leaderboard", action="store_true")
+    parser.add_argument("--leaderboard", default=False, action=argparse.BooleanOptionalAction)
+    parser.add_argument("--include-frontier", default=False, action=argparse.BooleanOptionalAction)
     args = parser.parse_args()
 
     init()
-    if args.load:
-        load_scores()
-    if args.wiki:
-        parse_wiki()
+    if args.archive:
+        parse_archive()
     if args.solnet:
         parse_solnet()
     if args.saves:
         parse_saves()
-    if args.dump:
-        dump_scores()
-
-    print_scores(set(args.print) - set(args.no_print), args.no_print_separator, args.no_print_video)
 
     if args.leaderboard:
-        print_leaderboard()
+        print_leaderboard(args.include_frontier)
+    else:
+        print_solutions(set(args.print) - set(args.no_print))
