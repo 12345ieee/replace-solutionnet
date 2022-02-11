@@ -153,7 +153,7 @@ def parse_solnet():
                 else:
                     userOS = 'Unknown OS'
 
-            if level.is_deterministic or userOS == 'Windows':
+            if level.is_deterministic or userOS != 'Linux':
                 this_solution = Solution(cycles=int(row['Cycle Count']),
                                          reactors=int(row['Reactor Count']),
                                          symbols=int(row['Symbol Count']),
