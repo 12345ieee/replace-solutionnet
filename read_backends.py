@@ -149,7 +149,10 @@ class SolnetReadBackend(AbstractReadBackend):
         if not ids:
             params = ()
         else:
-            query += ' WHERE solution_id in %s'
+            if isinstance(ids[0], int):
+                query += ' WHERE solution_id in %s'
+            elif isinstance(ids[0], str):
+                query += ' WHERE internal_name in %s'
             params = (tuple(ids),)
 
         if pareto_only:

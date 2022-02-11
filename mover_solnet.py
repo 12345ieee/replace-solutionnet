@@ -22,7 +22,7 @@ def main():
     else:
         write_backend = NoopWriteBackend()
 
-    solutions = read_backend.read_solutions(args.sol_ids, args.pareto_only)
+    solutions = read_backend.read_solutions(args.sol_ids or args.levels, args.pareto_only)
     for solution in solutions:
         sol_id, db_level_name, player_name, comment, c, s, r = solution
         print(f'Loading solution {sol_id}')
@@ -49,8 +49,8 @@ if __name__ == '__main__':
     parser.add_argument("-f", "--file-save", nargs="?", const=r'data/solnet.user')
     parser.add_argument("-e", "--export-folder", nargs="?", const=r'exports')
     gr_in = parser.add_mutually_exclusive_group()
-    gr_in.add_argument("--all", action="store_true")
     gr_in.add_argument("sol_ids", nargs='*', type=int, default=[])
+    gr_in.add_argument("-l", "--levels", nargs='+')
     parser.add_argument("--replace-sols", default=True, action=argparse.BooleanOptionalAction)
     parser.add_argument("--group-exports-by-level", default=False, action=argparse.BooleanOptionalAction)
     parser.add_argument("--pareto-only", default=False, action=argparse.BooleanOptionalAction)

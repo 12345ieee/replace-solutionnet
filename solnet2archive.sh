@@ -4,7 +4,7 @@ set -e
 suffix=${1:=TEST}
 
 function check {
-    time python -u ./mover_solnet.py --all -s --check -e exports_checked${suffix} |& tee log${suffix}.log
+    time python -u ./mover_solnet.py -s --check -e exports_checked${suffix} |& tee log${suffix}.log
 }
 
 function pareto {
