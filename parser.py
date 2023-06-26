@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.10
+#!/usr/bin/env python3
 
 import argparse
 import bisect
@@ -191,11 +191,9 @@ def parse_saves():
 
 def parse_archive():
 
-    for puzzle_path in archive_path.glob('[CMRT]*/*'):
-        if not puzzle_path.is_dir():
-            continue
-        level_id = puzzle_path.stem.replace('_', '-')
-        with open(puzzle_path / 'solutions.psv', 'r') as metadata_file:
+    for metadata_path in archive_path.glob('*/*/solutions.psv'):
+        level_id = metadata_path.parent.stem.replace('_', '-')
+        with open(metadata_path, 'r') as metadata_file:
             for line in metadata_file:
                 this_solution = Solution.unmarshal(line)
                 add_solution(level_id, this_solution, test_reject=False)

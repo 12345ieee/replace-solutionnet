@@ -308,7 +308,7 @@ saveId, category, number, name, type, isDeterministic
 "published-80-3", "researchnet", "8-4-3", "Memories", "research", 1
 "published-81-1", "researchnet", "8-5-1", "Tumbler", "production", 1
 "published-81-2", "researchnet", "8-5-2", "Molecular Key Carving", "production", 1
-"published-81-3", "researchnet", "8-5-3", "Sensitive Explosives I", "research", 1
+"published-81-3", "researchnet", "8-5-3", "Sensitive Explosives I", "production", 1
 "published-82-1", "researchnet", "8-6-1", "Waste Gas", "research", 1
 "published-82-2", "researchnet", "8-6-2", "Ethane Scrubbing", "production", 0
 "published-82-3", "researchnet", "8-6-3", "Melanophlogite Clathrates", "production", 0
