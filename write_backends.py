@@ -6,12 +6,11 @@ import sqlite3
 
 from abc import ABC, abstractmethod
 from io import StringIO
-from typing import Tuple
 
 import schem
 from schem.exceptions import ScoreError, SolutionImportError, SolutionRunError
 
-def make_level_dicts() -> Tuple[dict, dict]:
+def make_level_dicts() -> tuple[dict, dict]:
     """ Returns id2name, name2id"""
     id2name = dict()
     name2id = dict()
@@ -60,8 +59,8 @@ class SaveWriteBackend(AbstractWriteBackend):
         self.sv_conn = sqlite3.connect(savefile)
         self.sv_cur = self.sv_conn.cursor()
 
-        self.db_level_id: str
-        self.comp_id: int
+        self.db_level_id: str|None
+        self.comp_id: int|None
 
     def write_solution(self, db_level_name, author, c, s, r, description: str, replace_base=True):
 
@@ -190,6 +189,7 @@ class ExportWriteBackend(AbstractWriteBackend):
         if validate:
             try:
                 sol = schem.Solution(export)
+                assert sol.expected_score
                 run_up_to = int(sol.expected_score.cycles*1.2)
                 score = sol.run(max_cycles=run_up_to)
                 sol.expected_score = score

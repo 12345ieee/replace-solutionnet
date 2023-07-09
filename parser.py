@@ -146,6 +146,7 @@ def parse_solnet():
             save_id = solnet2id[solnet_id]
             level = id2level[save_id]
             author = row['Username']
+            userOS = None
             if not level.is_deterministic:
                 if '@' in author:
                     author, userOS = author.split('@')

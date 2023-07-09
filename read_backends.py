@@ -69,7 +69,7 @@ class SaveReadBackend(AbstractReadBackend):
         self.conn.row_factory = sqlite3.Row
         self.cur = self.conn.cursor()
 
-    def read_solutions(self, ids: list, pareto_only: bool) -> Iterable:
+    def read_solutions(self, ids: list|None, pareto_only: bool) -> Iterable:
         # we use cycles != 0 as a good proxy for finished
         query = """SELECT id, cycles, reactors, symbols, mastered
                    FROM Level
@@ -186,7 +186,7 @@ class SolnetReadBackend(AbstractReadBackend):
         reordered_pipes = []
         for out_id, raw_pipe in pipes:
             pipe = [self.Point(pipe_point['x'], pipe_point['y']) for pipe_point in raw_pipe]
-            seed: self.Point = self.seeds[component_type, out_id]
+            seed: SolnetReadBackend.Point = self.seeds[component_type, out_id]
             seeds.append((out_id, seed.x, seed.y))
             reordered_pipes.extend((out_id, x, y) for x, y in self._reorder_pipe(pipe, seed)[1:])
         # print seeds first to avoid the pipe bug
@@ -209,7 +209,7 @@ class SolnetReadBackend(AbstractReadBackend):
             self.field[pt.y][pt.x] = value
 
         def find_neighbours(self, curr: 'SolnetReadBackend.Point',
-                            include_end: 'SolnetReadBackend.Point' = None):
+                            include_end: 'SolnetReadBackend.Point'|None = None):
             neighbours = [SolnetReadBackend.Point(curr.x+dx, curr.y+dy)
                     for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]
                     if self.field[curr.y+dy][curr.x+dx] == 'p' or (curr.x+dx, curr.y+dy) == include_end]
@@ -266,9 +266,9 @@ class SolnetReadBackend(AbstractReadBackend):
 
     @classmethod
     def _build_pipe(cls, field: Field, starting_output: List[Point], target_len,
-                    target_point: Point = None, iterations=2000, clean=False) -> List[Point]:
+                    target_point: Point|None = None, iterations=2000, clean=False) -> List[Point]:
 
-        def is_neighbour(pt1: cls.Point, pt2: cls.Point) -> bool:
+        def is_neighbour(pt1: SolnetReadBackend.Point, pt2: SolnetReadBackend.Point) -> bool:
             return abs(pt1.x - pt2.x) + abs(pt1.y - pt2.y) == 1
 
         curr = starting_output[-1]
@@ -353,6 +353,7 @@ class ExportReadBackend(AbstractReadBackend):
             if not ids or (sol_id in ids):
                 with sol_file.open('r') as f:
                     sol = schem.Solution(f.readline())
+                    assert sol.expected_score
                 yield sol_id, self.name2id[sol.level.name], sol.author, sol.name, \
                       sol.expected_score[0], sol.expected_score[2], sol.expected_score[1]
 

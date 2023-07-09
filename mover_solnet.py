@@ -9,6 +9,8 @@ from write_backends import ExportWriteBackend, NoopWriteBackend, SaveWriteBacken
 def main():
     if args.read_from_folder or args.export_folder:
         id2name, name2id = make_level_dicts()
+    else:
+        id2name, name2id = None, None
 
     if args.read_from_folder:
         read_backend = ExportReadBackend(args.read_from_folder, name2id)
