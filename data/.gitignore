@@ -4,3 +4,6 @@ solutionnet_cleaned_dump.sql
 # solnet save
 new.user
 solnet.user
+
+# youtube scrape
+youtube_scrape.psv

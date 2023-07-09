@@ -3,6 +3,7 @@
 import argparse
 import bisect
 import csv
+import re
 import sqlite3
 import typing
 from collections import Counter, OrderedDict
@@ -198,6 +199,32 @@ def parse_archive():
                 this_solution = Solution.unmarshal(line)
                 add_solution(level_id, this_solution, test_reject=False)
 
+def parse_youtube():
+    lowername2level = {l.name.lower(): l for l in reversed(id2level.values())}
+    lowername2id = {l.name.lower(): i for i, l in reversed(id2level.items())}
+    level_names = sorted(lowername2id.keys(), key=len, reverse=True)
+    levels_regex = '|'.join('(?:' + re.escape(n) + ')' for n in level_names)
+    full_regex = re.compile(r'.*?(?P<name>' + levels_regex + r')(?P<mid>\W.*?)' +
+                            r'(?P<c>[\d,]{2,})\D+(?P<r>\d)\D+(?P<s>\d{1,3})(?P<ending>$|\D.*)',
+                            re.IGNORECASE)
+    with open('data/youtube_scrape.psv') as yt_file:
+        reader = csv.reader(yt_file, delimiter='|')
+        for link, author, title in reader:
+            if m := full_regex.match(title.strip()):
+                if 'linux' in m.string.lower() or 'mono 2.0' in m.string.lower():
+                    continue
+                lowername = m['name'].lower()
+                level = lowername2level[lowername]
+                level_id = lowername2id[lowername]
+                this_solution = Solution(cycles=int(m['c'].replace(',', '')),
+                                         reactors=int(m['r']),
+                                         symbols=int(m['s']),
+                                         is_bugged=True,
+                                         is_precognitive=not level.is_deterministic,
+                                         author=author,
+                                         display_link=link)
+                add_solution(level_id, this_solution)
+
 def print_solutions(printset):
 
     if not printset:
@@ -237,6 +264,7 @@ if __name__ == '__main__':
     parser.add_argument("-a", "--archive", default=True, action=argparse.BooleanOptionalAction)
     parser.add_argument("-n", "--solnet", default=False, action=argparse.BooleanOptionalAction)
     parser.add_argument("-s", "--saves", default=False, action=argparse.BooleanOptionalAction)
+    parser.add_argument("-y", "--youtube", default=False, action=argparse.BooleanOptionalAction)
     parser.add_argument("-p", "--print", choices={'research', 'production', 'boss'}, nargs='+', default=['research', 'production', 'boss'])
     parser.add_argument("--no-print", choices={'research', 'production', 'boss'}, nargs='+', default=[])
     parser.add_argument("--leaderboard", default=False, action=argparse.BooleanOptionalAction)
@@ -250,6 +278,8 @@ if __name__ == '__main__':
         parse_solnet()
     if args.saves:
         parse_saves()
+    if args.youtube:
+        parse_youtube()
 
     if args.leaderboard:
         print_leaderboard(args.include_frontier)
